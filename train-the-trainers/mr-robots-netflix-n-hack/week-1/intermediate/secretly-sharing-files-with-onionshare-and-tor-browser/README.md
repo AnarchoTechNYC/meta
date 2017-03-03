@@ -1,6 +1,6 @@
 # Secretly sharing files with OnionShare and Tor Browser
 
-In this exercise we will create a temporary (ephemeral) *Darknet* Website called an *Onion site* using the Tor anonymity system. We will use our Onion site to secretly tranfer a "sensitive" file to a friend. Our goal is to successfully give our friend a copy of the sensitive file without exposing so much as *the fact that* we have even transferred the file in the first place.
+In this exercise we will create a temporary (ephemeral) *Darknet* Website called an *Onion site* using the Tor anonymity system. We will use our Onion site to secretly transfer a "sensitive" file to a friend. Our goal is to successfully give our friend a copy of the sensitive file without exposing so much as *the fact that* we have even transferred the file in the first place.
 
 Essentially, we will be creating a kind of *digital [dead drop](https://en.wikipedia.org/wiki/Dead_drop)*.
 
@@ -92,6 +92,11 @@ As the receiver, you must acquire knowledge of the secret Onion site where the D
 **Do this:**
 
 1. Launch the Tor Browser. (Usually, this is as simple as double-clicking its icon.)
+1. Click on the *Connect* button when presented with the *Tor Network Settings* dialogue screen:  
+   ![Screenshot of the Tor Network Settings screen on Windows.](https://web.archive.org/web/20170303022410/http://core0.staticworld.net/images/article/2014/09/firsttimetor-100449209-orig.png)  
+   This will connect your computer to the Tor anonymity network.
+1. After Tor has successfully connected, you will see a Web browser window open and display (something that looks similar to) the following page:  
+   ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20170303022638/http://core0.staticworld.net/images/article/2014/09/torbrowserhero-100449223-orig.png)
 
 Now comes the tricky part! You must find a way to securely, secretly communicate with your friend to learn the Web address of their Onion site. Remember, if you are caught requesting this secret information from your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
 
