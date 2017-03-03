@@ -2,11 +2,13 @@
 
 In this exercise we will create a temporary (ephemeral) *Darknet* Website called an *Onion site* using the Tor anonymity system. We will use our Onion site to secretly tranfer a "sensitive" file to a friend. Our goal is to successfully give our friend a copy of the sensitive file without exposing so much as *the fact that* we have even transferred the file in the first place.
 
+Essentially, we will be creating a kind of *digital [dead drop](https://en.wikipedia.org/wiki/Dead_drop)*.
+
 # Objectives
 
 When you complete this exercise, you will have acquired the following capabilities:
 
-* The ability to share files revealing your location, whether your own physical ("real world") location or your computer's logical ("Internet address") location.
+* The ability to share files without revealing your location, whether your own physical ("real world") location or your computer's logical ("Internet address") location.
 * The ability to transfer file(s) without relying on corporate providers such as Google, Facebook, or Microsoft; no usernames or account passwords to remember.
 * The ability to share files even if you are located behind restrictive firewalls or censored networks such school, library, or employment networks.
 
@@ -51,22 +53,21 @@ As the sender, you must prepare an Onion site able to transmit the files to the 
 1. Launch the Tor Browser. (Usually, this is as simple as double-clicking its icon.)
 1. Click on the *Connect* button when presented with the *Tor Network Settings* dialogue screen:  
    ![Screenshot of the Tor Network Settings screen on Windows.](https://web.archive.org/web/20170303022410/http://core0.staticworld.net/images/article/2014/09/firsttimetor-100449209-orig.png)  
-   This will connect your computer to the Tor anonymity network. It also provides the service your computer will use to set up the Onion site in the next step.
-1. After Tor has successfully connected, you will see a Web browser window open and display (something like looks similar to) the following page:  
+   This will connect your computer to the Tor anonymity network. It also provides the service your computer will use to set up the Onion site in the following steps.
+1. After Tor has successfully connected, you will see a Web browser window open and display (something that looks similar to) the following page:  
    ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20170303022638/http://core0.staticworld.net/images/article/2014/09/torbrowserhero-100449223-orig.png)
 1. Launch OnionShare. (Usually, this is as simple as double-clicking its icon.) You will be presented with the main OnionShare window:  
    ![Screenshot of main OnionShare window on Windows.](https://web.archive.org/web/20170303022952/https://cdn.ghacks.net/wp-content/uploads/2017/03/onionshare.png)
 1. Drag-and-drop the Death Star plans into the main OnionShare window, or click either the *Add Files* or *Add Folder* button and browse to the location of the Death Star plans on your computer to add them to your soon-to-be Onion site.
-1. Click the *Start Sharing* button. Wait a few moments OnionShare prepares your Onion site.
-    * When the OnionSite is successfully running, the red indicator light will turn from red to green and the "Start Sharing" button will change to read "Stop Sharing" instead.
+1. Click the *Start Sharing* button. Wait a few moments as OnionShare prepares your Onion site.
+    * When the Onion site is successfully running, the red indicator light will turn green and the "Start Sharing" button will change to read "Stop Sharing" instead.
     * Additionally, two new buttons will appear ("Copy URL" and "Copy HidServAuth") next to a Web address that will look something like `http://fjqkh7xe7ol4tqws.onion/duct-crock`.
-1. Click the "*Copy URL*" button to copy the Web address of your new, ephemeral Onion website.
 
 Now comes the tricky part! You must find a way to securely, secretly communicate this Web address to your friend. Remember, if you are caught communicating this secret information to your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
 
 1. Once you have safely communicated the location of your secret Onion site to your friend, you must return to the main OnionShare window.
 1. Pay close attention to the OnionShare status bar (the very bottom of the OnionShare window).
-    * When your friend successfully arrives at your OnionSite, you will see the message "Download page loaded" appear.
+    * When your friend successfully arrives at your Onion site, you will see the message "Download page loaded" appear.
     * When your friend successfully begins receiving the files, a progress bar will appear and will show the estimated time to completion.
 1. You must ensure that this download completes!
     * Do not close OnionShare during this process.
@@ -86,7 +87,7 @@ Now comes the tricky part! You must find a way to securely, secretly communicate
 1. Once you have acquired the Onion site's Web address, carefully type it verbatim (or copy-and-paste it) into the location bar of your open Tor Browser, then press the "Go" button or press the Return key. If successful, you should see a page like the following:  
    ![Screenshot of the OnionShare server providin the Death Star plans.](https://web.archive.org/web/20170303030140/https://i.imgur.com/4lSL92q.png)
 1. Click on the blue download link; it will start with "onionshare" and then have some random letters and numbers at the end.
-    * OnionShare always shares all files in `.zip` format.
+    * OnionShare always packages all files in `.zip` format.
 1. After the download is complete, [uncompress the downloaded ZIP file](http://www.computerhope.com/issues/ch000506.htm) and confirm that the Death Star plans are now in your posession.
 
 # Discussion
