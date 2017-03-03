@@ -4,13 +4,23 @@ In this exercise we will create a temporary (ephemeral) *Darknet* Website called
 
 Essentially, we will be creating a kind of *digital [dead drop](https://en.wikipedia.org/wiki/Dead_drop)*.
 
+1. [Objectives](#objectives)
+1. [Scenario](#scenario)
+1. [Prerequisites](#prerequisites)
+1. [Set up](#set-up)
+1. [Practice](#practice)
+    * [Sender steps](#sender-steps)
+    * [Receiver steps](#receiver-steps)
+1. [Discussion](#discussion)
+1. [Additional references](#additional-references)
+
 # Objectives
 
 When you complete this exercise, you will have acquired the following capabilities:
 
 * The ability to share files without revealing your location, whether your own physical ("real world") location or your computer's logical ("Internet address") location.
 * The ability to transfer file(s) without relying on corporate providers such as Google, Facebook, or Microsoft; no usernames or account passwords to remember.
-* The ability to share files even if you are located behind restrictive firewalls or censored networks such school, library, or employment networks.
+* The ability to share files even if you are located behind restrictive firewalls or censored networks such as school, library, or employment networks.
 
 # Scenario
 
