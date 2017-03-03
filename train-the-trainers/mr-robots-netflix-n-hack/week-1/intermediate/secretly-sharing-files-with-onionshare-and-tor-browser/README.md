@@ -81,6 +81,7 @@ Now comes the tricky part! You must find a way to securely, secretly communicate
     * When your friend successfully begins receiving the files, a progress bar will appear and will show the estimated time to completion.
 1. You must ensure that this download completes!
     * Do not close OnionShare during this process.
+    * Do not close the Tor Browser during this process.
     * Do not interrupt your Internet connection during this process.
     * Do not shut down your computer until the download has completed.
 
