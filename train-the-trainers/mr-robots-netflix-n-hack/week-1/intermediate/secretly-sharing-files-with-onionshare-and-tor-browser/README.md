@@ -24,7 +24,7 @@ When you complete this exercise, you will have acquired the following capabiliti
 
 # Scenario
 
-[You are part of the Rebel Alliance (and a traitor)!](https://www.youtube.com/watch?v=2XOzyBQ594E) In order to avoid capture by The Empire, you must transmit the Death Star plans to a friend of yours, a fellow resistance fighter, whose contact information you already have. However, if you are observed communicating with your friend, you will both be arrested and charged with conspiracy to commit treason against The Emperor.
+[You are part of the Rebel Alliance (and a traitor)!](https://www.youtube.com/watch?v=2XOzyBQ594E) In order to avoid certain defeat at the hands of The Empire, you must transmit the Death Star plans to a friend of yours, a fellow resistance fighter, whose contact information you already have. However, if you are observed communicating with your friend, you will both be arrested and charged with conspiracy to commit treason against The Emperor.
 
 Your mission is to arrange for the secret transfer of the Death Star plans from your computer to their computer, so that they may deliver the plans to Alliance Headquarters.
 
