@@ -6,8 +6,12 @@ In this exercise we will obtain the password of an unsuspecting user by cracking
 1. [Scenario](#scenario)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
+    * [Installation on Windows](#installation-on-windows)
+    * [Installation on macOS](#installation-on-macos)
+    * [Installation on GNU/Linux](#installation-on-gnulinux)
 1. [Practice](#practice)
 1. [Discussion](#discussion)
+    * :construction: TK-TODO: Fill in this part of the TOC.
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -81,4 +85,15 @@ A pre-built macOS version of John the Ripper is available for modern Apple Macin
 
 # Discussion
 
+## `passwd` versus `shadow` files
+
+> :construction: TK-TODO: A brief discussion of `/etc/passwd` and why that's not quite enough to get at password hashes, as well as some more brief explanations of the file formats (though see `passwd(5)` and `shadow(5)` for more info).
+
+## `crypt(3)` formatted hash strings
+
+> :construction: TK-TODO: Some more detailed explanations of that somewhat complex-looking hash string, and how it's not *just* a hash output. See also Modular Crypt Format and PHC String Format, linked in the [references](#additional-references) section.
+
 # Additional references
+
+* [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html)
+* [PHC String Format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md)
