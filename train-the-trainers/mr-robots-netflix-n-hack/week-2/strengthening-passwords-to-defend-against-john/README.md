@@ -39,6 +39,8 @@ To participate in this exercise, you must have:
     * any flavor of the GNU/Linux operating system.
 * An active Internet connection (for downloading the required tools in the [set up](#set-up) step; you do not need an Internet connection once you have the tools installed).
 
+> :beginner: :computer: This exerise requires the use of a command line (or terminal). If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's Learn the Command Line interactive tutorial](https://www.codecademy.com/learn/learn-the-command-line). You don't need to complete their tutorial to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics.
+
 # Set up
 
 In addition to your laptop or desktop computer, you will need to acquire the following tool:
@@ -69,7 +71,7 @@ A pre-built macOS version of John the Ripper is available for modern Apple Macin
 1. Go to [John the Ripper's macOS community-contributed builds page](http://download.openwall.net/pub/projects/john/contrib/macosx/).
 1. Download the latest archive file available. (As of this writing, that is [`john-1.7.9-jumbo-7-macosx-Intel-2.zip`](http://download.openwall.net/pub/projects/john/contrib/macosx/john-1.7.9-jumbo-7-macosx-Intel-2.zip).)
 1. Unzip the file. Usually, this is as simple as double-clicking on it.
-    * This will produce a folder, inside of which is another folder named `run`. Inside *that* folder is a file called `john`. That file is the main John the Ripper application. Unlike a classic macOS application, this program must be run using the Terminal; you cannot simply double-click it. However, `john` is now successfully "installed."
+    * This will produce a folder, inside of which is another folder named `run`. Inside *that* folder is a file called `john`. That file is the main John the Ripper application. Unlike a classic macOS application, this program must be run [using the Terminal](http://guides.macrumors.com/Terminal); you cannot simply double-click it. However, `john` is now successfully "installed."
 
 ## Installation on GNU/Linux
 
