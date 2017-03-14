@@ -45,7 +45,7 @@ To participate in this exercise, you must have:
     * any flavor of the GNU/Linux operating system.
 * An active Internet connection (for downloading the required tools in the [set up](#set-up) step; you do not need an Internet connection once you have the tools installed).
 
-> :beginner: :computer: This exercise requires the use of a command line (or terminal). If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's Learn the Command Line interactive tutorial](https://www.codecademy.com/learn/learn-the-command-line). You don't need to complete their tutorial to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics.
+> :beginner: :computer: This exercise requires the use of a command line (or terminal). If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's Learn the Command Line interactive tutorial](https://www.codecademy.com/learn/learn-the-command-line) (for GNU/Linux or macOS users) or reviewing [Computer Hope's How to use the Windows command line (DOS) article](http://www.computerhope.com/issues/chusedos.htm) (for Windows users). You don't need to complete their tutorial or article to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics.
 
 # Set up
 
@@ -131,7 +131,7 @@ Each guess is written on its own line. We call each guess a *word*, even if ther
 
 When we give the wordlist to `john`, what we're doing is asking `john` to hash each of these "words" one at a time and then compare the resulting hash value to the hash value stored in the password file. When `john` finds a word in the wordlist that hashes to the same hash value as the hashed password, it will tell us that it found a match. When we find a matching value, we say we have "*cracked* the hash."
 
-If `john` is working correctly, we can expect that the third word in the wordlist, `Sup3rs3kr3tP@24431w0rd`, will result in a match.
+If `john` is working correctly, we can expect that the third word in the wordlist, `Sup3rs3kr3tP@24431w0rd`, will result in a match. If that guess were missing (as it is in the `sanitycheck.no-crack.wordlist.txt` file), we would expect to see `john` report its failure to find any matches.
 
 > :beginner: It's very easy to create a hashed version of a password, or any content, such as an arbitrary file. To make the hash in this sanity check (`ced91977849c44fd009ba437c14c1b74f632fae6`), I used [the `shasum(1)` command](https://linux.die.net/man/1/shasum) on a GNU/Linux system:
 > 
@@ -214,16 +214,66 @@ Sup3rs3kr3tP@24431w0rd (fsociety)
 guesses: 1  time: 0:00:00:00 DONE (Tue Mar 14 14:18:13 2017)  c/s: 400  trying: randomGuess - someotherword
 ```
 
-Here, `john` informs us that it found one hash in the password file ("`Loaded 1 password hash`"), along with the type of hashing algorithm it suspects (or that we told it) the hash was made with ("`Raw SHA-1`"). On the next line, we see the expected correct guess (`Sup3rs3kr3tP@24431w0rd`), which `john` reports as the plain-text, unobfuscated version of the password associated with the user `fsociety`. Finally, we see the number of *successful* guesses made (`guesses: 1`), the amount of time it took (`time:`), the fact that we have in fact completed making all guesses (`DONE`), the time of completion (in this example, shown as `(Tue Mar 14 14:18:13 2017)`), and the current range of password candidates being guessed.
+Here, `john` informs us that it found one hash in the password file ("`Loaded 1 password hash`"), along with the type of hashing algorithm it suspects (or that we told it) the hash was made with ("`Raw SHA-1`"). On the next line, we see the expected correct guess (`Sup3rs3kr3tP@24431w0rd`), which `john` reports as the plain-text, unobfuscated version of the password associated with the user `fsociety`. Finally, we see the number of *successful* guesses made (`guesses: 1`), the amount of time it took (`time:`), the fact that we have in fact completed making all guesses (`DONE`), and the time of completion (in this example, shown as `(Tue Mar 14 14:18:13 2017)`). Finally, the current range of password candidates being guessed is reported, shown here as "`trying: randomGuess - someotherword`." Indeed, `randomGuess` was our first guess, listed at the start of our wordlist, and `someotherword` was our last one, listed at the wordlist file's end. Notice that these guesses were attempted in order, from top to bottom. That's important because it means we should place "smarter" guesses, the guesses we think are more likely to successfully crack a hash, nearer to the top of our wordlist file.
 
 > :bulb: There is also some [additional information](http://www.openwall.com/john/doc/FAQ.shtml) in the report. For instance, we're also told that, on this run, `john` is using an [Intel processor feature called SSE2](https://en.wikipedia.org/wiki/SSE2) in an attempt to work as fast as possible. We also see a speed report, shown as "combinations per second" (`c/s`). There are many ways to benchmark `john`'s speed, and to tune it, in order to optimize the "guess more passwords faster" technique.
 
+Now that we've seen how `john` works when we make a successful guess, let's see what happens when our guesses fail to find the password. This will also demonstrate JtR's "`pot`" file feature.
+
+**Do this:**
+
+1. Download the [`sanitycheck.no-crack.wordlist.txt`](sanitycheck.no-crack.wordlist.txt?raw=true) file and save it in or move it to JtR's `run` folder.
+1. Invoke `john` as shown above again, but use this new wordlist file in place of the other one.
+    * Optionally, use the `--format=raw-sha1` option to quiet `john`'s warnings and disable its hash format auto-detection.
+
+This time, the report output differs:
+
+```sh
+$ ./john --format=raw-sha1 --wordlist=sanitycheck.no-crack.wordlist.txt sanitycheck.password.txt
+Loaded 1 password hash (Raw SHA-1 [128/128 SSE2 intrinsics 4x])
+No password hashes left to crack (see FAQ)
+```
+
+Rather than start a cracking session, `john` simply checks the password file we gave it (same as before, "`Loaded 1 password hash`") but then immediately reports "`No password hashes left to crack (see FAQ)`." This is happening because `john` remembers both this specific password hash file *and* the fact that we have already correctly guessed the password corresponding to the hash inside of it. John the Ripper maintains a list of successfully cracked hashes in a so-called pot. This is literally a file called `john.pot` and it will have appeared in the the `run` folder after the previous invocation of `john`. We can open `john`'s `.pot` file with any graphical text editor or have a look at its contents using [the `cat(1)` command](https://linux.die.net/man/1/cat) on a GNU/Linux or macOS terminal, or [the `type` command](https://technet.microsoft.com/en-us/library/bb491026.aspx) in a Windows Command Prompt:
+
+```sh
+$ cat john.pot
+$dynamic_26$ced91977849c44fd009ba437c14c1b74f632fae6:Sup3rs3kr3tP@24431w0rd
+```
+
+> :bulb: The format of this line is JtR-specific, but closely resembles the syntax used by the [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html). See the `doc/DYNAMIC` file in the official John the Ripper source distribution for details.
+
+If you look closely, you can see both the hashed and plain versions of the password, but John the Ripper's documentation suggests an easier way of viewing this file's contents. Invoking `john` with its `--show` option (instead of its `--wordlist` option) presents a nicer readout:
+
+```sh
+$ ./john --show sanitycheck.password.txt
+fsociety:Sup3rs3kr3tP@24431w0rd
+
+1 password hash cracked, 0 left
+```
+
+Remembering previously-cracked hashes is convenient, but gets in the way of our sanity check. So, let's just delete the pot file and try again.
+
+**Do this:**
+
+1. Delete the `john.pot` file in JtR's `run` folder, or move it to the trash. 
+1. Re-run the previous command invoking `john` with the intentionally-failing sanity check wordlist.
+
+```sh
+$ ./john --format=raw-sha1 --wordlist=sanitycheck.no-crack.wordlist.txt sanitycheck.password.txt
+Loaded 1 password hash (Raw SHA-1 [128/128 SSE2 intrinsics 4x])
+guesses: 0  time: 0:00:00:00 DONE (Tue Mar 14 18:39:29 2017)  c/s: 300  trying: randomGuess - someotherword
+```
+
+This report is more like what we were expecting. It's similar to the first report, where we successfully "guessed" the password, but this time it does not display the cracked hash. That's because we simply didn't include that guess in the wordlist we used.
+
+Now that we understand `john`'s basic operation, and we can recognize what a successful and a failed cracking session looks like, we can move on to trying to crack the passwords we obtained off Evil Corp's mail server.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
 > 1. Get the files, have a quick look at them to, y'know, understand them.
 > 1. `unshadow` the files (maybe unnecessary/distracting for educational purposes?)
-> 1. Do the thing! (`john --wordlist=mywordlist.list the_file_with_hashes_to_crack`)
+> 1. Do the thing! (`john --wordlist=mywordlist.list the_file_with_hashes_to_crack_`)
 >     * Provide "mywordlist.list" with this repo, as an example file. But *also*,
 >     * point out that other wordlists exist, dramatic-dot-dot-dot.
 > 1. Tell students to go get their own, better wordlist. ("rockyou"?)
@@ -240,6 +290,10 @@ Here, `john` informs us that it found one hash in the password file ("`Loaded 1 
 > 1. Get a password manager. Generate a password with it. Etc.
 
 # Discussion
+
+## Differences between the practice lab and the Mr. Robot episode
+
+> :construction: TK-TODO: Brief walkthrough of the incorrect parts of the Mr. Robot scene and screenshots.
 
 ## Calculating password strength
 
@@ -259,3 +313,4 @@ Here, `john` informs us that it found one hash in the password file ("`Loaded 1 
 * [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html)
 * [PHC String Format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md)
 * [Password Haystacks: How Well-Hidden is Your Needle?](https://www.grc.com/haystack.htm)
+* [Hashcat: Advanced Password Recovery](https://hashcat.net/) - a popular alternative to John the Ripper
