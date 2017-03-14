@@ -83,6 +83,26 @@ A pre-built macOS version of John the Ripper is available for modern Apple Macin
 
 # Practice
 
+> :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
+> 
+> 1. Get the files, have a quick look at them to, y'know, understand them.
+> 1. `unshadow` the files (maybe unnecessary/distracting for educational purposes?)
+> 1. Do the thing! (`john --wordlist=mywordlist.list the_file_with_hashes_to_crack`)
+>     * Provide "mywordlist.list" with this repo, as an example file. But *also*,
+>     * point out that other wordlists exist, dramatic-dot-dot-dot.
+> 1. Tell students to go get their own, better wordlist. ("rockyou"?)
+>     * Doing `john --wordlist=rockyou.txt` or whatever should produce several more password hits, which is an "aha" moment.
+> 1. Do the thing again, this time with `--rules` and so on.
+>     * This should crack maybe one or two more passwords, again, to provide that "aha" moment for what `--rules` are and do.
+> 1. Finally, introduce the idea that we can devise our own password guessing strategies, write our own rules files, etc.
+>     * Doing this correctly should reveal yet another couple of passwords; have the passwords be Mr. Robot themed but the rules common (adding numbers at the end, 1337 speak, and so on).
+> 
+> Obvi, we already "know" Tyrell's password so doesn't really matter if we actually crack his. But it's good that we already know is that students can "check their work" against a known quantity.
+> 
+> Don't forget we also then need to write up the defense:
+> 
+> 1. Get a password manager. Generate a password with it. Etc.
+
 # Discussion
 
 ## `passwd` versus `shadow` files
