@@ -115,5 +115,6 @@ A pre-built macOS version of John the Ripper is available for modern Apple Macin
 
 # Additional references
 
+* [Ars Technica: How I became a password cracker](https://arstechnica.com/security/2013/03/how-i-became-a-password-cracker/)
 * [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html)
 * [PHC String Format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md)
