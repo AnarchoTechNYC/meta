@@ -20,7 +20,7 @@ When you complete this exercise, you will have acquired the following capabiliti
 
 * The ability to make and use passwords for your user accounts that are practically invincible against many attackers.
 * The ability to replace old passwords with strong new passwords easily, on whatever schedule you want.
-* The ability to determine other users's original passwords, if their's are weak, despite sophisticated attempts to protect them.
+* The ability to determine other users's original passwords, if theirs are weak, despite sophisticated attempts to protect them.
 * The ability to guage the approximate relative strength of a password using only "the naked eye."
 
 # Scenario
@@ -43,7 +43,7 @@ To participate in this exercise, you must have:
     * any flavor of the GNU/Linux operating system.
 * An active Internet connection (for downloading the required tools in the [set up](#set-up) step; you do not need an Internet connection once you have the tools installed).
 
-> :beginner: :computer: This exerise requires the use of a command line (or terminal). If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's Learn the Command Line interactive tutorial](https://www.codecademy.com/learn/learn-the-command-line). You don't need to complete their tutorial to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics.
+> :beginner: :computer: This exercise requires the use of a command line (or terminal). If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's Learn the Command Line interactive tutorial](https://www.codecademy.com/learn/learn-the-command-line). You don't need to complete their tutorial to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics.
 
 # Set up
 

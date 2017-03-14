@@ -1,5 +1,7 @@
 root:x:0:0:root:/root:/bin/sh
 lp:x:7:7:lp:/var/spool/lpd:/bin/sh
+www-data:x:33:33:www-data:/var/www:/bin/false
+postfix:x:113:119::/var/spool/postfix:/bin/false
 tyrellwellick:x:65534:65534:tyrellwellick:/nonexistent:/bin/false
 teddieboyle:x:89099:89099:teddieboyle:/nonexistent:/bin/false
 paulwiener:x:60222:60222:paulwiener:/nonexistent:/bin/false
