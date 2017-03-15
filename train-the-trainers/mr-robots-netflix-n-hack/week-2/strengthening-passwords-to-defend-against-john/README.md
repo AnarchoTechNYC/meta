@@ -250,7 +250,7 @@ $ cat john.pot
 $dynamic_26$ced91977849c44fd009ba437c14c1b74f632fae6:Sup3rs3kr3tP@24431w0rd
 ```
 
-> :bulb: The format of this line is JtR-specific, but closely resembles the syntax used by the [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html). See the `doc/DYNAMIC` file in the official John the Ripper source distribution for details.
+> :bulb: The format of this line is JtR-specific, but closely resembles the syntax used by the [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html). More on that a bit later. In the meantime, the super-curious reader can refer to the `doc/DYNAMIC` file in the official John the Ripper source distribution for details.
 
 If you look closely, you can see both the hashed and plain versions of the password, but John the Ripper's documentation suggests an easier way of viewing this file's contents. Invoking `john` with its `--show` option (instead of its `--wordlist` option) presents a nicer readout:
 
@@ -315,13 +315,27 @@ jeffpanessa:x:77078:77078:jeffpanessa:/nonexistent:/bin/false
 aliciaoldham:x:49002:49002:aliciaoldham:/nonexistent:/bin/false
 ```
 
-Notice that this text is structured the same way that `john` already expects it to be. Each line is a record in this plain-text database. On the very start of each line is a username. A colon (`:`) marks the end of one *field* and the beginning of the next. Each record contains seven distinct fields. This is exactly how the `shadow` file is structured, too. Here's Tyrell Wellick's entry in the `shadow` file:
+Notice that this text is structured, and it's structured the same way `john` expects it to be. At the start of each line is a username, and the values are delimeted by colons. In database lingo, we call each line a *record*, and the positions in the record containing values are called *fields*. The fields are demarcated by the *field separater* (the colon, `:`, for this database). This is why the `passwd` file is sometimes also called the `passwd` *database*.
+
+The `shadow` file is structured in the same way. Here is Tyrell Wellick's entry in the `shadow` file:
 
 ```sh
 tyrellwellick:$6$ge7W6aVQ$dhJxmLt2qD964d8GXD7Z53EkxxKfe08LVRBNVZ5Xbg.YXXwgIagzJ9bRB.QUcgvOsdrhitXsTf0MbGY7S1sH60:17239:0:99999:7:::
 ```
 
-Once again, notice the colons acting as field separators. Notice also that the first field is the username, and that this is the same across both files. The second field, however, is different. In the `passwd` file, the second field was always an `x`. In the `shadow` file, the second field is the password hash.
+Once again, notice the colons acting as field separators. Notice also that the first field is the username, and that this is the same across both files. The second field, however, is different. In the `passwd` file, the second field was always an `x`. In the `shadow` file, the second field is the coveted password hash.
+
+It's immediately clear that this hash is way more complex than the raw SHA-1 hash we saw earlier. There are two reasons for that. First, it's a different hash algorithm, a more modern one designed to be harder than SHA-1 to crack. "Harder" means that it takes longer to compute a resulting value given some input, and thus slows attackers down. Second, it's been further complicated by a small amount of extra input, called *salt* (yes, from the expression, "salt to taste"). The salt makes *this* hash different from all other hashes that were given the same, original "unsalted" input. Thankfully, none of this matters much to `john`, which already knows how to recognize and deal with salted hashes.
+
+> :beginner: For the curious, the salt for this hash is `ge7W6aVQ`. You can read it, plain as day, near the start of the second field in the `shadow` database. This hash string is, itself, composed of three separate parts. They're not really "fields" in the proper sense because there's no formal, universally agreed upon standard way of denoting them. The closest thing to a standard is the popular [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html) specification and the more recent [Password Hashing Competition (PHC) String Format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md). Anyway, the parts of a hash string are more-or-less delimited by dollar signs (`$`). From left-to-right, those parts are:
+> 
+> 1. The *hash prefix* (or *hash identifier*), which is a short alphanumeric string in between `$` symbols. In this hash, it's `$6$`, which generally indicates SHA-512 Crypt.
+> 1. Next comes the salt value, which continues until the next `$` symbol. In this hash, that's the `ge7W6aVQ` part.
+> 1. The remainder of the field is the hash value itself. This is the value `john` will compare after concatenating the salt value with each of our guesses and performing the hashing operations.
+> 
+> Part of the usefulness of adding salt to a password in order to produce a *salted hash* is that it forces attackers like us to go through this hash cracking process each time we want to crack a different user's password. If a system hashed a user's password without adding any salt, then the hashes for two different accounts that happened to have the same password would be exactly the same. Worse, this would even be true of two user accounts across completely unrelated systems, if those systems happened to use the same hash algorithm. Assuming we already cracked the one account, we could instantly recognize the password just by reading the hash value, defeating the whole point of hashing in the first place. In other words, we would be able to learn the password *without having to perform the laborious process of actually computing its hash*.
+> 
+> Furthermore, many huge, public, free lookup databases of previously-computed (or previously-encountered) hashes and their original inputs exist online. One such popular database is at [CrackStation.net](https://crackstation.net/). These databases of precomputed hashes and their corresponding original inputs are called [rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table). Some even larger rainbow tables are accessible, for a fee.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
