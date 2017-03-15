@@ -1,6 +1,6 @@
 # Strengthening Passwords to Defend Against John
 
-In this exercise we will obtain the password of an unsuspecting user by "cracking" the hashed copy of that user's password. Then we will use a password manager to strengthen our own passwords in order to protect yourself against the same sort of attacks. Our goal is to understand why and how using [password management software](https://en.wikipedia.org/wiki/Password_manager) makes having a digital life both safer and easier at the same time.
+In this exercise we will obtain the password of an unsuspecting user by "cracking" the hashed copy of that user's password. Then we will use a password manager to strengthen our own passwords in order to protect ourselves against the same sort of attacks. Our goal is to understand why and how using [password management software](https://en.wikipedia.org/wiki/Password_manager) makes having a digital life both safer and easier at the same time.
 
 In other words, you will perform a *[password cracking](https://en.wikipedia.org/wiki/Password_cracking) attack* and learn how to stop password crackers from cracking your own passwords.
 
@@ -33,7 +33,7 @@ When you complete this exercise, you will have acquired the following capabiliti
 
 > Hacking Tyrell Wellick, you'd think it'd be tricky but it wasn't. Evil Corp's corporate mail servers? They haven't patched anything since Shellshock. He doesn't even use two-step verification. His password was just his wife's maiden name and Sweden's independence date, `66`. One "six" away from the obvious, but still. This is bad noob practice.
 
-You are Elliot Alderson, ordinary cybersecurity engineer by day, vigilante hacker by night. In order to uncover Evil Corp's next nefarious plot, you must hack into the corporate email account of their Senior Vice President of Technology, Tyrell Wellick. Fortunately for you, Evil Corp's mail servers run a webmail system vulnerable to an exploit called Shellshock, which has enabled you to obtain a file listing the usernames and passwords of everyone who uses the system. However, the passwords are obfuscated using a one-way mathematical function called a *hash* (or *digest*).
+You are Elliot Alderson, ordinary cybersecurity engineer by day, vigilante hacker by night. In order to uncover Evil Corp's next nefarious plot, you must hack into the corporate email account of their Senior Vice President of Technology, Tyrell Wellick. Fortunately for you, Evil Corp's mail servers run a webmail system vulnerable to an exploit called Shellshock, which has enabled you to obtain files listing the usernames and passwords of everyone who uses the system. However, the passwords are obfuscated using a one-way mathematical function called a *hash* (or *digest*).
 
 In order to recover the password, you must "crack" its hashed equivalent, revealing the original. Once cracked, you may impersonate Tyrell Wellick to the Evil Corp mail server by using his username and password to log in as him, thereby gaining access to his emails. Moreover, to make sure that Tyrell Wellick is unable to hack you back, you must set all your online accounts to use "uncrackable" passwords to protect yourself against the very same attack.
 
@@ -115,7 +115,7 @@ This means, to be successful, we only have two techniques available to us:
 
 Guessing more passwords faster is pretty intuitive: the faster we can make guesses, the less time it will take to perform an exhaustive, brute-force search. This is simply a function of what computer you have. The better, faster, stronger, more expensive your computers are, the more guesses you can make per second. Making smarter guesses sooner involves much more subtlety, so that's where we'll be focusing the majority of our time in this lab.
 
-### Sanity check
+## Sanity check
 
 First, let's make sure you successfully installed John the Ripper (JtR) and that its `john` program is working correctly. We'll do this by giving `john` two files. One file contains a fictional username and hashed password combination. The second file will contain a (correct) "guess" of the un-hashed password. Given these two files, `john` should be able to apply the password guess in the one file to the hashed version of the password in the other file and tell us that the guess is correct.
 
@@ -126,7 +126,7 @@ First, let's make sure you successfully installed John the Ripper (JtR) and that
 > ced91977849c44fd009ba437c14c1b74f632fae6  -
 > ```
 > 
-> Similarly, Windows users can use a Microsoft utility called the [File Checksum Integrity Verifier](http://support.microsoft.com/kb/841290).
+> Similarly, Windows users can use [Notepad](https://en.wikipedia.org/wiki/Microsoft_Notepad) and a utility called the [File Checksum Integrity Verifier](http://support.microsoft.com/kb/841290).
 
 The file containing the username and hashed password pair is called `sanitycheck.password.txt`. It contains one line that looks like this:
 
@@ -278,10 +278,53 @@ This report is more like what we were expecting. It's similar to the first repor
 
 Now that we understand `john`'s basic operation, and we can recognize what a successful and a failed cracking session looks like, we can move on to trying to crack the passwords we obtained off Evil Corp's mail server.
 
+## Crack session preparation
+
+Recall that, [previously](#scenario):
+
+> Evil Corp's mail servers run a webmail system vulnerable to an exploit called Shellshock, which has enabled you to obtain files listing the usernames and passwords of everyone who uses the system.
+
+Since Evil Corp's mail system was powered by a [Unix](https://en.wikipedia.org/wiki/Unix)-like server, the two files you plucked off Evil Corp's server during your successful Shellshock exploit were the files located at `/etc/passwd` and `/etc/shadow`. Often, these are just called "the `passwd` and `shadow` files" for short. On Unix-like systems, these two files taken together comprise a local database that provides the system with information about its user accounts. Numerous programs query one or both of these files to answer the all important question, "Is *this* the correct password for *that* user?"
+
+> :beginner: :cinema: In the Mr. Robot episode, Elliot only retrieves one file, `passwd`, and never accesses the `shadow` file, but he is nonetheless able to crack Tyrell's password. This is an error. Since the password hash is located in the `shadow` file, Merely obtaining the `passwd` file would have left Elliot without the information he needed to crack any passwords.
+> 
+> See the [`passwd` versus `shadow` files](#passwd-versus-shadow-files) section below for details, and the "[Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)" section in the [Discussion](#discussion) for a list of more errors like this.
+
+Let's have a look at our copies of both the `passwd` and `shadow` files, which we saved as `evilcorp-intl.com.passwd.txt` and `evilcorp-intl.com.shadow.txt`, respectively. As before, we can use `cat` on a GNU/Linux or macOS terminal or `type` in a Windows Command Prompt to print the file's content. Here's the `passwd` file:
+
+```sh
+$ cat evilcorp-intl.com.passwd.txt
+root:x:0:0:root:/root:/bin/sh
+lp:x:7:7:lp:/var/spool/lpd:/bin/sh
+tyrellwellick:x:65534:65534:tyrellwellick:/nonexistent:/bin/false
+teddieboyle:x:89099:89099:teddieboyle:/nonexistent:/bin/false
+paulwiener:x:60222:60222:paulwiener:/nonexistent:/bin/false
+stevereeves:x:25652:25652:stevereeves:/nonexistent:/bin/false
+chrispollard:x:47771:47771:chrispollard:/nonexistent:/bin/false
+andrepaczos:x:20350:20350:andrepaczos:/nonexistent:/bin/false
+susanross:x:31909:31909:susanross:/nonexistent:/bin/false
+janetcleveland:x:24684:24684:janetcleveland:/nonexistent:/bin/false
+torapeterson:x:28434:28434:torapeterson:/nonexistent:/bin/false
+peterdunbar:x:54303:54303:peterdunbar:/nonexistent:/bin/false
+mikesime:x:25057:25057:mikesime:/nonexistent:/bin/false
+derekstenborg:x:78556:78556:derekstenborg:/nonexistent:/bin/false
+vanessaweiss:x:79083:79083:vanessaweiss:/nonexistent:/bin/false
+malaikajohnson:x:24113:24113:malaikajohnson:/nonexistent:/bin/false
+johnlittlejars:x:58594:58594:johnlittlejars:/nonexistent:/bin/false
+jeffpanessa:x:77078:77078:jeffpanessa:/nonexistent:/bin/false
+aliciaoldham:x:49002:49002:aliciaoldham:/nonexistent:/bin/false
+```
+
+Notice that this text is structured the same way that `john` already expects it to be. Each line is a record in this plain-text database. On the very start of each line is a username. A colon (`:`) marks the end of one *field* and the beginning of the next. Each record contains seven distinct fields. This is exactly how the `shadow` file is structured, too. Here's Tyrell Wellick's entry in the `shadow` file:
+
+```sh
+tyrellwellick:$6$ge7W6aVQ$dhJxmLt2qD964d8GXD7Z53EkxxKfe08LVRBNVZ5Xbg.YXXwgIagzJ9bRB.QUcgvOsdrhitXsTf0MbGY7S1sH60:17239:0:99999:7:::
+```
+
+Once again, notice the colons acting as field separators. Notice also that the first field is the username, and that this is the same across both files. The second field, however, is different. In the `passwd` file, the second field was always an `x`. In the `shadow` file, the second field is the password hash.
+
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
-> 1. Get the files, have a quick look at them to, y'know, understand them.
-> 1. `unshadow` the files (maybe unnecessary/distracting for educational purposes?)
 > 1. Do the thing! (`john --wordlist=mywordlist.list the_file_with_hashes_to_crack_`)
 >     * Provide "mywordlist.list" with this repo, as an example file. But *also*,
 >     * point out that other wordlists exist, dramatic-dot-dot-dot.
@@ -300,21 +343,38 @@ Now that we understand `john`'s basic operation, and we can recognize what a suc
 
 # Discussion
 
-## Differences between the practice lab and the Mr. Robot episode
+## Technical errors in the Mr. Robot scene
+
+1. Elliot only retrieves the `/etc/passwd` file, and is never shown accessing the `/etc/shadow` file. We are left to presume that we simply didn't see him grabbing that file.
 
 > :construction: TK-TODO: Brief walkthrough of the incorrect parts of the Mr. Robot scene and screenshots.
 
-## Calculating password strength
-
-[A couple tricks for password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
-
 ## `passwd` versus `shadow` files
 
-> :construction: TK-TODO: A brief discussion of `/etc/passwd` and why that's not quite enough to get at password hashes, as well as some more brief explanations of the file formats (though see `passwd(5)` and `shadow(5)` for more info).
+On Unix-like systems, the [`/etc/passwd` file](https://en.wikipedia.org/wiki/Passwd#Password_file) and [`/etc/shadow` file](https://en.wikipedia.org/wiki/Passwd#Shadow_file) taken together make up a local database of sorts. Numerous programs query one or both of these files to answer questions such as, "What users are permitted to login to this system?" "How long has it been since this user last changed their password?" And, of course, the all important question: "Is this the correct password for that user?"
+
+Some information, such as the user's login name, are stored in both files. Other properties about the user are stored in only one or the other file. For instance, a user's [primary group ID](https://en.wikipedia.org/wiki/Group_identifier) and [home folder](https://en.wikipedia.org/wiki/Home_directory) location are stored in the `passwd` file but not the `shadow` file. Conversely, a user's hashed password and the date of their last password change is stored in the `shadow` file but not the `passwd` file.
+
+In a `passwd` file, the seven fields, from left to right, are:
+ 
+1. The account's login username. This is typically what a user would type into the "`Username`" field of a login form.
+1. A symbol representing the account's login password. At one time, this field held the user's literal password. Perhaps needless to say, that is no longer standard practice. An `x` means the password is actually stored as a hash in the `shadow` file, instead.
+1. The account's ID number. This is how the operating system refers to the account, internally.
+1. The account's primary group ID number. This is often used to assign the user to a certain role shared by other users on the system as part of a [role-based access control](https://en.wikipedia.org/wiki/Role-based_access_control) system.
+1. The user's display name. In the example above, every user's display name is identical to their login username. If I were in Tyrell's shoes, I might have updated my display name to read `Tyrell Wellick` instead of `tyrellwellick`, but to each their own.
+1. The filesystem location of the account's home folder. In the example above, everyone's home is set to `/nonexistent`. This location (presumably) doesn't exist, which is the point. Setting this value to a non-existent location is the equivalent of setting "no home directory."
+1. The command to run by default when (or if) the account logs in to the system interactively (i.e., with a command line). In the example above, a few accounts have this set to `/bin/sh`, but most are set to `/bin/false`. The latter case has the effect of disallowing command line access for that user.
+
+
+These plain text files are not the only way a system might store this kind of information, but it was one of the first methods designed, is among the simplest, and is often still used. Other places to store equivalent information includes more complex locally-stored databases (often in [Berkeley DB](https://en.wikipedia.org/wiki/Berkeley_DB) file format) or network-accessible directories. On a typical Unix-like system, the [`nsswitch.conf(5)`](https://linux.die.net/man/5/nsswitch.conf) file determines which sources are consulted, and in which order. Other systems use different methods. (If you're on a macOS computer, look into [Apple Open Directory](https://en.wikipedia.org/wiki/Apple_Open_Directory) ([`opendirectoryd(8)`](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/opendirectoryd.8.html)), while Windows users could explore the [Security Account Manager](https://en.wikipedia.org/wiki/Security_Account_Manager).)
 
 ## `crypt(3)` formatted hash strings
 
 > :construction: TK-TODO: Some more detailed explanations of that somewhat complex-looking hash string, and how it's not *just* a hash output. See also Modular Crypt Format and PHC String Format, linked in the [references](#additional-references) section.
+
+## Calculating password strength
+
+[A couple tricks for password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
 
 # Additional references
 
