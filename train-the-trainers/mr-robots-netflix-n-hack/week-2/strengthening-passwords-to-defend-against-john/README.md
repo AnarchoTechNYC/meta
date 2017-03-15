@@ -8,9 +8,9 @@ In other words, you will perform a [*password cracking*](https://en.wikipedia.or
 1. [Scenario](#scenario)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
-    * [Installation on Windows](#installation-on-windows)
-    * [Installation on macOS](#installation-on-macos)
-    * [Installation on GNU/Linux](#installation-on-gnulinux)
+    * [John the Ripper installation on Windows](#jtr-installation-on-windows)
+    * [John the Ripper installation on macOS](#jtr-installation-on-macos)
+    * [John the Ripper installation on GNU/Linux](#jtr-installation-on-gnulinux)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Sanity check](#sanity-check)
@@ -47,19 +47,24 @@ To participate in this exercise, you must have:
     * any flavor of the GNU/Linux operating system.
 * An active Internet connection (for downloading the required tools in the [set up](#set-up) step; you do not need an Internet connection once you have the tools installed).
 
-> :beginner: :computer: This exercise requires the use of a command line (or terminal). If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's Learn the Command Line interactive tutorial](https://www.codecademy.com/learn/learn-the-command-line) (for GNU/Linux or macOS users) or reviewing [Computer Hope's How to use the Windows command line (DOS) article](http://www.computerhope.com/issues/chusedos.htm) (for Windows users). You don't need to complete their tutorial or article to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics.
+> :beginner: :computer: This exercise requires the use of a command line, or "terminal." If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's interactive tutorial, "Learn the Command Line"](https://www.codecademy.com/learn/learn-the-command-line) (for macOS or GNU/Linux users) or reviewing [Computer Hope's article, "How to use the Windows command line (DOS)"](http://www.computerhope.com/issues/chusedos.htm) (for Windows users). You don't need to complete the whole tutorial or article to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics.
 
 # Set up
 
-In addition to your laptop or desktop computer, you will need to acquire the following tool:
+In addition to your laptop or desktop computer, you will need to acquire the following tools.
 
-* [John the Ripper password cracker](http://www.openwall.com/john/), sometimes written as *JtR*
+* [KeePassX](https://www.keepassx.org/)
+* [John the Ripper password cracker](http://www.openwall.com/john/), often written as *JtR*.
 
-A number of different installation procedures are available. If you're comfortable doing so, you can follow the above link, download, and install the software configuration of your choosing. (See [Beginner's Guide to Installing from Source](http://moi.vonos.net/linux/beginners-installing-from-source/) if you're not comfortable, but want to try that anyway.) The rest of this section will describe more common approaches to installing John the Ripper in a little more detail.
+There are pre-built versions of KeePassX for both Windows and macOS available for download from the [KeePassX downloads page](https://www.keepassx.org/downloads). For GNU/Linux users, KeePassX is ordinarily provided as a standard software package directly from your operating system's distributor. Use your system's default package manager to install it.
 
-## Installation on Windows
+> :bulb: If you already use a different password manager or prefer to choose one of the many different [recommended password managers](https://prism-break.org/en/all/#password-managers), you can still follow along with the overwhelming majority of this exercise. The fundamental features of all password managers are, generally speaking, equivalent to one another. What matters is that you use one, not necessarily which one you use.
 
-Two pre-built Windows versions of John the Ripper are available. One is an "official" build, compiled by the tool's original developers, and the second is a "community-enhanced" build, which bundles (literally) hundreds of additional features written by volunteers into the application itself. For the purposes of this exercise, it does not matter which version you choose to get. To install John the Ripper, take the following steps:
+There are several different procedures to install John the Ripper available to you. If you're comfortable doing so, you can follow the above link, download JtR's source code, and install the software configuration of your choosing. (See [Beginner's Guide to Installing from Source](http://moi.vonos.net/linux/beginners-installing-from-source/) if you're not comfortable, but want to try that anyway.) The rest of this section will describe more common approaches to installing John the Ripper in a little more detail.
+
+## JtR installation on Windows
+
+Two pre-built Windows versions of John the Ripper are available. One is an "official" build, compiled by the tool's original developers, and the second is a "community-enhanced" build, which bundles (literally) hundreds of additional features written by volunteers into the application itself. For the purposes of this exercise, it does not matter which version you choose to get, although the community-enhanced version is recommended. To install John the Ripper, take the following steps:
 
 **Do this:**
 
@@ -70,18 +75,18 @@ Two pre-built Windows versions of John the Ripper are available. One is an "offi
 1. Unzip the file. Usually, this is as simple as right-clicking on it and selecting *Extract All* from the context-menu. (See [the Windows Help "Compress and uncompress files (zip files)" article](https://support.microsoft.com/en-us/help/14200/windows-compress-uncompress-zip-files).)
     * This will produce a folder, inside of which is another folder named `run`. Inside *that* folder is a file called `john` (or `john.exe` if your computer is [set to display file extensions](http://www.computerhope.com/issues/ch000573.htm)). That file is the main John the Ripper application. Unlike most Windows applications, this program must be run [using the Windows Command Prompt](http://www.computerhope.com/issues/chusedos.htm); you cannot simply double-click it. However, `john.exe` is now successfully "installed."
 
-## Installation on macOS
+## JtR installation on macOS
 
-A pre-built macOS version of John the Ripper is available for modern Apple Macintosh computers, that is, Macs with an Intel processor. (See [About System Information on your Mac](https://support.apple.com/en-us/HT203001) to learn how to find out what processor your Mac has.) If you have such a Mac, then to install John the Ripper, take the following steps.
+A pre-built macOS version of John the Ripper is available for modern Apple's Macintosh computers, that is, Macs with an Intel processor. (See [About System Information on your Mac](https://support.apple.com/en-us/HT203001) to learn how to find out what processor your Mac has.) If you have such a Mac, then to install John the Ripper, take the following steps.
 
 **Do this:**
 
 1. Go to [John the Ripper's macOS community-contributed builds page](http://download.openwall.net/pub/projects/john/contrib/macosx/).
-1. Download the latest archive file available. (As of this writing, that is [`john-1.7.9-jumbo-7-macosx-Intel-2.zip`](http://download.openwall.net/pub/projects/john/contrib/macosx/john-1.7.9-jumbo-7-macosx-Intel-2.zip).)
+1. Download the latest version available. (As of this writing, that is [`john-1.7.9-jumbo-7-macosx-Intel-2.zip`](http://download.openwall.net/pub/projects/john/contrib/macosx/john-1.7.9-jumbo-7-macosx-Intel-2.zip).)
 1. Unzip the file. Usually, this is as simple as double-clicking on it.
     * This will produce a folder, inside of which is another folder named `run`. Inside *that* folder is a file called `john`. That file is the main John the Ripper application. Unlike a classic macOS application, this program must be run [using the Terminal](http://guides.macrumors.com/Terminal); you cannot simply double-click it. However, `john` is now successfully "installed."
 
-## Installation on GNU/Linux
+## JtR installation on GNU/Linux
 
 > :construction: TK-TODO: These instructions are currently missing. Please add them!
 
