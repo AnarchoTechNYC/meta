@@ -2,6 +2,8 @@
 
 In this exercise we will obtain the password of an unsuspecting user by cracking the hashed copy of that user's password. Then we will use a password manager to strengthen our own passwords in order to protect against the same sorts of attacks in the future. Our goal is to understand why and how password management software makes having a digital life both safer and easier at the same time.
 
+In other words, you learn about [*password cracking*](https://en.wikipedia.org/wiki/Password_cracking) and how to stop password crackers from cracking your own passwords.
+
 1. [Objectives](#objectives)
 1. [Scenario](#scenario)
 1. [Prerequisites](#prerequisites)
@@ -89,7 +91,15 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 ## Introduction
 
-Recovering passwords is generally accomplished in one of two ways. The approach we'll be taking in this exercise, *offline hash cracking*, is by far the more common of the two. We say it is "offline" because we do it entirely on our own computer, without needing an active network connection, after already acquiring the "hashed" password(s) through some other means. The alternative to this approach, *online password guessing*, is said to be "online" because it's as simple as repeatedly attempting to log in to an active, remote system, such as an email service or online banking website. Of course, most websites don't allow visitors to try logging in to an account too many times. After some number of failed guesses, they will usually lock out the account. Besides, it would be unbearably slow to have to reload the login page over and over again after each guess. Therein lies the key concept: speed.
+Recovering passwords is generally accomplished in one of two ways. The approach we'll be taking in this exercise, *offline hash cracking*, is by far the more common of the two. We say it is "offline" because we do it entirely on our own computer, without needing an active network connection, after already acquiring the "hashed" password(s) through some other means.
+
+> :beginner: If you've never encountered a "hash" in this context before, this exercise might seem complex already. Searching the Internet for "hash" probably reveals more pages about cannabis than computer security at first, but adding "computer" to your searches will get you [many](http://www.webopedia.com/TERM/H/hashing.html), [many](http://unixwiz.net/techtips/iguide-crypto-hashes.html), [many](https://en.wikipedia.org/wiki/Hash_function) more [relevant results](http://www.computerhope.com/jargon/h/hashing.htm). Another tip for beginners, especially if you've found the regular Wikipedia article impenetrable, is to check if there is a "simple" version of the Wikipedia page. In this case, you're in luck: the [Simple Wikipedia article for "Cryptographic hash function"](https://simple.wikipedia.org/wiki/Cryptographic_hash_function) is relatively straightforward by comparison.
+> 
+> In the end, a "hash" in the context of computer security is simply a value that ("cryptographically") represents some other value. The idea, in theory, is that two different original values will never be represented by the same two ultimate values after they have been "hashed," and that it is infeasible to recover the original value from the hashed value. ([Watch these few minutes from "Crypto 101"](https://www.youtube.com/watch?v=3rmCGsCYJF8&t=20m6s) for a further explanation and some pictures depicting this.) In practice, however, weaknesses in cryptographic hash functions (whether by design due to flaws in their algorithm, or by mistakes introduced through their actual implementation) sometimes result in two different values being hashed to the same value. When this happens, the hash function is said to be "cryptographically broken," because if you can hash two different values and get the same resulting value (a situation known as a *hash collision*), then there is little point to the hash from a security perspective in the first place.
+> 
+> For the purposes of this exercise, we will assume there are no flaws in the hashing algorithm. In reality, this "sanity check" hash value uses a cryptographically broken algorithm called [SHA-1](https://en.wikipedia.org/wiki/SHA-1). To learn more about how SHA-1 is broken, and how to construct a *hash collision attack* yourself, read [Boston Key Party 2017 CTF: Prudentialv2](https://github.com/meitar/CTF/blob/master/2017/BKP/cloud/Prudentialv2/README.md).
+
+The alternative to offline hash cracking is *online password guessing*. We say it's "online" because it's as simple as repeatedly attempting to log in to an active, remote system, such as an email service or online banking website. Of course, most websites don't allow visitors to try logging in to an account too many times. After some number of failed guesses, they will usually lock out the account. Besides, it would be unbearably slow to have to reload the login page over and over again after each guess. Therein lies the key concept: speed.
 
 A password can, theoretically, be any sequence of characters at all. In practice, many systems place limits on what they consider valid passwords, or limit the length of the password. For instance, many websites require your password to be "between 4 to 12 characters, and must contain only letters, numbers, or punctuation marks," or something like that. The set of possibilities that a given password might be is called a *search space*. Given infinite time, it would be a simple matter of trying every single possibility until one of your guesses is right. This technique is called a *brute force search*. In practice, however, we never have anything close to infinite time. If it took us, say, two hundred years to find Tyrell Wellick's password, we would be long dead, Evil Corp's nefarious plan will surely have gone unopposed, and we have still not even gotten close to infinite time!
 
@@ -102,21 +112,24 @@ Guessing more passwords faster is pretty intuitive: the faster we can make guess
 
 ### Sanity check
 
-First, let's make sure you successfully installed John the Ripper (JtR) and that its `john` program is working correctly. We'll do this by giving `john` two files. One file contains a fictional username and hashed password combination. The second file will contain the correct password. Given these two files, `john` should be able to apply the password guess to the hashed version of the password in the other file and tell us that the guess in the other file is correct.
+First, let's make sure you successfully installed John the Ripper (JtR) and that its `john` program is working correctly. We'll do this by giving `john` two files. One file contains a fictional username and hashed password combination. The second file will contain a (correct) "guess" of the un-hashed password. Given these two files, `john` should be able to apply the password guess in the one file to the hashed version of the password in the other file and tell us that the guess is correct.
 
-The file containing the username and password pair is called `sanitycheck.password.txt`. It contains one line that looks like this:
+> :beginner: It's very easy to create a hashed version of a password, or any content, such as an arbitrary file. To make the hash in this sanity check, I used [the `shasum(1)` command](https://linux.die.net/man/1/shasum) on a GNU/Linux system:
+> 
+> ```sh
+> $ echo -n "Sup3rs3kr3tP@24431w0rd" | shasum --algorithm 1
+> ced91977849c44fd009ba437c14c1b74f632fae6  -
+> ```
+> 
+> Similarly, Windows users can use a Microsoft utility called the [File Checksum Integrity Verifier](http://support.microsoft.com/kb/841290).
+
+The file containing the username and hashed password pair is called `sanitycheck.password.txt`. It contains one line that looks like this:
 
 ```
 fsociety:ced91977849c44fd009ba437c14c1b74f632fae6
 ```
 
 On the left, at the start of the file, is a username. In this case, that's `fsociety`. Then there is the *field separator* character, a colon (`:`). Finally, there is the *hash value*. That hash is the obfuscated version of the password we need to guess.
-
-> :beginner: If you've never encountered a "hash" in this context before, this exercise might seem complex already. Searching the Internet for "hash" probably reveals more pages about cannabis than computer security at first, but adding "computer" to your searches will get you [many](http://www.webopedia.com/TERM/H/hashing.html), [many](http://unixwiz.net/techtips/iguide-crypto-hashes.html), [many](https://en.wikipedia.org/wiki/Hash_function) more [relevant results](http://www.computerhope.com/jargon/h/hashing.htm). Another tip for beginners, especially if you've found the regular Wikipedia article impenetrable, is to check if there is a "simple" version of the Wikipedia page. In this case, you're in luck: the [Simple Wikipedia article for "Cryptographic hash function"](https://simple.wikipedia.org/wiki/Cryptographic_hash_function) is relatively straightforward by comparison.
-> 
-> In the end, a "hash" in the context of computer security is simply a value that ("cryptographically") represents some other value. The idea, in theory, is that two different original values will never be represented by the same two ultimate values after they have been "hashed," and that it is infeasible to recover the original value from the hashed value. ([Watch these few minutes from "Crypto 101"](https://www.youtube.com/watch?v=3rmCGsCYJF8&t=20m6s) for a further explanation and some pictures depicting this.) In practice, however, weaknesses in cryptographic hash functions (whether by design due to flaws in their algorithm, or by mistakes introduced through their actual implementation) sometimes result in two different values being hashed to the same value. When this happens, the hash function is said to be "cryptographically broken," because if you can hash two different values and get the same resulting value (a situation known as a *hash collision*), then there is little point to the hash from a security perspective in the first place.
-> 
-> For the purposes of this exercise, we will assume there are no flaws in the hashing algorithm. In reality, this "sanity check" hash value uses a cryptographically broken algorithm called [SHA-1](https://en.wikipedia.org/wiki/SHA-1). To learn more about how SHA-1 is broken, and how to construct a *hash collision attack* yourself, read [Boston Key Party 2017 CTF: Prudentialv2](https://github.com/meitar/CTF/blob/master/2017/BKP/cloud/Prudentialv2/README.md).
 
 The file containing our guesses is called `sanitycheck.wordlist.txt`. It contains four lines and looks like this:
 
@@ -132,15 +145,6 @@ Each guess is written on its own line. We call each guess a *word*, even if ther
 When we give the wordlist to `john`, what we're doing is asking `john` to hash each of these "words" one at a time and then compare the resulting hash value to the hash value stored in the password file. When `john` finds a word in the wordlist that hashes to the same hash value as the hashed password, it will tell us that it found a match. When we find a matching value, we say we have "*cracked* the hash."
 
 If `john` is working correctly, we can expect that the third word in the wordlist, `Sup3rs3kr3tP@24431w0rd`, will result in a match. If that guess were missing (as it is in the `sanitycheck.no-crack.wordlist.txt` file), we would expect to see `john` report its failure to find any matches.
-
-> :beginner: It's very easy to create a hashed version of a password, or any content, such as an arbitrary file. To make the hash in this sanity check (`ced91977849c44fd009ba437c14c1b74f632fae6`), I used [the `shasum(1)` command](https://linux.die.net/man/1/shasum) on a GNU/Linux system:
-> 
-> ```sh
-> $ echo -n "Sup3rs3kr3tP@24431w0rd" | shasum --algorithm 1
-> ced91977849c44fd009ba437c14c1b74f632fae6  -
-> ```
-> 
-> Then I just copy-and-pasted the resulting hash into the password file.
 
 To perform the sanity check, we'll use this command invocation:
 
@@ -214,9 +218,9 @@ Sup3rs3kr3tP@24431w0rd (fsociety)
 guesses: 1  time: 0:00:00:00 DONE (Tue Mar 14 14:18:13 2017)  c/s: 400  trying: randomGuess - someotherword
 ```
 
-Here, `john` informs us that it found one hash in the password file ("`Loaded 1 password hash`"), along with the type of hashing algorithm it suspects (or that we told it) the hash was made with ("`Raw SHA-1`"). On the next line, we see the expected correct guess (`Sup3rs3kr3tP@24431w0rd`), which `john` reports as the plain-text, unobfuscated version of the password associated with the user `fsociety`. Finally, we see the number of *successful* guesses made (`guesses: 1`), the amount of time it took (`time:`), the fact that we have in fact completed making all guesses (`DONE`), and the time of completion (in this example, shown as `(Tue Mar 14 14:18:13 2017)`). Finally, the current range of password candidates being guessed is reported, shown here as "`trying: randomGuess - someotherword`." Indeed, `randomGuess` was our first guess, listed at the start of our wordlist, and `someotherword` was our last one, listed at the wordlist file's end. Notice that these guesses were attempted in order, from top to bottom. That's important because it means we should place "smarter" guesses, the guesses we think are more likely to successfully crack a hash, nearer to the top of our wordlist file.
+Here, `john` informs us that it found one hash in the password file ("`Loaded 1 password hash`"), along with the type of hashing algorithm it suspects (or that we told it) the hash was made with ("`Raw SHA-1`"). On the next line, we see the expected correct guess (`Sup3rs3kr3tP@24431w0rd`), which `john` reports as the plain-text, unobfuscated version of the password associated with the user `fsociety`. Finally, we see the number of *successful* guesses made (`guesses: 1`), the amount of time it took (`time:`), the fact that we have in fact finished trying all guesses loaded from the wordlist (`DONE`), and the time of completion (in this example, shown as `(Tue Mar 14 14:18:13 2017)`). Finally, the current range of password candidates being guessed is reported, shown here as "`trying: randomGuess - someotherword`." Indeed, `randomGuess` was our first guess, listed at the start of our wordlist, and `someotherword` was our last one, listed at the wordlist file's end. Notice that these guesses were attempted in order, from top to bottom. That's important because it means we should place "smarter" guesses, the guesses we think are more likely to successfully crack a hash, nearer to the top of our wordlist, in order to help `john` makes smarter guesses sooner.
 
-> :bulb: There is also some [additional information](http://www.openwall.com/john/doc/FAQ.shtml) in the report. For instance, we're also told that, on this run, `john` is using an [Intel processor feature called SSE2](https://en.wikipedia.org/wiki/SSE2) in an attempt to work as fast as possible. We also see a speed report, shown as "combinations per second" (`c/s`). There are many ways to benchmark `john`'s speed, and to tune it, in order to optimize the "guess more passwords faster" technique.
+> :bulb: There is also some [additional information](http://www.openwall.com/john/doc/FAQ.shtml) in the report. For instance, we're also told that, on this run, `john` is using an [Intel processor feature called SSE2](https://en.wikipedia.org/wiki/SSE2) in an attempt to work as fast as possible. We also see a speed report, shown as "combinations per second" (`c/s`). This metric measures combinations of username and password candidates attempted against each hashed password per second. In our case, with our four guesses and one raw SHA-1 password hash, on my specific hardware, `john` says it can guess passwords at "four hundred combinations per second," although this metric will differ based on what else my computer is doing at the time, the processing power my computer hardware makes available to `john` in the first place, and even what kind of hash algorithm is used because some hash algorithms take much more work to compute than others. There are many ways to benchmark `john`'s speed, and to tune it, in order to optimize the "guess more passwords faster" technique (look into the `--test` option) but, again, we'll be focusing on "making smarter guesses sooner," instead.
 
 Now that we've seen how `john` works when we make a successful guess, let's see what happens when our guesses fail to find the password. This will also demonstrate JtR's "`pot`" file feature.
 
