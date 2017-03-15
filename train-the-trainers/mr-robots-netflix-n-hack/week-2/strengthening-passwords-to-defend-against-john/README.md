@@ -23,7 +23,7 @@ When you complete this exercise, you will have acquired the following capabiliti
 * The ability to make and use passwords for your user accounts that are practically invincible against many attackers.
 * The ability to replace old passwords with strong new passwords easily, on whatever schedule you want.
 * The ability to determine other users's original passwords, if theirs are weak, despite sophisticated attempts to protect them.
-* The ability to guage the approximate relative strength of a password using only "the naked eye."
+* The ability to gauge the approximate relative strength of a password using only "the naked eye."
 
 # Scenario
 
@@ -98,7 +98,7 @@ This means, to be successful, we only have two techniques available to us:
 * Guess more passwords faster.
 * Make smarter guesses sooner.
 
-Guessing more passwords faster is pretty intuitive: the faster we can make guesses, the less time it will time to perform an exhaustive, brute-force search. This is simply a function of what computer you have. The better, faster, stronger, more expensive your computers are, the more guesses you can make per second. Making smarter guesses sooner involves much more subtlety, so that's where we'll be focusing the majority of our time in this lab.
+Guessing more passwords faster is pretty intuitive: the faster we can make guesses, the less time it will take to perform an exhaustive, brute-force search. This is simply a function of what computer you have. The better, faster, stronger, more expensive your computers are, the more guesses you can make per second. Making smarter guesses sooner involves much more subtlety, so that's where we'll be focusing the majority of our time in this lab.
 
 ### Sanity check
 
@@ -234,7 +234,7 @@ Loaded 1 password hash (Raw SHA-1 [128/128 SSE2 intrinsics 4x])
 No password hashes left to crack (see FAQ)
 ```
 
-Rather than start a cracking session, `john` simply checks the password file we gave it (same as before, "`Loaded 1 password hash`") but then immediately reports "`No password hashes left to crack (see FAQ)`." This is happening because `john` remembers both this specific password hash file *and* the fact that we have already correctly guessed the password corresponding to the hash inside of it. John the Ripper maintains a list of successfully cracked hashes in a so-called pot. This is literally a file called `john.pot` and it will have appeared in the the `run` folder after the previous invocation of `john`. We can open `john`'s `.pot` file with any graphical text editor or have a look at its contents using [the `cat(1)` command](https://linux.die.net/man/1/cat) on a GNU/Linux or macOS terminal, or [the `type` command](https://technet.microsoft.com/en-us/library/bb491026.aspx) in a Windows Command Prompt:
+Rather than start a cracking session, `john` simply checks the password file we gave it (same as before, "`Loaded 1 password hash`") but then immediately reports "`No password hashes left to crack (see FAQ)`." This is happening because `john` remembers both this specific password hash file *and* the fact that we have already correctly guessed the password corresponding to the hash inside of it. John the Ripper maintains a list of successfully cracked hashes in a so-called pot. This is literally a file called `john.pot` and it will have appeared in the `run` folder after the previous invocation of `john`. We can open `john`'s `.pot` file with any graphical text editor or have a look at its contents using [the `cat(1)` command](https://linux.die.net/man/1/cat) on a GNU/Linux or macOS terminal, or [the `type` command](https://technet.microsoft.com/en-us/library/bb491026.aspx) in a Windows Command Prompt:
 
 ```sh
 $ cat john.pot
