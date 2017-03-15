@@ -296,10 +296,6 @@ Recall that, [previously](#scenario):
 
 Since Evil Corp's mail system was powered by a [Unix](https://en.wikipedia.org/wiki/Unix)-like server, the two files you plucked off Evil Corp's server during your successful Shellshock exploit were the files located at `/etc/passwd` and `/etc/shadow`. Often, these are just called "the `passwd` and `shadow` files" for short. On Unix-like systems, these two files taken together comprise a local database that provides the system with information about its user accounts. Numerous programs query one or both of these files to answer the all important question, "Is *this* the correct password for *that* user?"
 
-> :beginner: :cinema: In the Mr. Robot episode, Elliot only retrieves one file, `passwd`, and never accesses the `shadow` file, but he is nonetheless able to crack Tyrell's password. This is an error. Since the password hash is located in the `shadow` file, Merely obtaining the `passwd` file would have left Elliot without the information he needed to crack any passwords.
-> 
-> See the [`passwd` versus `shadow` files](#passwd-versus-shadow-files) section below for details, and the "[Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)" section in the [Discussion](#discussion) for a list of more errors like this.
-
 Let's have a look at our copies of both the `passwd` and `shadow` files, which we saved as `evilcorp-intl.com.passwd.txt` and `evilcorp-intl.com.shadow.txt`, respectively. As before, we can use `cat` on a GNU/Linux or macOS terminal or `type` in a Windows Command Prompt to print the file's content. Here's the `passwd` file:
 
 ```sh
@@ -325,7 +321,7 @@ jeffpanessa:x:77078:77078:jeffpanessa:/nonexistent:/bin/false
 aliciaoldham:x:49002:49002:aliciaoldham:/nonexistent:/bin/false
 ```
 
-Notice that this text is structured, and it's structured the same way `john` expects it to be. At the start of each line is a username, and the values are delimeted by colons. In database lingo, we call each line a *record*, and the positions in the record containing values are called *fields*. The fields are demarcated by the *field separater* (the colon, `:`, for this database). This is why the `passwd` file is sometimes also called the `passwd` *database*.
+Notice that this text is structured, and it's structured the same way `john` expects it to be. At the start of each line is a username, and the values are delimited by colons. In database lingo, we call each line a *record*, and the positions in the record containing values are called *fields*. The fields are demarcated by the *field separater* (the colon, `:`, for this database). This is why the `passwd` file is sometimes also called the `passwd` *database*.
 
 The `shadow` file is structured in the same way. Here is Tyrell Wellick's entry in the `shadow` file:
 
@@ -334,6 +330,10 @@ tyrellwellick:$6$ge7W6aVQ$dhJxmLt2qD964d8GXD7Z53EkxxKfe08LVRBNVZ5Xbg.YXXwgIagzJ9
 ```
 
 Once again, notice the colons acting as field separators. Notice also that the first field is the username, and that this is the same across both files. The second field, however, is different. In the `passwd` file, the second field was always an `x`. In the `shadow` file, the second field is the coveted password hash.
+
+> :beginner: :cinema: In the Mr. Robot episode, Elliot only retrieves one file, `passwd`. He never accesses the `shadow` file, but he is nonetheless able to crack Tyrell's password. This is an error. Since the password hash is located in the `shadow` file, merely obtaining the `passwd` file would have left Elliot without the information he needed to crack any passwords.
+> 
+> See the [`passwd` versus `shadow` files](#passwd-versus-shadow-files) section below for details, and the "[Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)" section in the [Discussion](#discussion) for a list of more errors like this.
 
 It's immediately clear that this hash is way more complex than the raw SHA-1 hash we saw earlier. There are two reasons for that. First, it's a different hash algorithm, a more modern one designed to be harder than SHA-1 to crack. "Harder" means that it takes longer to compute a resulting value given some input, and thus slows attackers down. Second, it's been further complicated by a small amount of extra input, called *salt* (yes, from the expression, "salt to taste"). The salt makes *this* hash different from all other hashes that were given the same, original "unsalted" input. Thankfully, none of this need matter much to us, since `john` already knows how to recognize and deal with salted hashes.
 
@@ -395,15 +395,15 @@ A hash string, like this one, is composed of three separate parts. They're not r
 
 The parts of a hash string are more-or-less delimited by dollar signs (`$`). From left-to-right, those parts are:
 
-1. The *hash prefix* (or *hash identifier*), which is a short alphanumeric string in between dollar (`$`) signs. In this hash, it's `$6$`, which generally indicates SHA-512 Crypt.
-1. Next comes the salt value, which continues until the next dollar (`$`) sign. In this hash, that's the `ge7W6aVQ` part.
+1. The *hash prefix* (or *hash identifier*), which is a short alphanumeric string in between dollar signs. In this hash, it's `$6$`, which generally indicates SHA-512 Crypt.
+1. Next comes the salt value, which continues until the next dollar sign. In this hash, that's the `ge7W6aVQ` part.
 1. The remainder of the field is the hashing algorithm's output, sometimes called the *digest*. This is the value `john` compares to its own output after concatenating the salt value with each of our guesses and performing the computation specified by the hash algorithm.
 
 ## Salted versus unsalted hashes
 
 Part of the usefulness of adding salt to a password in order to produce a *salted hash* is that it forces attackers like us to go through this hash cracking process each time we want to crack a different user's password. If a system hashed a user's password without adding any salt, then the hashes for two different accounts that happened to have the same password would be exactly the same. Worse, this would even be true of two user accounts across completely unrelated systems, if those systems happened to use the same hash algorithm.
 
-Without salting hashes, assuming we already cracked one account, we could instantly recognize the password of any other account that used the same password just by reading the hash value. That defeats the whole point of hashing in the first place. In other words, we would be able to learn the password without having to perform the laborious process of actually computing its hash.
+Without salting hashes, assuming we already cracked one account, we could instantly recognize the password of any other account that used the same password just by reading the hash value. In other words, we would learn the password without having to perform the laborious process of actually computing its hash. That defeats the whole point of hashing in the first place.
 
 Furthermore, many huge, public, free lookup databases of previously-computed (or previously-encountered) hashes and their original inputs exist online. One such popular database is at [CrackStation.net](https://crackstation.net/). These databases of precomputed hashes and their corresponding original inputs are called [rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table). Some even larger rainbow tables are accessible, for a fee.
 
