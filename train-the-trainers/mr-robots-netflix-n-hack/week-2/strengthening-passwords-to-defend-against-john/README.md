@@ -15,7 +15,11 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     1. [Introduction](#introduction)
     1. [Sanity check](#sanity-check)
 1. [Discussion](#discussion)
-    * :construction: TK-TODO: Fill in this part of the TOC.
+    * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
+    * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
+    * [Hash string formats](#hash-string-formats)
+    * [Salted versus unsalted hashes](#salted-versus-unsalted-hashes)
+    * [Calculating password strength](#calculating-password-strength)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -250,7 +254,7 @@ $ cat john.pot
 $dynamic_26$ced91977849c44fd009ba437c14c1b74f632fae6:Sup3rs3kr3tP@24431w0rd
 ```
 
-> :bulb: The format of this line is JtR-specific, but closely resembles the syntax used by the [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html). More on that a bit later. In the meantime, the super-curious reader can refer to the `doc/DYNAMIC` file in the official John the Ripper source distribution for details.
+> :bulb: The format of this line is JtR-specific, but closely resembles the syntax used by the [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html). See the "[Hash string format](#hash-string-format)" section, below, for generally-applicable details, or the `doc/DYNAMIC` file in the official John the Ripper source distribution for more information about "`dynamic`" hash formats in John the Ripper.
 
 If you look closely, you can see both the hashed and plain versions of the password, but John the Ripper's documentation suggests an easier way of viewing this file's contents. Invoking `john` with its `--show` option (instead of its `--wordlist` option) presents a nicer readout:
 
@@ -319,23 +323,15 @@ Notice that this text is structured, and it's structured the same way `john` exp
 
 The `shadow` file is structured in the same way. Here is Tyrell Wellick's entry in the `shadow` file:
 
-```sh
+```
 tyrellwellick:$6$ge7W6aVQ$dhJxmLt2qD964d8GXD7Z53EkxxKfe08LVRBNVZ5Xbg.YXXwgIagzJ9bRB.QUcgvOsdrhitXsTf0MbGY7S1sH60:17239:0:99999:7:::
 ```
 
 Once again, notice the colons acting as field separators. Notice also that the first field is the username, and that this is the same across both files. The second field, however, is different. In the `passwd` file, the second field was always an `x`. In the `shadow` file, the second field is the coveted password hash.
 
-It's immediately clear that this hash is way more complex than the raw SHA-1 hash we saw earlier. There are two reasons for that. First, it's a different hash algorithm, a more modern one designed to be harder than SHA-1 to crack. "Harder" means that it takes longer to compute a resulting value given some input, and thus slows attackers down. Second, it's been further complicated by a small amount of extra input, called *salt* (yes, from the expression, "salt to taste"). The salt makes *this* hash different from all other hashes that were given the same, original "unsalted" input. Thankfully, none of this matters much to `john`, which already knows how to recognize and deal with salted hashes.
+It's immediately clear that this hash is way more complex than the raw SHA-1 hash we saw earlier. There are two reasons for that. First, it's a different hash algorithm, a more modern one designed to be harder than SHA-1 to crack. "Harder" means that it takes longer to compute a resulting value given some input, and thus slows attackers down. Second, it's been further complicated by a small amount of extra input, called *salt* (yes, from the expression, "salt to taste"). The salt makes *this* hash different from all other hashes that were given the same, original "unsalted" input. Thankfully, none of this need matter much to us, since `john` already knows how to recognize and deal with salted hashes.
 
-> :beginner: For the curious, the salt for this hash is `ge7W6aVQ`. You can read it, plain as day, near the start of the second field in the `shadow` database. This hash string is, itself, composed of three separate parts. They're not really "fields" in the proper sense because there's no formal, universally agreed upon standard way of denoting them. The closest thing to a standard is the popular [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html) specification and the more recent [Password Hashing Competition (PHC) String Format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md). Anyway, the parts of a hash string are more-or-less delimited by dollar signs (`$`). From left-to-right, those parts are:
-> 
-> 1. The *hash prefix* (or *hash identifier*), which is a short alphanumeric string in between `$` symbols. In this hash, it's `$6$`, which generally indicates SHA-512 Crypt.
-> 1. Next comes the salt value, which continues until the next `$` symbol. In this hash, that's the `ge7W6aVQ` part.
-> 1. The remainder of the field is the hash value itself. This is the value `john` will compare after concatenating the salt value with each of our guesses and performing the hashing operations.
-> 
-> Part of the usefulness of adding salt to a password in order to produce a *salted hash* is that it forces attackers like us to go through this hash cracking process each time we want to crack a different user's password. If a system hashed a user's password without adding any salt, then the hashes for two different accounts that happened to have the same password would be exactly the same. Worse, this would even be true of two user accounts across completely unrelated systems, if those systems happened to use the same hash algorithm. Assuming we already cracked the one account, we could instantly recognize the password just by reading the hash value, defeating the whole point of hashing in the first place. In other words, we would be able to learn the password *without having to perform the laborious process of actually computing its hash*.
-> 
-> Furthermore, many huge, public, free lookup databases of previously-computed (or previously-encountered) hashes and their original inputs exist online. One such popular database is at [CrackStation.net](https://crackstation.net/). These databases of precomputed hashes and their corresponding original inputs are called [rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table). Some even larger rainbow tables are accessible, for a fee.
+> :beginner: For the curious, the salt for this hash is `ge7W6aVQ`. You can read it, plain as day, near the start of the second field in the `shadow` database. See the [Hash string formats](#hash-string-formats) and [Salted versus unsalted hashes](#salted-versus-unsalted-hashes) sections, below, if you're curious.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
@@ -379,12 +375,31 @@ In a `passwd` file, the seven fields, from left to right, are:
 1. The filesystem location of the account's home folder. In the example above, everyone's home is set to `/nonexistent`. This location (presumably) doesn't exist, which is the point. Setting this value to a non-existent location is the equivalent of setting "no home directory."
 1. The command to run by default when (or if) the account logs in to the system interactively (i.e., with a command line). In the example above, a few accounts have this set to `/bin/sh`, but most are set to `/bin/false`. The latter case has the effect of disallowing command line access for that user.
 
-
 These plain text files are not the only way a system might store this kind of information, but it was one of the first methods designed, is among the simplest, and is often still used. Other places to store equivalent information includes more complex locally-stored databases (often in [Berkeley DB](https://en.wikipedia.org/wiki/Berkeley_DB) file format) or network-accessible directories. On a typical Unix-like system, the [`nsswitch.conf(5)`](https://linux.die.net/man/5/nsswitch.conf) file determines which sources are consulted, and in which order. Other systems use different methods. (If you're on a macOS computer, look into [Apple Open Directory](https://en.wikipedia.org/wiki/Apple_Open_Directory) ([`opendirectoryd(8)`](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/opendirectoryd.8.html)), while Windows users could explore the [Security Account Manager](https://en.wikipedia.org/wiki/Security_Account_Manager).)
 
-## `crypt(3)` formatted hash strings
+## Hash string formats
 
-> :construction: TK-TODO: Some more detailed explanations of that somewhat complex-looking hash string, and how it's not *just* a hash output. See also Modular Crypt Format and PHC String Format, linked in the [references](#additional-references) section.
+Tyrell Wellick's account password hash value is not *merely* a hash algorithm's output. The raw hash output is there, yes, but it's stored along with some additional metadata that has been prepended as part of a longer *hash string*. The full hash string for Tyrell's password in the `shadow` file is:
+
+```
+$6$ge7W6aVQ$dhJxmLt2qD964d8GXD7Z53EkxxKfe08LVRBNVZ5Xbg.YXXwgIagzJ9bRB.QUcgvOsdrhitXsTf0MbGY7S1sH60
+```
+
+A hash string, like this one, is composed of three separate parts. They're not really "fields" in the proper sense because there's no formal, universally agreed upon standard way of denoting the parts. The closest thing to a standard is the popular [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html) specification and the more recent [Password Hashing Competition (PHC) String Format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md) specification.
+
+The parts of a hash string are more-or-less delimited by dollar signs (`$`). From left-to-right, those parts are:
+
+1. The *hash prefix* (or *hash identifier*), which is a short alphanumeric string in between dollar (`$`) signs. In this hash, it's `$6$`, which generally indicates SHA-512 Crypt.
+1. Next comes the salt value, which continues until the next dollar (`$`) sign. In this hash, that's the `ge7W6aVQ` part.
+1. The remainder of the field is the hashing algorithm's output, sometimes called the *digest*. This is the value `john` compares to its own output after concatenating the salt value with each of our guesses and performing the computation specified by the hash algorithm.
+
+## Salted versus unsalted hashes
+
+Part of the usefulness of adding salt to a password in order to produce a *salted hash* is that it forces attackers like us to go through this hash cracking process each time we want to crack a different user's password. If a system hashed a user's password without adding any salt, then the hashes for two different accounts that happened to have the same password would be exactly the same. Worse, this would even be true of two user accounts across completely unrelated systems, if those systems happened to use the same hash algorithm.
+
+Without salting hashes, assuming we already cracked one account, we could instantly recognize the password of any other account that used the same password just by reading the hash value. That defeats the whole point of hashing in the first place. In other words, we would be able to learn the password without having to perform the laborious process of actually computing its hash.
+
+Furthermore, many huge, public, free lookup databases of previously-computed (or previously-encountered) hashes and their original inputs exist online. One such popular database is at [CrackStation.net](https://crackstation.net/). These databases of precomputed hashes and their corresponding original inputs are called [rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table). Some even larger rainbow tables are accessible, for a fee.
 
 ## Calculating password strength
 
@@ -393,7 +408,5 @@ These plain text files are not the only way a system might store this kind of in
 # Additional references
 
 * [Ars Technica: How I became a password cracker](https://arstechnica.com/security/2013/03/how-i-became-a-password-cracker/)
-* [Modular Crypt Format](https://pythonhosted.org/passlib/modular_crypt_format.html)
-* [PHC String Format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md)
 * [Password Haystacks: How Well-Hidden is Your Needle?](https://www.grc.com/haystack.htm)
 * [Hashcat: Advanced Password Recovery](https://hashcat.net/) - a popular alternative to John the Ripper
