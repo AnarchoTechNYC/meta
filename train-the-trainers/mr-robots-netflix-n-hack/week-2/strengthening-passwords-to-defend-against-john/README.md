@@ -1,8 +1,8 @@
 # Strengthening Passwords to Defend Against John
 
-In this exercise we will obtain the password of an unsuspecting user by cracking the hashed copy of that user's password. Then we will use a password manager to strengthen our own passwords in order to protect against the same sorts of attacks in the future. Our goal is to understand why and how password management software makes having a digital life both safer and easier at the same time.
+In this exercise we will obtain the password of an unsuspecting user by "cracking" the hashed copy of that user's password. Then we will use a password manager to strengthen our own passwords in order to protect yourself against the same sort of attacks. Our goal is to understand why and how using [password management software](https://en.wikipedia.org/wiki/Password_manager) makes having a digital life both safer and easier at the same time.
 
-In other words, you learn about [*password cracking*](https://en.wikipedia.org/wiki/Password_cracking) and how to stop password crackers from cracking your own passwords.
+In other words, you will perform a [*password cracking*](https://en.wikipedia.org/wiki/Password_cracking) attack and learn how to stop password crackers from cracking your own passwords.
 
 1. [Objectives](#objectives)
 1. [Scenario](#scenario)
