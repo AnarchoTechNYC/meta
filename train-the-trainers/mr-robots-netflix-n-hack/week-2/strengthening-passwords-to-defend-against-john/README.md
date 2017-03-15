@@ -155,15 +155,21 @@ When we give the wordlist to `john`, what we're doing is asking `john` to hash e
 
 If `john` is working correctly, we can expect that the third word in the wordlist, `Sup3rs3kr3tP@24431w0rd`, will result in a match. If that guess were missing (as it is in the `sanitycheck.no-crack.wordlist.txt` file), we would expect to see `john` report its failure to find any matches.
 
-To perform the sanity check, we'll use this command invocation:
+To perform the sanity check, we'll use this command invocation on GNU/Linux or macOS systems:
 
 ```sh
 ./john --wordlist=sanitycheck.wordlist.txt sanitycheck.password.txt
 ```
 
+Windows users will need to reverse the slash, but otherwise can use the same invocation:
+
+```sh
+.\john --wordlist=sanitycheck.wordlist.txt sanitycheck.password.txt
+```
+
 Breaking this invocation down:
 
-* The first part, `./john`, runs the program `john` in the current directory (`./`).
+* The first part, `./john` (or `.\john` on Windows), runs the program `john` in the current directory (notated as `./` on GNU/Linux and macOS and `.\` on Windows). The rest of this walkthrough always uses the GNU/Linux and macOS style, so if you're following along on Windows, just remember to reverse the direction of the slash to mean "current directory."
 * The first option, `--wordlist`, tells JtR to read its guesses from the file given by the value (`=`) of the option, in this case the contents of the file `sanitycheck.wordlist.txt`.
 * The final argument, `sanitycheck.password.txt`, is the file containing the hashed passwords we want to crack.
 
