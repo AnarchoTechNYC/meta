@@ -365,7 +365,7 @@ To get us started, John the Ripper comes with a wordlist. It's the `password.lst
 
 **Do this:**
 
-1. Open the `password.lst` file in JtR's `run` folder in your favorite text editor. (Notepad or TextEdit are both fine.)
+1. Open the `password.lst` file in JtR's `run` folder using your favorite text editor. (Notepad or TextEdit are both fine.)
 1. Read the lines that start with `#!comment:` at the top of the file. They are reprinted here:  
     ```
     #!comment: This list has been compiled by Solar Designer of Openwall Project,
@@ -382,7 +382,7 @@ To get us started, John the Ripper comes with a wordlist. It's the `password.lst
     ```
 1. Invoke `john` again, but this time use Solar Designer's wordlist against Evil Corp's `shadow` file. (From here on out, you will need to work out the correct command invocation yourself.)
 
-Depending on the speed of your computer, in a matter of seconds, this will have cracked (at least) one Evil Corp employee's password and revealed the password belonging to the user `chrispollard`. You were able to crack Chris's password because, despite not being an English word, it was an entry in the wordlist you just used. For that reason, we (password crackers) say that Chris's password was "in a dictionary," even though it was not in "*the* (Mirriam-Webster) dictionary."
+Depending on the speed of your computer, in a matter of seconds, this will have cracked (at least) one Evil Corp employee's password, revealing the password belonging to the user `chrispollard`. You were able to crack Chris Pollard's password because, despite not being an English word, it was an entry in the wordlist you just used. For that reason, we (password crackers) say that Chris's password was "in a dictionary," even though it was not in "*the* (Mirriam-Webster) dictionary."
 
 **If *your* password is "in a dictionary," then you've just seen how easy it is for anyone else to crack.** This holds true regardless of how complex the password actually is. Remember `Sup3rs3kr3tP@24431w0rd`? You can bet that's in a dictionary now, just by virtue of it being used as an example on this exercise. So, y'know, never use it as your password for anything, ever.
 
@@ -419,8 +419,10 @@ Of course, there are. And we're going to use them.
 > 
 > 1. Do the thing again, this time with `--rules` and so on.
 >     * This should crack maybe one or two more passwords, again, to provide that "aha" moment for what `--rules` are and do.
-> 1. Finally, introduce the idea that we can devise our own password guessing strategies, write our own rules files, etc.
->     * Doing this correctly should reveal yet another couple of passwords; have the passwords be Mr. Robot themed but the rules common (adding numbers at the end, 1337 speak, and so on).
+> 1. Next, introduce the idea that we can devise our own password guessing strategies, write our own rules files, etc.
+>     * Doing this correctly should reveal yet another couple of passwords; have the passwords be Mr. Robot themed but the rules common (adding numbers at the end, 1337 speak, and so on). Importantly, Tyrell's "bad noob" password is crackable with the right wordlist and --rules.
+> 1. Optionally, continue cracking more passwords with advanced modes such as `--loopback` and `--markov`; another "aha" moment with regards to the "smarts" of wordlists and why the only "good" passwords are *random* passwords.
+> 1. There will be at least one password hash that is still uncrackable, so finally, after all else fails, explain how to do an actual brute force ("incremental") search. The aha moment here is "see, this will take fucking forever, and that's the point." <-- This is what using a password manager correctly forces attackers to do.
 > 
 > Obvi, we already "know" Tyrell's password so doesn't really matter if we actually crack his. But it's good that we already know is that students can "check their work" against a known quantity.
 > 
