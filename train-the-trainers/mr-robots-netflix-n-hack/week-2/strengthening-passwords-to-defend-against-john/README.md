@@ -14,6 +14,9 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Sanity check](#sanity-check)
+    1. [Crack session preparation](#crack-session-preparation)
+    1. [Your first crack](#your-first-crack)
+    1. [Better wordlists](#better-wordlists)
 1. [Discussion](#discussion)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
     * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
@@ -339,13 +342,81 @@ It's immediately clear that this hash is way more complex than the raw SHA-1 has
 
 > :beginner: For the curious, the salt for this hash is `ge7W6aVQ`. You can read it, plain as day, near the start of the second field in the `shadow` database. See the [Hash string formats](#hash-string-formats) and [Salted versus unsalted hashes](#salted-versus-unsalted-hashes) sections, below, if you're curious.
 
+Now that we know where the hashes actually are, and that they are conveniently enough already in files that match the structure `john` expects, we can just point `john` at them to get cracking, right? Well, almost. Let's do that with what we've got so far and see what happens.
+
+**Do this:**
+
+1. Download the [`evilcorp-intl.com.shadow.txt`](evilcorp-intl.com.shadow.txt?raw=true) file and save it in or move it to JtR's `run` folder.
+1. Invoke `john` as shown above again, using the same ol' `sanitycheck.wordlist.txt` wordlist file as before, but use the `shadow` file as the password hash file instead of the "sanity check" one this time.
+
+```sh
+$ ./john --wordlist=sanitycheck.wordlist.txt evilcorp-intl.com.shadow.txt
+Loaded 21 password hashes with 21 different salts (sha512crypt [64/64])
+guesses: 0  time: 0:00:00:00 DONE (Wed Mar 15 19:58:29 2017)  c/s: 48.00  trying: randomGuess - someotherword
+```
+
+Unsurprisingly, `john` immedaitely reports failure. Careful readers will also notice that `john` reports it has "`Loaded 21 password hashes`" but notes they have been loaded "`with 21 different salts`." Thanks, `john`.
+
+By now it should be pretty clear why we failed. There are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions. Clearly, we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
+
+## Your first crack
+
+To get us started, John the Ripper comes with a wordlist. It's the `password.lst` file located in JtR's `run` folder. Let's have a peek, and try it out.
+
+**Do this:**
+
+1. Open the `password.lst` file in JtR's `run` folder in your favorite text editor. (Notepad or TextEdit are both fine.)
+1. Read the lines that start with `#!comment:` at the top of the file. They are reprinted here:  
+    ```
+    #!comment: This list has been compiled by Solar Designer of Openwall Project,
+    #!comment: http://www.openwall.com/wordlists/
+    #!comment:
+    #!comment: This list is based on passwords most commonly seen on a set of Unix
+    #!comment: systems in mid-1990's, sorted for decreasing number of occurrences
+    #!comment: (that is, more common passwords are listed first).  It has been
+    #!comment: revised to also include common website passwords from public lists
+    #!comment: of "top N passwords" from major community website compromises that
+    #!comment: occurred in 2006 through 2010.
+    #!comment:
+    #!comment: Last update: 2011/11/20 (3546 entries)
+    ```
+1. Invoke `john` again, but this time use Solar Designer's wordlist against Evil Corp's `shadow` file. (From here on out, you will need to work out the correct command invocation yourself.)
+
+Depending on the speed of your computer, in a matter of seconds, this will have cracked (at least) one Evil Corp employee's password and revealed the password belonging to the user `chrispollard`. You were able to crack Chris's password because, despite not being an English word, it was an entry in the wordlist you just used. For that reason, we (password crackers) say that Chris's password was "in a dictionary," even though it was not in "*the* (Mirriam-Webster) dictionary."
+
+**If *your* password is "in a dictionary," then you've just seen how easy it is for anyone else to crack.** This holds true regardless of how complex the password actually is. Remember `Sup3rs3kr3tP@24431w0rd`? You can bet that's in a dictionary now, just by virtue of it being used as an example on this exercise. So, y'know, never use it as your password for anything, ever.
+
+To drive the point home, let's consider what we've just done. Solar Designer's `password.lst` wordlist has 3,546 entries. That means, for each password hash we loaded from the `shadow` file, and there were 21 of them, we made 3,546 guesses. If we do the math, which is 3,546 &times; 21, we can see we made a total of 74,466 guesses. Technically speaking, we produced 74,466 salted SHA-512 Crypt hashes and compared each one to the appropriate hash in the `shadow` file. Not too shabby, especially when you consider the amount of time you saved compared with making 74,466 guesses *by hand*.
+
+Should you so desire, you can now log on to Evil Corp's corporate mail server and read Chris Pollard's emails. Unfortunately, Chris is just a low-level receptionist. We'll have to crack better passwords if we want to stop Evil Corp's nefarious plot. Besides, Chris's password was exceptionally bad. Most of Evil Corp's other employees are holding strong against this wordlist, including Tyrell Wellick. Ideally, we will crack all their passwords, but his is the one we actually need.
+
+**Do this:**
+
+1. Open the `password.lst` wordlist again and skim through it to get a sense of its contents.
+1. Find Chris Pollard's password in the wordlist.
+    * What was the password immediately preceeding it?
+    * What was the password immediately following it?
+1. Find the first ten passwords in the wordlist. (These were your ten first guesses.) Compare them with the last ten passwords in the wordlist. (These were your ten last guesses.)
+    * How many different classes of characters are in the first ten? (A *character class* is a set of characters, like "numbers," "lowercase letters," "uppercase letters," or "special symbols.")
+    * How many different classes of characters are in the last ten?
+
+## Better wordlists
+
+The wordlist that comes with John the Ripper isn't bad, it's just small. You might think 3,546 entries sounds like a lot, but given the speed with which your computer can make guesses, it's not. Even the spell-check dictionary on your computer has orders of magnitude more words in it than that, and your computer checks every word you type *as you type it* against each of those entires. Surely, there must be "better" wordlists available.
+
+Of course, there are. And we're going to use them.
+
+> :beginner: Perhaps the most obvious characteristic of a "good" wordlist is that it is large, but remember that the larger the wordlist, the longer it will take to hash and guess each word in it. A good wordlist is therefore also sorted, with the most likely password candidates at the top. This raises the next obvious question: what are the "likely" candidates? The answer increasingly depends on your target. For instance, most monolingual people choose passwords in the one language they speak, so including English words in a wordlist targeted at Portuguese speakers might waste valuable time. See the [Characteristics of a good password cracking wordlist](#characteristics-of-a-good-password-cracking-wordlist) section for a further discussion of this subtlety.
+
+**Do this:**
+
+1. Search the Internet for a better wordlist or two (or three).
+    * Some people, including JtR's makers, *sell* wordlists. You do *not* need to buy any of these.
+    * Hint: Some of the best wordlists are compiled from previous [data breaches](https://en.wikipedia.org/wiki/Data_breach).
+1. Use the better wordlists you found against the Evil Corp password hashes.
+
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
-> 1. Do the thing! (`john --wordlist=mywordlist.list the_file_with_hashes_to_crack_`)
->     * Provide "mywordlist.list" with this repo, as an example file. But *also*,
->     * point out that other wordlists exist, dramatic-dot-dot-dot.
-> 1. Tell students to go get their own, better wordlist. ("rockyou"?)
->     * Doing `john --wordlist=rockyou.txt` or whatever should produce several more password hits, which is an "aha" moment.
 > 1. Do the thing again, this time with `--rules` and so on.
 >     * This should crack maybe one or two more passwords, again, to provide that "aha" moment for what `--rules` are and do.
 > 1. Finally, introduce the idea that we can devise our own password guessing strategies, write our own rules files, etc.
@@ -407,9 +478,18 @@ Without salting hashes, assuming we already cracked one account, we could instan
 
 Furthermore, many huge, public, free lookup databases of previously-computed (or previously-encountered) hashes and their original inputs exist online. One such popular database is at [CrackStation.net](https://crackstation.net/). These databases of precomputed hashes and their corresponding original inputs are called [rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table). Some even larger rainbow tables are accessible, for a fee.
 
+## Characteristics of a good password cracking wordlist
+
+:construction: TK-TODO
+
+[A blog post by g0tmi1k about what makes a password cracking wordlist "good"](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
+
 ## Calculating password strength
 
+:construction: TK-TODO
+
 [A couple tricks for password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
+
 
 # Additional references
 
