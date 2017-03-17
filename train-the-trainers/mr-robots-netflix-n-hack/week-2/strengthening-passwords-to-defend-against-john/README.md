@@ -173,7 +173,7 @@ Windows users will need to reverse the slash, but otherwise can use the same inv
 Breaking this invocation down:
 
 * The first part, `./john` (or `.\john` on Windows), runs the program `john` in the current directory (notated as `./` on GNU/Linux and macOS and `.\` on Windows). The rest of this walkthrough always uses the GNU/Linux and macOS style, so if you're following along on Windows, just remember to reverse the direction of the slash to mean "current directory."
-* The first option, `--wordlist`, tells JtR to read its guesses from the file given by the value (`=`) of the option, in this case the contents of the file `sanitycheck.wordlist.txt`.
+* The next part, i.e., the first [argument](https://bash.cyberciti.biz/guide/Shell_command_line_parameters#What_is_a_command_line_argument.3F), is the `--wordlist` option, which tells JtR to read its guesses from the file given by the value (`=`) of the option, in this case the contents of the file `sanitycheck.wordlist.txt`.
 * The final argument, `sanitycheck.password.txt`, is the file containing the hashed passwords we want to crack.
 
 Notice that we did not have to tell John the Ripper what hash algorithm to use. In many cases, it's smart enough to figure that out all on its own! This is one of the reasons JtR is considered an easy tool to use. However, if `john` incorrectly detects the hash format, it will never find a match, since different hash algorithms produce different hash values, even for the same input.
@@ -202,7 +202,7 @@ Use the "--show" option to display all of the cracked passwords reliably
 
 Since we did not tell `john` what hashing algorithm to use, the very first thing the program did was make an educated guess about the hash algorithm that was used to produce the hash value in the password file. Its guess is based on the contents of the hash value itself; the hash's length, the characters it contains, and other details can sometimes be used to deduce the hashing algorithm. In this case, `john`'s educated guess ("Raw SHA-1") happens to be correct, and JtR informs us that it will proceed as though we had invoked it with the `--format=raw-sha1` option.
 
-> :bulb: We can quiet these "warnings" by telling `john` to use a specific hash algorithm. We do this by passing the `--format` option and setting the option's value to a specific algorithm's name. You can ask `john` for a list of all the algorithm names it knows about by invoking it with no options. This will print some basic help. Look for the `--format` option in that output to read a list of hash format names `john` recognizes.
+> :beginner: :bulb: We can quiet these "warnings" by telling `john` to use a specific hash algorithm. We do this by passing the `--format` option and setting the option's value to a specific algorithm's name. You can ask `john` for a list of all the algorithm names it knows about by invoking it with no options. This will print some basic help. Look for the `--format` option in that output to read a list of hash format names `john` recognizes.
 > 
 > In this example, I'm [using a shell's pipe](https://bash.cyberciti.biz/guide/Pipes) (`|`) to send `john`'s help message to [the `grep(1)` command](https://linux.die.net/man/1/grep) on a GNU/Linux system so I can focus on just the fifteen lines of text after (`-A 15`) wherever the `--format` option is described:
 > 
@@ -297,7 +297,7 @@ Recall that, [previously](#scenario):
 
 > Evil Corp's mail servers run a webmail system vulnerable to an exploit called Shellshock, which has enabled you to obtain files listing the usernames and passwords of everyone who uses the system.
 
-Since Evil Corp's mail system was powered by a [Unix](https://en.wikipedia.org/wiki/Unix)-like server, the two files you plucked off Evil Corp's server during your successful Shellshock exploit were the files located at `/etc/passwd` and `/etc/shadow`. Often, these are just called "the `passwd` and `shadow` files" for short. On Unix-like systems, these two files taken together comprise a local database that provides the system with information about its user accounts. Numerous programs query one or both of these files to answer the all important question, "Is *this* the correct password for *that* user?"
+Since Evil Corp's mail system was powered by a [Unix](https://en.wikipedia.org/wiki/Unix)-like server, the two files you plucked off their system during your hack were the files located at `/etc/passwd` and `/etc/shadow`. Often, these are just called "the `passwd` and `shadow` files" for short. On Unix-like systems, these two files taken together comprise a local database that provides the system with information about its user accounts and their passwords. Numerous programs query one or both of these files to answer numerous questions, including the all important question, "Is *this* the correct password for *that* user?"
 
 Let's have a look at our copies of both the `passwd` and `shadow` files, which we saved as `evilcorp-intl.com.passwd.txt` and `evilcorp-intl.com.shadow.txt`, respectively. As before, we can use `cat` on a GNU/Linux or macOS terminal or `type` in a Windows Command Prompt to print the file's content. Here's the `passwd` file:
 
@@ -340,7 +340,7 @@ Once again, notice the colons acting as field separators. Notice also that the f
 
 It's immediately clear that this hash is way more complex than the raw SHA-1 hash we saw earlier. There are two reasons for that. First, it's a different hash algorithm, a more modern one designed to be harder than SHA-1 to crack. "Harder" means that it takes longer to compute a resulting value given some input, and thus slows attackers down. Second, it's been further complicated by a small amount of extra input, called *salt* (yes, from the expression, "salt to taste"). The salt makes *this* hash different from all other hashes that were given the same, original "unsalted" input. Thankfully, none of this need matter much to us, since `john` already knows how to recognize and deal with salted hashes.
 
-> :beginner: For the curious, the salt for this hash is `ge7W6aVQ`. You can read it, plain as day, near the start of the second field in the `shadow` database. See the [Hash string formats](#hash-string-formats) and [Salted versus unsalted hashes](#salted-versus-unsalted-hashes) sections, below, if you're curious.
+> :beginner: For the curious, the salt for this hash is `ge7W6aVQ`. You can read it, plain as day, near the start of the second field in the `shadow` database. See the [Hash string formats](#hash-string-formats) and [Salted versus unsalted hashes](#salted-versus-unsalted-hashes) sections, below, for more details if you're curious.
 
 Now that we know where the hashes actually are, and that they are conveniently enough already in files that match the structure `john` expects, we can just point `john` at them to get cracking, right? Well, almost. Let's do that with what we've got so far and see what happens.
 
@@ -357,7 +357,7 @@ guesses: 0  time: 0:00:00:00 DONE (Wed Mar 15 19:58:29 2017)  c/s: 48.00  trying
 
 Unsurprisingly, `john` immedaitely reports failure. Careful readers will also notice that `john` reports it has "`Loaded 21 password hashes`" but notes they have been loaded "`with 21 different salts`." Thanks, `john`.
 
-By now it should be pretty clear why we failed. There are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions. Clearly, we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
+By now it should be pretty clear why we failed. There are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions upon zillions. Clearly, we need to at least make more than four guesses; we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
 
 ## Your first crack
 
@@ -365,7 +365,7 @@ To get us started, John the Ripper comes with a wordlist. It's the `password.lst
 
 **Do this:**
 
-1. Open the `password.lst` file in JtR's `run` folder using your favorite text editor. (Notepad or TextEdit are both fine.)
+1. Open the `password.lst` file in JtR's `run` folder using your favorite text editor. (Graphical text editors like Notepad or TextEdit are both fine.)
 1. Read the lines that start with `#!comment:` at the top of the file. They are reprinted here:  
     ```
     #!comment: This list has been compiled by Solar Designer of Openwall Project,
@@ -382,7 +382,7 @@ To get us started, John the Ripper comes with a wordlist. It's the `password.lst
     ```
 1. Invoke `john` again, but this time use Solar Designer's wordlist against Evil Corp's `shadow` file. (From here on out, you will need to work out the correct command invocation yourself.)
 
-Depending on the speed of your computer, in a matter of seconds, this will have cracked (at least) one Evil Corp employee's password, revealing the password belonging to the user `chrispollard`. You were able to crack Chris Pollard's password because, despite not being an English word, it was an entry in the wordlist you just used. For that reason, we (password crackers) say that Chris's password was "in a dictionary," even though it was not in "*the* (Mirriam-Webster) dictionary."
+Depending on the speed of your computer, in a matter of seconds, this will have cracked (at least) one Evil Corp employee's password, revealing the password belonging to the user `chrispollard`. You were able to crack Chris Pollard's password because, despite not being an English word, it was an entry in the wordlist you just used. For that reason, we say that Chris's password was "in a dictionary," even though it was not in "*the* (Mirriam-Webster) dictionary."
 
 **If *your* password is "in a dictionary," then you've just seen how easy it is for anyone else to crack.** This holds true regardless of how complex the password actually is. Remember `Sup3rs3kr3tP@24431w0rd`? You can bet that's in a dictionary now, just by virtue of it being used as an example on this exercise. So, y'know, never use it as your password for anything, ever.
 
@@ -390,9 +390,18 @@ To drive the point home, let's consider what we've just done. Solar Designer's `
 
 Should you so desire, you can now log on to Evil Corp's corporate mail server and read Chris Pollard's emails. Unfortunately, Chris is just a low-level receptionist. We'll have to crack better passwords if we want to stop Evil Corp's nefarious plot. Besides, Chris's password was exceptionally bad. Most of Evil Corp's other employees are holding strong against this wordlist, including Tyrell Wellick. Ideally, we will crack all their passwords, but his is the one we actually need.
 
+## Better wordlists
+
+The wordlist that comes with John the Ripper isn't bad, it's just small. You might think 3,546 entries sounds like a lot, but given the speed with which your computer can make guesses, it's not. Even the spell-check dictionary on your computer has orders of magnitude more words in it than that, and your computer checks every word you type *as you type it* against each of those entires. Surely, there must be "better" wordlists available.
+
+Of course, better wordlists *are* available, and we're going to use them. While the most obvious characteristic of the better wordlists may be that they're simply larger, remember that the larger the wordlist the longer it will take us to finish hashing and comparing each word in it to the hashes we're trying to crack. That's why a good wordlist is also sorted, with the most likely password candidates at the top. This raises the next obvious question: what are the more "likely" candidates? The answer to that increasingly depends on your target. For instance, most monolingual people choose passwords in the one language they speak, so including English words in a wordlist targeted at the account passwords of Portuguese speakers might waste valuable time.
+
+Before we just chuck a huge number of additional words into our wordlist, though, let's get a deeper sense of how the professionals make their wordlists.
+
 **Do this:**
 
-1. Open the `password.lst` wordlist again and skim through it to get a sense of its contents.
+1. Open the `password.lst` wordlist in your text editor again
+1. Skim (scroll) through the wordlist to get a sense of its contents.
 1. Find Chris Pollard's password in the wordlist.
     * What was the password immediately preceeding it?
     * What was the password immediately following it?
@@ -400,13 +409,15 @@ Should you so desire, you can now log on to Evil Corp's corporate mail server an
     * How many different classes of characters are in the first ten? (A *character class* is a set of characters, like "numbers," "lowercase letters," "uppercase letters," or "special symbols.")
     * How many different classes of characters are in the last ten?
 
-## Better wordlists
+One thing that should be immediately apparent to you is that many words in the wordlist are just plain old English words. This is because, believe it or not, many people take the term "password" literally, believing that their password must be an actual word. Some security-conscious applications have started using the term pass*phrase* in an attempt to better communicate the fact that a "password" can actually be *completely arbitrary*, and does not necessarily need to be an actual, honest-to-goodness human-language dictionary word.
 
-The wordlist that comes with John the Ripper isn't bad, it's just small. You might think 3,546 entries sounds like a lot, but given the speed with which your computer can make guesses, it's not. Even the spell-check dictionary on your computer has orders of magnitude more words in it than that, and your computer checks every word you type *as you type it* against each of those entires. Surely, there must be "better" wordlists available.
+There's more to notice, though. For instance, you may have noticed that numerous "words" in the wordlist are simple patterns. Common patterns include numeric sequences like "`123456`" and strings that correspond to the rows or layouts of keyboards or a phone's keypad, or the finger positions of trained typists, such as "`asdfjkl;`" (called [the *home row* on a US English keyboard](https://web.archive.org/web/20161225064555/http://www.typing-lessons.org/lesson_1.html)). There are also colloquialisms such as "`shazam`," obscenities like "`fuckyou`," and various pronouns (i.e., the names of places, TV shows, celebrities, companies, and so on). A follow-on obsveration we can make from this is that most of the wordlist's words aren't very long, around under ten characters or so.
 
-Of course, there are. And we're going to use them.
+Moreover, notice that fewer words near the top of the wordlist have a mix of character types. Most of those words are either all letters or all numbers. Most of the ones with letters don't even have a mix of upper- and lower-case characters, and even when they do, the capital letter is usually at the very beginning, just as you'd expect them to appear in regular written text. Later on in the wordlist, where mixed character sets begin to appear, there is still a clearly discernible pattern. Words with numbers overwhelmingly use the digits 1 and 2, and they usually appear at the end of the word. Even the symbols, when they appear at all, are predictable. Most of these also follow clear patterns, like keyboard layouts. Finally, there are almost no occurrences of the more esoteric symbols like the [Section sign (`§`)](https://en.wikipedia.org/wiki/Section_sign).
 
-> :beginner: Perhaps the most obvious characteristic of a "good" wordlist is that it is large, but remember that the larger the wordlist, the longer it will take to hash and guess each word in it. A good wordlist is therefore also sorted, with the most likely password candidates at the top. This raises the next obvious question: what are the "likely" candidates? The answer increasingly depends on your target. For instance, most monolingual people choose passwords in the one language they speak, so including English words in a wordlist targeted at Portuguese speakers might waste valuable time. See the [Characteristics of a good password cracking wordlist](#characteristics-of-a-good-password-cracking-wordlist) section for a further discussion of this subtlety.
+> :bulb: Of course, the above observations are not the only ones you can make about Solar Designer's wordlist. To find some others, you can ask yourself questions about the list, such as, "In what language are the 'real' words?" and "What is the ratio of 'regular' words to special words like specific industry jargon?" The answers to questions like these can often tell you a lot about where a wordlist came from or what kind of users it might be intended to target. See the [Characteristics of a good password cracking wordlist](#characteristics-of-a-good-password-cracking-wordlist) section for a further discussion of this subtlety.
+
+All of these observations are going to be helpful to us in making smarter guesses sooner, that is, in making better wordlists. We *could* now begin the process of composing a custom wordlist to target Evil Corp employees specifically, but in all likelihood "Evil Corp employees" are not so different from any other random company's workers. So, instead, let's just see what other wordlist options are already available to us.
 
 **Do this:**
 
