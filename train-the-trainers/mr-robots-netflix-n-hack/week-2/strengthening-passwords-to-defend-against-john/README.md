@@ -126,15 +126,6 @@ Guessing more passwords faster is pretty intuitive: the faster we can make guess
 
 First, let's make sure you successfully installed John the Ripper (JtR) and that its `john` program is working correctly. We'll do this by giving `john` two files. One file contains a fictional username and hashed password combination. The second file will contain a (correct) "guess" of the un-hashed password. Given these two files, `john` should be able to apply the password guess in the one file to the hashed version of the password in the other file and tell us that the guess is correct.
 
-> :beginner: It's very easy to create a hashed version of a password, or any content, such as an arbitrary file. To make the hash in this sanity check, I used [the `shasum(1)` command](https://linux.die.net/man/1/shasum) on a GNU/Linux system:
-> 
-> ```sh
-> $ echo -n "Sup3rs3kr3tP@24431w0rd" | shasum --algorithm 1
-> ced91977849c44fd009ba437c14c1b74f632fae6  -
-> ```
-> 
-> Similarly, Windows users can use [Notepad](https://en.wikipedia.org/wiki/Microsoft_Notepad) and a utility called the [File Checksum Integrity Verifier](http://support.microsoft.com/kb/841290).
-
 The file containing the username and hashed password pair is called `sanitycheck.password.txt`. It contains one line that looks like this:
 
 ```
@@ -480,6 +471,11 @@ In a `passwd` file, the seven fields, from left to right, are:
 These plain text files are not the only way a system might store this kind of information, but it was one of the first methods designed, is among the simplest, and is often still used. Other places to store equivalent information includes more complex locally-stored databases (often in [Berkeley DB](https://en.wikipedia.org/wiki/Berkeley_DB) file format) or network-accessible directories. On a typical Unix-like system, the [`nsswitch.conf(5)`](https://linux.die.net/man/5/nsswitch.conf) file determines which sources are consulted, and in which order. Other systems use different methods. (If you're on a macOS computer, look into [Apple Open Directory](https://en.wikipedia.org/wiki/Apple_Open_Directory) ([`opendirectoryd(8)`](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/opendirectoryd.8.html)), while Windows users could explore the [Security Account Manager](https://en.wikipedia.org/wiki/Security_Account_Manager).)
 
 ## Hash string formats
+> :beginner: It's very easy to create a hashed version of a password, or any content, such as an arbitrary file. To make the hash in this sanity check, I used [the `shasum(1)` command](https://linux.die.net/man/1/shasum) on a GNU/Linux system:
+>
+> ```sh> $ echo -n "Sup3rs3kr3tP@24431w0rd" | shasum --algorithm 1> ced91977849c44fd009ba437c14c1b74f632fae6  -> ```
+> 
+> Similarly, Windows users can use [Notepad](https://en.wikipedia.org/wiki/Microsoft_Notepad) and a utility called the [File Checksum Integrity Verifier](http://support.microsoft.com/kb/841290).2
 
 Tyrell Wellick's account password hash value is not *merely* a hash algorithm's output. The raw hash output is there, yes, but it's stored along with some additional metadata that has been prepended as part of a longer *hash string*. The full hash string for Tyrell's password in the `shadow` file is:
 
