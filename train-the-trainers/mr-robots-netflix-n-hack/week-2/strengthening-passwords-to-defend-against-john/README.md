@@ -357,7 +357,7 @@ guesses: 0  time: 0:00:00:00 DONE (Wed Mar 15 19:58:29 2017)  c/s: 48.00  trying
 
 Unsurprisingly, `john` immedaitely reports failure. Careful readers will also notice that `john` reports it has "`Loaded 21 password hashes`" but notes they have been loaded "`with 21 different salts`." Thanks, `john`.
 
-By now it should be pretty clear why we failed. There are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions upon zillions. Clearly, we need to at least make more than four guesses; we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
+The reason why we failed is simple: there are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions upon zillions. Clearly, we need to at least make more than four guesses; we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
 
 ## Your first crack
 
