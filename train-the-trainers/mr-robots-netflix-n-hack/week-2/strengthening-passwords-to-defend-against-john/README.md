@@ -59,9 +59,8 @@ To participate in this exercise, you must have:
 # Set up
 
 In addition to your laptop or desktop computer, you will need to acquire the following tools.
-
-* [KeePassX](https://www.keepassx.org/)
-* [John the Ripper password cracker](http://www.openwall.com/john/), often written as *JtR*
+* For cracking Tyrell's password: [John the Ripper password cracker](http://www.openwall.com/john/), often written as *JtR*
+* For managing your own passwords: [KeePassX](https://www.keepassx.org/), for managing your own passwords.
 
 There are pre-built versions of KeePassX for both Windows and macOS available for download from the [KeePassX downloads page](https://www.keepassx.org/downloads). For GNU/Linux users, KeePassX is ordinarily provided as a standard software package directly from your operating system's distributor. Use your system's default package manager to install it.
 
