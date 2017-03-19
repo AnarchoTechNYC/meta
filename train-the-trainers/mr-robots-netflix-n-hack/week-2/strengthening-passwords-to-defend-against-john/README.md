@@ -60,8 +60,8 @@ To participate in this exercise, you must have:
 
 In addition to your laptop or desktop computer, you will need to acquire the following tools.
 
-* [KeePassX](https://www.keepassx.org/)
-* [John the Ripper password cracker](http://www.openwall.com/john/), often written as *JtR*
+* For cracking Tyrell's password: [John the Ripper password cracker](http://www.openwall.com/john/), often written as *JtR*
+* For managing your own passwords: [KeePassX](https://www.keepassx.org/)
 
 There are pre-built versions of KeePassX for both Windows and macOS available for download from the [KeePassX downloads page](https://www.keepassx.org/downloads). For GNU/Linux users, KeePassX is ordinarily provided as a standard software package directly from your operating system's distributor. Use your system's default package manager to install it.
 
@@ -348,7 +348,7 @@ guesses: 0  time: 0:00:00:00 DONE (Wed Mar 15 19:58:29 2017)  c/s: 48.00  trying
 
 Unsurprisingly, `john` immedaitely reports failure. Careful readers will also notice that `john` reports it has "`Loaded 21 password hashes`" but notes they have been loaded "`with 21 different salts`." Thanks, `john`.
 
-By now it should be pretty clear why we failed. There are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions upon zillions. Clearly, we need to at least make more than four guesses; we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
+The reason why we failed is simple: there are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions upon zillions. Clearly, we need to at least make more than four guesses; we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
 
 ## Your first crack
 
@@ -425,9 +425,9 @@ All of these observations are going to be helpful to us in making smarter guesse
 > * If you get impatient during your cracking session, or if you need to stop to turn off your laptop, you can press and hold the Control key and then, before releasing it, press and release the `c` key to interrupt `john` before the session completes on its own. (You might also see this keyboard combination notated as `C-c`, `^C`, or `CTRL+C`.) This will stop `john` and give you back your command prompt. Don't worry, you can pick up exactly where you left off by subsequently invoking `john` with the `--restore` option, like this: `./john --restore`
 > * As a hint, for the purposes of this exercise, if you find the right wordlist(s), it should not take you very long to crack at least a couple more hashes, even on commodity hardware from about 2012 or so. If you're getting nowhere and `john` tells you that your session will last for more than a few hours, you should consider trying a different wordlist. Think through what kind of wordlist you should look for, given the nature of the accounts you're trying to crack, or what you know about the Evil Corp employees, themselves.
 
-If you found and used useful wordlists, you will have cracked a couple more hashes by now. Congratulations, you are now a 1337 h4x0r! If you've kept your wits about you, you may notice some relationships between the revealed passwords, the users who chose them, and their user accounts.
+If you found and loaded useful wordlists, you will have cracked a couple more hashes by now. Congratulations, you are now a [*1337 h4x0r*](https://www.urbandictionary.com/define.php?term=1337%20h4x0r)! You may also notice some relationships between the revealed passwords, the users who chose them, and their user accounts; people's cracked passwords often reflect little insights about who they are or what they're like.
 
-**If *your* password has any meaningful relationship to who you are, what you like, what you use your account for, and so on, you can now see how easy it would be for an attacker to get at your personal data just by making slightly more educated guesses about your password.** Notice, especially, that these "slightly more educated guesses" were not about *you*, just about passwords *generally*. Moreover, these passwords may not even be *your* passwords, just *someone's* password *somewhere* else that they once used on a site you may not have even heard of before. Nevertheless, because it was compiled in a dictionary, you were able to use it to crack Evil Corp's employees passwords, anyway.
+**If *your* password has any meaningful relationship to things like who you are or what you use your account for you can now see how easy it would be to guess.** In particular, notice that these guesses are not guesses about *you*, but rather about passwords *generally*. Moreover, notice also that even though your specific *account* may never have been hacked, an attacker may already have your *password* just because someone else once used the same password elsewhere, even on a site you may not have even heard of before. Since *their* hacked account password ended up in a cracking dictionary, your account is now also at risk.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
@@ -510,7 +510,6 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 :construction: TK-TODO
 
 [A couple tricks for password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
-
 
 # Additional references
 
