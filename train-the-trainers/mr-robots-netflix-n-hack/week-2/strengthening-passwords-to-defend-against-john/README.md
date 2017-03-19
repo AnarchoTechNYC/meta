@@ -20,6 +20,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
 1. [Discussion](#discussion)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
     * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
+    * [Hash algorithms](#hash-algorithms)
     * [Hash string formats](#hash-string-formats)
     * [Salted versus unsalted hashes](#salted-versus-unsalted-hashes)
     * [Calculating password strength](#calculating-password-strength)
@@ -109,7 +110,7 @@ Recovering passwords is generally accomplished in one of two ways. The approach 
 > 
 > In the end, a "hash" in the context of computer security is simply a value that ("cryptographically") represents some other value. The idea, in theory, is that two different original values will never be represented by the same two ultimate values after they have been "hashed," and that it is infeasible to recover the original value from the hashed value. ([Watch these few minutes from "Crypto 101"](https://www.youtube.com/watch?v=3rmCGsCYJF8&t=20m6s) for a further explanation and some pictures depicting this.) In practice, however, weaknesses in cryptographic hash functions (whether by design due to flaws in their algorithm, or by mistakes introduced through their actual implementation) sometimes result in two different values being hashed to the same value. When this happens, the hash function is said to be "cryptographically broken," because if you can hash two different values and get the same resulting value (a situation known as a *hash collision*), then there is little point to the hash from a security perspective in the first place.
 > 
-> For the purposes of this exercise, we will assume there are no flaws in the hashing algorithm. In reality, this "sanity check" hash value uses a cryptographically broken algorithm called [SHA-1](https://en.wikipedia.org/wiki/SHA-1). To learn more about how SHA-1 is broken, and how to construct a *hash collision attack* yourself, read [Boston Key Party 2017 CTF: Prudentialv2](https://github.com/meitar/CTF/blob/master/2017/BKP/cloud/Prudentialv2/README.md).
+> For the purposes of this exercise, we will assume there are no flaws in the hashing algorithm. In reality, this "sanity check" hash value uses a cryptographically broken algorithm called [SHA-1](https://en.wikipedia.org/wiki/SHA-1). To learn more about how SHA-1 is broken, and how to construct a *hash collision attack* yourself, read [Boston Key Party 2017 CTF: Prudentialv2](https://github.com/meitar/CTF/blob/master/2017/BKP/cloud/Prudentialv2/README.md). For more details, see the [Hash algorithms](#hash-algorithms) section in the [Discussion](#discussion), below.
 
 The alternative to offline hash cracking is *online password guessing*. We say it's "online" because it's as simple as repeatedly attempting to log in to an active, remote system, such as an email service or online banking website. Of course, most websites don't allow visitors to try logging in to an account too many times. After some number of failed guesses, they will usually lock out the account. Besides, it would be unbearably slow to have to reload the login page over and over again after each guess. Therein lies the key concept: speed.
 
@@ -124,7 +125,7 @@ Guessing more passwords faster is pretty intuitive: the faster we can make guess
 
 ## Sanity check
 
-First, let's make sure you successfully installed John the Ripper (JtR) and that its `john` program is working correctly. We'll do this by giving `john` two files. One file contains a fictional username and hashed password combination. The second file will contain a (correct) "guess" of the un-hashed password. Given these two files, `john` should be able to apply the password guess in the one file to the hashed version of the password in the other file and tell us that the guess is correct.
+First, let's make sure you successfully installed John the Ripper (JtR) and that its `john` program is working correctly. We'll do this by giving `john` two files. Both files have already been created for you. One file contains a fictional username and hashed password combination. The second file will contain a (correct) "guess" of the un-hashed password. Given these two files, `john` should be able to apply the password guess in the one file to the hashed version of the password in the other file and tell us that the guess is correct.
 
 The file containing the username and hashed password pair is called `sanitycheck.password.txt`. It contains one line that looks like this:
 
@@ -470,12 +471,25 @@ In a `passwd` file, the seven fields, from left to right, are:
 
 These plain text files are not the only way a system might store this kind of information, but it was one of the first methods designed, is among the simplest, and is often still used. Other places to store equivalent information includes more complex locally-stored databases (often in [Berkeley DB](https://en.wikipedia.org/wiki/Berkeley_DB) file format) or network-accessible directories. On a typical Unix-like system, the [`nsswitch.conf(5)`](https://linux.die.net/man/5/nsswitch.conf) file determines which sources are consulted, and in which order. Other systems use different methods. (If you're on a macOS computer, look into [Apple Open Directory](https://en.wikipedia.org/wiki/Apple_Open_Directory) ([`opendirectoryd(8)`](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/opendirectoryd.8.html)), while Windows users could explore the [Security Account Manager](https://en.wikipedia.org/wiki/Security_Account_Manager).)
 
+## Hash algorithms
+
+Over the years, [many different *hash algorithms* (or "*hash functions*") have been devised](https://valerieaurora.org/hash.html). You can think of a hash algorithm as a mathematical "recipe" that describes how to produce output with [certain cryptographic properties](https://en.wikibooks.org/wiki/Cryptography/Hashes) from any given input. Moreover, the recipe must be able to deal with *any* arbitrary input and must yield the exact same output when given the same input. Hashing algorithms must be deterministic.
+
+Most hash algorithms yield output of a fixed size (such as the aging [MD5](https://en.wikipedia.org/wiki/MD5), [SHA-1](https://en.wikipedia.org/wiki/SHA-1), and [SHA-2](https://en.wikipedia.org/wiki/SHA-2) family of algorthms). Some newer algorithms can be directed to produce any amount of output you like (such as [SHA-3](https://en.wikipedia.org/wiki/SHA-3) and [Skein](https://en.wikipedia.org/wiki/Skein_%28hash_function%29)). A hash algorithm's output is alternately called a *digest*, *hash value*, or more simply, just a *hash*.
+
+The act of taking some data and performing the steps of a given hash algorithm on that data is called *hashing*. Your laptop may already have some built-in tools you can use to create hashes. Since you can hash any data you like, it's very easy to create a hashed version of a password. To make the hash in this sanity check, I used [the `shasum(1)` command](https://linux.die.net/man/1/shasum) on a GNU/Linux system:
+
+```sh
+$ echo -n "Sup3rs3kr3tP@24431w0rd" | shasum --algorithm 1> ced91977849c44fd009ba437c14c1b74f632fae6  -
+```
+
+Similarly, Windows users can use [Notepad](https://en.wikipedia.org/wiki/Microsoft_Notepad) and a utility called the [File Checksum Integrity Verifier](http://support.microsoft.com/kb/841290) to create SHA-1 hashes.
+
+Different hash algorithms have different properties. Some can be computed extraordinarily quickly (MD5 and SHA-1 fall into this category). Others were take far longer to compute, and yet others were intentionally designed to be used to hash passwords or password-like data (such as [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2), [scrypt](https://en.wikipedia.org/wiki/Scrypt), and [Argon2](https://en.wikipedia.org/wiki/Argon2)). This makes some hash algorithms more useful for specific purposes than others. For instance, if you are trying to protect password hashes from hash crackers, you should use an algorithm that takes a comparitively long time to compute in order to force password crackers to spend more computing power (and thus time) to crack the hash; the functions designed specifically for password-hashing are your best choices, here.
+
+Unfortunately for users, and fortunately for password crackers, many systems still don't properly protect user passwords. They choose bad hashing algorithms (i.e., hash functions that run quickly), improperly handle the user's password before the hash function is applied, and in the worst cases simply don't bother hashing the password at all! One sure-fire way to recognize the latter case is when a website or service simply emails your password back to you when you use its "I forgot my password" feature; if the service can email you the password you used in plain text, it means they never bothered hashing your password in the first place. Yikes!
+
 ## Hash string formats
-> :beginner: It's very easy to create a hashed version of a password, or any content, such as an arbitrary file. To make the hash in this sanity check, I used [the `shasum(1)` command](https://linux.die.net/man/1/shasum) on a GNU/Linux system:
->
-> ```sh> $ echo -n "Sup3rs3kr3tP@24431w0rd" | shasum --algorithm 1> ced91977849c44fd009ba437c14c1b74f632fae6  -> ```
-> 
-> Similarly, Windows users can use [Notepad](https://en.wikipedia.org/wiki/Microsoft_Notepad) and a utility called the [File Checksum Integrity Verifier](http://support.microsoft.com/kb/841290).2
 
 Tyrell Wellick's account password hash value is not *merely* a hash algorithm's output. The raw hash output is there, yes, but it's stored along with some additional metadata that has been prepended as part of a longer *hash string*. The full hash string for Tyrell's password in the `shadow` file is:
 
