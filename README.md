@@ -13,6 +13,8 @@ This repository is (generally) organized in the following way:
     * *`<subproject name>/`* folder housing files related to a particular subproject
         * `README.md` file describing the subproject itself
 
+Some projects are included as [Git submodules](https://git-scm.com/book/en/Git-Tools-Submodules), so use [`git clone --recursive`](http://explainshell.com/explain?cmd=git+clone+--recursive) when cloning.
+
 # Nomenclature
 
 You may encounter the following icons throughout these texts:
