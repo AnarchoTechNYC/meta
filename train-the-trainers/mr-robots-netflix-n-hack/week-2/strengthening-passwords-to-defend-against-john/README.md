@@ -17,6 +17,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     1. [Crack session preparation](#crack-session-preparation)
     1. [Your first crack](#your-first-crack)
     1. [Better wordlists](#better-wordlists)
+    1. [Word mangling rules](#word-mangling-rules)
 1. [Discussion](#discussion)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
     * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
@@ -430,13 +431,84 @@ If you found and loaded useful wordlists, you will have cracked a couple more ha
 
 **If *your* password has any meaningful relationship to things like the provider or purpose of your account, you can now see how easy it would be to guess.** In particular, notice that these guesses are not guesses about *you*, but rather about passwords *generally*. Moreover, notice also that even though your specific *account* may never have been hacked, an attacker may already have your *password* in a dictionary waiting to be used just because someone else once used the same password elsewhere that you're using for one of your own accounts. Since *their* password ended up in a cracking dictionary, your account is now also at risk through no direct fault of your own.
 
-> :beginner: :bulb: This is one of the many ways your personal security and privacy is partly dependent on the actions of others, outside of your immediate control. Professionals call this a "networked" or sometimes a "systems" problem, because inputs to one part of a networked system cause ripples that affect its other parts. Put more plainly, if you truly want to secure yourself and your privacy, you have to help your family and friends do the same for themselves, and on top of that you also all have to work together to do protect and respect each other.
+> :beginner: :bulb: This is one of the many ways your personal security and privacy is partly dependent on the actions of others, outside of your immediate control. Professionals call this a "networked" or sometimes a "systems" problem, because inputs to one part of a networked system cause ripples that affect its other parts. Put more plainly, if you truly want to secure yourself and your privacy, you have to help your family and friends do the same for themselves, and on top of that you also all have to work together to protect and respect each other.
 
-At this point, you could log on to Evil Corp's corporate mail server as a number of different users thanks to the smarter guesses in the better wordlists you used during your dictionary attacks. Unfortunately, it's still unlikely that you'll have cracked Tyrell Wellick's password (unless one of the wordlists you used included his exact password, of course). Regardless, there are still a number of passwords left to crack, which requires us to guess passwords (or "explore the search space") more algorithmically.
+At this point, you could log on to Evil Corp's corporate mail server as a number of different users thanks to the smarter guesses in the better wordlists you used during your dictionary attacks. Unfortunately, it's still unlikely that you'll have cracked Tyrell Wellick's password (unless one of the wordlists you used included his exact password, of course). Regardless, there are still a number of passwords left to crack, which requires us to guess passwords (or "explore the search space") more algorithmically. This will make it possible to "automatically" find passwords that are similar to but not exactly matching the guesses in our wordlist.
 
 ## Word mangling rules
 
-Most good hash cracking tools provide a built-in facility for the purpose of algorithmically making smart password guesses based on other likely passwords. JtR calls this facility *word mangling*, and it lets you instruct `john` to modify words in your wordlist in arbitrary ways by writing *word mangling rules*. Using these rules in conjunction with a wordlist to guess passwords is called a *rule-based attack*.
+Most good hash cracking tools provide a built-in facility for the purpose of algorithmically making smart password guesses based on other likely passwords. JtR calls this facility *word mangling*, and it lets you tell `john` how to modify words in your wordlist in arbitrary ways by writing word mangling *rules*. Using these rules in conjunction with a wordlist to guess passwords is called a *rule-based attack*.
+
+To make things easier, John the Ripper comes pre-configured with numerous word mangling *rulesets*, which are groups of word mangling rules useful for specific attack purposes and organized into named sections. Of course, you can also write your own rules for your own purposes. But first, let's have a look at JtR's built-in rules and how to use them.
+
+Recall that our "sanity check" wordlist contains four password candidates:
+
+```sh
+$ cat sanitycheck.wordlist.txt
+randomGuess
+alsoWrong
+Sup3rs3kr3tP@24431w0rd
+someotherword
+```
+
+We can ask `john` to show us all the password candidates it will guess by invoking it with the `--stdout` option *instead* of a file with password hashes in it. Running `john` this way with our `sanitycheck.wordlist.txt` file as the input wordlist should show a report like the following:
+
+```sh
+$ ./john --wordlist=sanitycheck.wordlist.txt --stdout
+randomGuess
+alsoWrong
+Sup3rs3kr3tP@24431w0rd
+someotherword
+words: 4  time: 0:00:00:00 DONE (Sat Apr  1 15:53:29 2017)  w/s: 80.00  current: someotherword
+```
+
+Note that `john` correctly reports there are four password candidates ("`words: 4`"). However, the purpose of a word mangling ruleset is to take this list of "likely" password candidates and mutate each entry in pre-defined ways such that each single entry produces multiple guesses that are similar but not exactly the same as each original guess in the wordlist. This way, we can more elegantly express ideas like "add a `1` to the end of every guess." For instance, look at the list of guesses (which I've truncated in the output below) and the ultimate report `john` gives us after invoking it with the same wordlist (`--wordlist=sanitycheck.wordlist.txt`) *and* its `--rules` option:
+
+```sh
+$ ./john --wordlist=sanitycheck.wordlist.txt --rules --stdout
+randomGuess
+alsoWrong
+Sup3rs3kr3tP@24431w0rd
+someotherword
+randomguess
+alsowrong
+Randomguess
+Alsowrong
+Someotherword
+randomguesses
+alsowrongs
+someotherwords
+randomguess1
+alsowrong1
+someotherword1
+Randomguess1
+Alsowrong1
+Someotherword1
+# …many more combinations omitted for length…
+8randomguess
+8alsowrong
+8someotherword
+Randomguesses
+Alsowrongs
+Someotherwords
+randomguessed
+alsowrongged
+someotherworded
+randomguessing
+alsowrongging
+someotherwording
+Randomguessed
+Alsowrongged
+Someotherworded
+Randomguessing
+Alsowrongging
+Someotherwording
+words: 151  time: 0:00:00:00 DONE (Sat Apr  1 16:07:03 2017)  w/s: 2516  current: Someotherwording
+```
+
+This time, `john` produced 151 password candidates even though the input wordlist file still only contains four words. You can also see the 147 new guesses are based on the original four: common English-language suffixes (like `ed` and `ing`) have been added, letter case has been changed or normalized, and single digits have been appended or prepended. All of these changes are described by word mangling rules written inside a *configuration file* in `john`'s `run` folder, called `john.conf`, that `john` loaded automatically each time you invoked it.
+
+> :construction: By default, a combination of `--wordlist` and `--rules` will load the mangling rules in the `List.Rules:Wordlist` section of the configuration file.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
