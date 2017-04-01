@@ -146,7 +146,7 @@ someotherword
 
 Each guess is written on its own line. We call each guess a *word*, even if there are multiple human-language words on a single line. We call the whole file a *wordlist*, or sometimes a *dictionary* (because it is a "list of words," of course).
 
-When we give the wordlist to `john`, what we're doing is asking `john` to hash each of these "words" one at a time and then compare the resulting hash value to the hash value stored in the password file. When `john` finds a word in the wordlist that hashes to the same hash value as the hashed password, it will tell us that it found a match. When we find a matching value, we say we have "*cracked* the hash."
+When we give the wordlist to `john`, what we're doing is asking `john` to hash each of these "words" one at a time and then compare the resulting hash value to the hash value stored in the password file. When `john` finds a word in the wordlist that hashes to the same hash value as the hashed password, it will tell us that it found a match. When we find a matching value, we say we have "*cracked* the hash." We call this technique a *dictionary attack*.
 
 If `john` is working correctly, we can expect that the third word in the wordlist, `Sup3rs3kr3tP@24431w0rd`, will result in a match. If that guess were missing (as it is in the `sanitycheck.no-crack.wordlist.txt` file), we would expect to see `john` report its failure to find any matches.
 
@@ -428,7 +428,15 @@ All of these observations are going to be helpful to us in making smarter guesse
 
 If you found and loaded useful wordlists, you will have cracked a couple more hashes by now. Congratulations, you are now a [*1337 h4x0r*](https://www.urbandictionary.com/define.php?term=1337%20h4x0r)! You may also notice some relationships between the revealed passwords, the users who chose them, and their user accounts; people's cracked passwords often reflect little insights about who they are or what they're like.
 
-**If *your* password has any meaningful relationship to things like who you are or what you use your account for you can now see how easy it would be to guess.** In particular, notice that these guesses are not guesses about *you*, but rather about passwords *generally*. Moreover, notice also that even though your specific *account* may never have been hacked, an attacker may already have your *password* just because someone else once used the same password elsewhere, even on a site you may not have even heard of before. Since *their* hacked account password ended up in a cracking dictionary, your account is now also at risk.
+**If *your* password has any meaningful relationship to things like the provider or purpose of your account, you can now see how easy it would be to guess.** In particular, notice that these guesses are not guesses about *you*, but rather about passwords *generally*. Moreover, notice also that even though your specific *account* may never have been hacked, an attacker may already have your *password* in a dictionary waiting to be used just because someone else once used the same password elsewhere that you're using for one of your own accounts. Since *their* password ended up in a cracking dictionary, your account is now also at risk through no direct fault of your own.
+
+> :beginner: :bulb: This is one of the many ways your personal security and privacy is partly dependent on the actions of others, outside of your immediate control. Professionals call this a "networked" or sometimes a "systems" problem, because inputs to one part of a networked system cause ripples that affect its other parts. Put more plainly, if you truly want to secure yourself and your privacy, you have to help your family and friends do the same for themselves, and on top of that you also all have to work together to do protect and respect each other.
+
+At this point, you could log on to Evil Corp's corporate mail server as a number of different users thanks to the smarter guesses in the better wordlists you used during your dictionary attacks. Unfortunately, it's still unlikely that you'll have cracked Tyrell Wellick's password (unless one of the wordlists you used included his exact password, of course). Regardless, there are still a number of passwords left to crack, which requires us to guess passwords (or "explore the search space") more algorithmically.
+
+## Word mangling rules
+
+Most good hash cracking tools provide a built-in facility for the purpose of algorithmically making smart password guesses based on other likely passwords. JtR calls this facility *word mangling*, and it lets you instruct `john` to modify words in your wordlist in arbitrary ways by writing *word mangling rules*. Using these rules in conjunction with a wordlist to guess passwords is called a *rule-based attack*.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
