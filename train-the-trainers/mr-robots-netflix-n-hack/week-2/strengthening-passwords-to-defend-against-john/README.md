@@ -25,7 +25,6 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     * [Hash string formats](#hash-string-formats)
     * [Salted versus unsalted hashes](#salted-versus-unsalted-hashes)
     * [Characteristics of a good password cracking wordlist](#characteristics-of-a-good-password-cracking-wordlist)
-    * [Calculating password strength](#calculating-password-strength)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -349,7 +348,7 @@ Loaded 21 password hashes with 21 different salts (sha512crypt [64/64])
 guesses: 0  time: 0:00:00:00 DONE (Wed Mar 15 19:58:29 2017)  c/s: 48.00  trying: randomGuess - someotherword
 ```
 
-Unsurprisingly, `john` immedaitely reports failure. Careful readers will also notice that `john` reports it has "`Loaded 21 password hashes`" but notes they have been loaded "`with 21 different salts`." Thanks, `john`.
+Unsurprisingly, `john` immediately reports failure. Careful readers will also notice that `john` reports it has "`Loaded 21 password hashes`" but notes they have been loaded "`with 21 different salts`." Thanks, `john`.
 
 The reason why we failed is simple: there are only four guesses in our sanity check wordlist, while the number of possible guesses (the search space we need to attack) is in the zillions upon zillions. Clearly, we need to at least make more than four guesses; we need a bigger wordlist. Moreover, we need a *smart* wordlist, not just any list of words.
 
@@ -624,14 +623,10 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 
 [A blog post by g0tmi1k about what makes a password cracking wordlist "good"](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
 
-## Calculating password strength
-
-:construction: TK-TODO
-
-[A couple tricks for password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
-
 # Additional references
 
 * [Ars Technica: How I became a password cracker](https://arstechnica.com/security/2013/03/how-i-became-a-password-cracker/)
 * [Password Haystacks: How Well-Hidden is Your Needle?](https://www.grc.com/haystack.htm)
 * [Hashcat: Advanced Password Recovery](https://hashcat.net/) - a popular alternative to John the Ripper
+* [Making password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
+
