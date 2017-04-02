@@ -24,6 +24,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     * [Hash algorithms](#hash-algorithms)
     * [Hash string formats](#hash-string-formats)
     * [Salted versus unsalted hashes](#salted-versus-unsalted-hashes)
+    * [Characteristics of a good password cracking wordlist](#characteristics-of-a-good-password-cracking-wordlist)
     * [Calculating password strength](#calculating-password-strength)
 1. [Additional references](#additional-references)
 
@@ -439,7 +440,7 @@ At this point, you could log on to Evil Corp's corporate mail server as a number
 
 Most good hash cracking tools provide a built-in facility for the purpose of algorithmically making smart password guesses based on other likely passwords. JtR calls this facility *word mangling*, and it lets you tell `john` how to modify words in your wordlist in arbitrary ways by writing word mangling *rules*. Using these rules in conjunction with a wordlist to guess passwords is called a *rule-based attack*.
 
-To make things easier, John the Ripper comes pre-configured with numerous word mangling *rulesets*, which are groups of word mangling rules useful for specific attack purposes and organized into named sections. Of course, you can also write your own rules for your own purposes. But first, let's have a look at JtR's built-in rules and how to use them.
+To make things easier, John the Ripper comes pre-configured with numerous *rulesets*, which are groups of word mangling rules useful for specific attack purposes and organized into named sections. Of course, you can also write your own individual rules or whole rulesets for your own purposes. Before we do that, let's first have a look at JtR's built-in rules and how to use them.
 
 Recall that our "sanity check" wordlist contains four password candidates:
 
@@ -451,7 +452,7 @@ Sup3rs3kr3tP@24431w0rd
 someotherword
 ```
 
-We can ask `john` to show us all the password candidates it will guess by invoking it with the `--stdout` option *instead* of a file with password hashes in it. Running `john` this way with our `sanitycheck.wordlist.txt` file as the input wordlist should show a report like the following:
+We can ask `john` to show us all the password candidates it will guess by invoking it with the `--stdout` option *instead* of a file with password hashes in it. Running `john` this way, with our `sanitycheck.wordlist.txt` file as the input wordlist, will show a report like the following:
 
 ```sh
 $ ./john --wordlist=sanitycheck.wordlist.txt --stdout
@@ -462,7 +463,7 @@ someotherword
 words: 4  time: 0:00:00:00 DONE (Sat Apr  1 15:53:29 2017)  w/s: 80.00  current: someotherword
 ```
 
-Note that `john` correctly reports there are four password candidates ("`words: 4`"). However, the purpose of a word mangling ruleset is to take this list of "likely" password candidates and mutate each entry in pre-defined ways such that each single entry produces multiple guesses that are similar but not exactly the same as each original guess in the wordlist. This way, we can more elegantly express ideas like "add a `1` to the end of every guess." For instance, look at the list of guesses (which I've truncated in the output below) and the ultimate report `john` gives us after invoking it with the same wordlist (`--wordlist=sanitycheck.wordlist.txt`) *and* its `--rules` option:
+Here, `john` correctly reports there are four password candidates ("`words: 4`"). The purpose of a word mangling ruleset is to take this list of "likely" password candidates and mutate each entry in some pre-defined ways. Each mutation's result is then used as a password candidate, as though it were part of the original wordlist. This way, we can more elegantly express patterns in our guesses, by encoding ideas like "add a `1` to the end of every guess" as a word mangling rule. For instance, look at the following list of guesses (which I've truncated for readability purposes) and the ultimate report `john` gives us after invoking it with the same wordlist (`--wordlist=sanitycheck.wordlist.txt`) *and* its `--rules` option:
 
 ```sh
 $ ./john --wordlist=sanitycheck.wordlist.txt --rules --stdout
@@ -506,9 +507,32 @@ Someotherwording
 words: 151  time: 0:00:00:00 DONE (Sat Apr  1 16:07:03 2017)  w/s: 2516  current: Someotherwording
 ```
 
-This time, `john` produced 151 password candidates even though the input wordlist file still only contains four words. You can also see the 147 new guesses are based on the original four: common English-language suffixes (like `ed` and `ing`) have been added, letter case has been changed or normalized, and single digits have been appended or prepended. All of these changes are described by word mangling rules written inside a *configuration file* in `john`'s `run` folder, called `john.conf`, that `john` loaded automatically each time you invoked it.
+This time, `john` produced 151 password candidates even though the input wordlist file still only contains four words. You can see the unmodified wordlist echoed as the first four candidates, and you can see the 147 new guesses are clearly based on those original four words: common English-language suffixes (like `ed` and `ing`) have been added, letter case has been changed or normalized, and single digits have been appended or prepended. All of these changes are described by word mangling rules written inside a *configuration file* in `john`'s `run` folder, named `john.conf`, that `john` loaded automatically each time you invoked it.
 
-> :construction: By default, a combination of `--wordlist` and `--rules` will load the mangling rules in the `List.Rules:Wordlist` section of the configuration file.
+> :beginner: :computer: Configuration files are a common way that command line programs describe application preferences or allow a user to customize a program's options that they want to use, so you can think of a configuration file as analogous to a graphical program's Preferences, Settings, or Options screen. Configuration files are almost always plain text files structured in well-defined ways that the program they are intended to configure is pre-programmed to expect. Confusingly, there are many syntactic and stylistic differences between one program's configuration file structure and another's, despite many attempts at standardization over the years. Not even the filename extension is standardized, although extensions like `.conf`, `.config`, `.cfg`, and `.ini` are among the most common.
+> 
+> :bulb: A full discussion of John the Ripper's configuration file is beyond the scope of this exercise, but see the `doc/CONFIG` file in the official JtR source distribution for more information about customizing `john`'s behavior.
+
+To see why *these* specific candidates were constructed from the input wordlist, we can examine the specific rules `john` applied to them. By default, when you invoke `john` with a combination of the `--wordlist` and `--rules` options, it will load the mangling rules in the "`Wordlist`" section of the `john.conf` file. In my copy of `john.conf`, this section header is at line 338 of the file and it begins like this:
+
+```
+# Wordlist mode rules
+[List.Rules:Wordlist]
+# Try words as they are
+:
+# Lowercase every pure alphanumeric word
+-c >3 !?X l Q
+# Capitalize every pure alphanumeric word
+-c (?a >2 !?X c Q
+# Lowercase and pluralize pure alphabetic words
+<* >2 !?A l p
+# Lowercase pure alphabetic words and append '1'
+<* >2 !?A l $1
+# Capitalize pure alphabetic words and append '1'
+-c <* >2 !?A c $1
+```
+
+These lines show JtR's specific syntax for a named section header (the `[List.Rules:Wordlist]` part), and some word mangling rules themselves (lines like `-c >3 !?X l Q` and `<* >2 !?A l $1`). Each rule is a single line, and each line is composed of JtR's own miniature language to describe mangling operations. Fortunately, the author of this configuration file included English-language descriptions of what each rule actually does as a comment before each one.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
