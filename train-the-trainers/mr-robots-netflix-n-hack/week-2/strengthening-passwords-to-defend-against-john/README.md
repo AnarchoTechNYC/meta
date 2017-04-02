@@ -437,9 +437,9 @@ At this point, you could log on to Evil Corp's corporate mail server as a number
 
 ## Word mangling rules
 
-Most good hash cracking tools provide a built-in facility for the purpose of algorithmically making smart password guesses based on other likely passwords. JtR calls this facility *word mangling*, and it lets you tell `john` how to modify words in your wordlist in arbitrary ways by writing word mangling *rules*. Using these rules in conjunction with a wordlist to guess passwords is called a *rule-based attack*.
+Most good hash cracking tools provide a built-in facility for the purpose of algorithmically making smart password guesses based on other likely passwords. JtR calls this facility *word mangling*, and it lets you tell `john` how to modify words in your wordlist in arbitrary ways by writing *wordlist rules*. Using these rules in conjunction with a wordlist to guess passwords is called a *rule-based attack*.
 
-To make things easier, John the Ripper comes pre-configured with numerous *rulesets*, which are groups of word mangling rules useful for specific attack purposes and organized into named sections. Of course, you can also write your own individual rules or whole rulesets for your own purposes. Before we do that, let's first have a look at JtR's built-in rules and how to use them.
+To make things easier, John the Ripper comes pre-configured with numerous *rule sections* (or "rulesets"), which are named groups of word mangling rules useful for specific attack purposes. Of course, you can also write your own individual rules or whole rulesets for your own purposes. Before we do that, let's first have a look at JtR's built-in rules and how to use them.
 
 Recall that our "sanity check" wordlist contains four password candidates:
 
@@ -512,7 +512,7 @@ This time, `john` produced 151 password candidates even though the input wordlis
 > 
 > :bulb: A full discussion of John the Ripper's configuration file is beyond the scope of this exercise, but see the `doc/CONFIG` file in the official JtR source distribution for more information about customizing `john`'s behavior.
 
-To see why *these* specific candidates were constructed from the input wordlist, we can examine the specific rules `john` applied to them. By default, when you invoke `john` with a combination of the `--wordlist` and `--rules` options, it will load the mangling rules in the "`Wordlist`" section of the `john.conf` file. In my copy of `john.conf`, this section header is at line 338 of the file and it begins like this:
+To see why these specific candidates were generated from the original words, we can examine the specific wordlist rules `john` applied to them. By default, when you invoke `john` with a combination of the `--wordlist` and `--rules` options, it will load the mangling rules in the "`Wordlist`" section of the `john.conf` file. In my copy of `john.conf`, this section header is at line 338 of the file and it begins like this:
 
 ```
 # Wordlist mode rules
@@ -531,7 +531,43 @@ To see why *these* specific candidates were constructed from the input wordlist,
 -c <* >2 !?A c $1
 ```
 
-These lines show JtR's specific syntax for a named section header (the `[List.Rules:Wordlist]` part), and some word mangling rules themselves (lines like `-c >3 !?X l Q` and `<* >2 !?A l $1`). Each rule is a single line, and each line is composed of JtR's own miniature language to describe mangling operations. Fortunately, the author of this configuration file included English-language descriptions of what each rule actually does as a comment before each one.
+These lines show JtR's specific syntax for a named section header (the `[List.Rules:Wordlist]` part), and some word mangling rules themselves (lines like `-c >3 !?X l Q` and `<* >2 !?A l $1`). Each rule is a single line, and each line is composed of JtR's own miniature language to describe mangling operations. We'll explore this language in more detail shortly. Fortunately, the author of this configuration file included English-language descriptions of what each rule actually does as a comment before each one so we can more easily match up the output of `john`'s candidate list with these rules.
+
+For instance, the very first comment and its rule in the ruleset is:
+
+```
+# Try words as they are
+:
+```
+
+In other words, "for every input word, make no changes to it." In `john`'s word mangling rule mini-language, this is written as a single colon (`:`). The existence of this first "do nothing" rule in the ruleset is why the first set of generated password candidates from our wordlist exactly match the words in the original wordlist.
+
+The second rule in the ruleset is more complex, as its comment makes clear:
+
+```
+# Lowercase every pure alphanumeric word
+-c >3 !?X l Q
+```
+
+In our original wordlist, we have three "pure alphanumeric words." These are:
+
+* `randomGuess`
+* `alsoWrong`
+* `someotherword`
+
+Note that, of these, `someotherword` is *already* lowercased, so applying this rule to this input is effectively the same as doing nothing. That is, for this input word, this rule is equivalent to the previous rule, the single colon, so no output is generated. That means this rule only actually mangles the other two words, and what it does to them is lowercase the uppercase letters in them. Sure enough, the fifth and sixth words in `john`'s generated wordlist are `randomguess` and `alsowrong`, which are lowercased variants of the same inputs.
+
+The syntax and grammar for composing word mangling rules is rich, but very terse. Each rule contains a list of mangling instructions, called *simple commands*, with an optional set of qualifiers at the start that determine whether or not to actually apply the rule to the given word, called *rule reject flags*. The first rule we saw, the single colon on its own line, is an example of a rule without any rule reject flags and consisting entirely of one simple command, which was the colon itself. Here's how the "Lowercase every pure alphanumeric word" rule breaks down:
+
+1. `-c` is a rule reject flag that tells `john` to ignore this rule for case-*in*sensitive hashing algorithms. Since the SHA-1 and the SHA-512 Crypt hashing algorithms we're working with in this lab are case-sensistive, `john` will continue to evaluate and apply the remainder of the rule.
+1. `>3` is the first simple command in the rule, and it tells `john` to mangle this word only if it has more than (`>`) three (`3`) characters. This is similar to a rule reject flag, but it operates on the input word rather than the hash type. Since all four words in our "sanity check" wordlist are longer than three characters, `john` will mangle all of them according to the instructions in the rest of this rule. 
+1. `!?X` is the second simple command in the rule, which tells `john` to mangle this word only if it contains purely alphanumeric characters. More specifically, the exclamation point (`!`) is the simple command to ignore mangling the word if that word contains a given character. The question mark (`?`) signifies a *character class*, which is a pre-defined set of characters (like "A through Z" or "0 through 9"), and the `X` immediately following the question mark means the complement of the `?x` character class, which is alphanumeric characters. Putting this together, `!?X` means "reject this word if the word contains a non-alphanumeric character," and the logical effect of this construction is to apply the rule only to input words that are purley alphanumeric. In our wordlist, this part of the rule disqualifies the word `Sup3rs3kr3tP@24431w0rd` because it contains an at-sign (`@`) character, so `john` will only apply this rule to the other three words in our wordlist.
+1. `l` (lowercase letter L) is the simple command to convert the input word to lowercase lettering.
+1. Finally, `Q` is a simple command that tells `john` to compare the result of the mutations applied and include the word in the output list of generated candidates only if it's *actually* different from the original input word. This is why `john` doesn't try guessing `someotherword` twice, which would clearly be a waste of time.
+
+> :bulb: A comprehensive overview of John the Ripper's wordlist rule syntax is beyond the scope of this exercise, but if you want a complete accounting of each reject flag and simple command that `john` understands, see the `doc/RULES` file in the official JtR source distribution for more information.
+
+:construction:
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
