@@ -18,6 +18,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     1. [Your first crack](#your-first-crack)
     1. [Better wordlists](#better-wordlists)
     1. [Word mangling rules](#word-mangling-rules)
+    1. [Writing wordlist rules](#writing-wordlist-rules)
 1. [Discussion](#discussion)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
     * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
@@ -540,7 +541,7 @@ For instance, the very first comment and its rule in the ruleset is:
 :
 ```
 
-In other words, "for every input word, make no changes to it." In `john`'s word mangling rule mini-language, this is written as a single colon (`:`). The existence of this first "do nothing" rule in the ruleset is why the first set of generated password candidates from our wordlist exactly match the words in the original wordlist.
+Said another way, "for every input word, make no changes to it." In `john`'s word mangling rule mini-language, this is written as a single colon (`:`). The existence of this first "do nothing" rule in the ruleset is why the first set of generated password candidates from our wordlist exactly match the words in the original wordlist.
 
 The second rule in the ruleset is more complex, as its comment makes clear:
 
@@ -549,7 +550,7 @@ The second rule in the ruleset is more complex, as its comment makes clear:
 -c >3 !?X l Q
 ```
 
-In our original wordlist, we have three "pure alphanumeric words." These are:
+In this wordlist, we have three "pure alphanumeric words." These are:
 
 * `randomGuess`
 * `alsoWrong`
@@ -557,13 +558,27 @@ In our original wordlist, we have three "pure alphanumeric words." These are:
 
 Note that, of these, `someotherword` is *already* lowercased, so applying this rule to this input is effectively the same as doing nothing. That is, for this input word, this rule is equivalent to the previous rule, the single colon, so no output is generated. That means this rule only actually mangles the other two words, and what it does to them is lowercase the uppercase letters in them. Sure enough, the fifth and sixth words in `john`'s generated wordlist are `randomguess` and `alsowrong`, which are lowercased variants of the same inputs.
 
-The syntax and grammar for composing word mangling rules is rich, but very terse. Each rule contains a list of mangling instructions, called *simple commands*, with an optional set of qualifiers at the start that determine whether or not to actually apply the rule to the given word, called *rule reject flags*. The first rule we saw, the single colon on its own line, is an example of a rule without any rule reject flags and consisting entirely of one simple command, which was the colon itself. Here's how the "Lowercase every pure alphanumeric word" rule breaks down:
+The syntax and grammar for composing word mangling rules is rich, but very terse. Each rule contains a list of mangling instructions, called *simple commands* (separated by spaces to make the whole rule slightly more human-readable), with an optional set of qualifiers at the start that determine whether or not to actually apply the rule to the given word, called *rule reject flags*. The first rule we saw, the single colon on its own line, is an example of a rule without any rule reject flags and consisting entirely of one simple command, which was the colon itself. Here's how the "Lowercase every pure alphanumeric word" rule breaks down:
 
 1. `-c` is a rule reject flag that tells `john` to ignore this rule for case-*in*sensitive hashing algorithms. Since the SHA-1 and the SHA-512 Crypt hashing algorithms we're working with in this lab are case-sensistive, `john` will continue to evaluate and apply the remainder of the rule.
 1. `>3` is the first simple command in the rule, and it tells `john` to mangle this word only if it has more than (`>`) three (`3`) characters. This is similar to a rule reject flag, but it operates on the input word rather than the hash type. Since all four words in our "sanity check" wordlist are longer than three characters, `john` will mangle all of them according to the instructions in the rest of this rule. 
 1. `!?X` is the second simple command in the rule, which tells `john` to mangle this word only if it contains purely alphanumeric characters. More specifically, the exclamation point (`!`) is the simple command to ignore mangling the word if that word contains a given character. The question mark (`?`) signifies a *character class*, which is a pre-defined set of characters (like "A through Z" or "0 through 9"), and the `X` immediately following the question mark means the complement of the `?x` character class, which is alphanumeric characters. Putting this together, `!?X` means "reject this word if the word contains a non-alphanumeric character," and the logical effect of this construction is to apply the rule only to input words that are purley alphanumeric. In our wordlist, this part of the rule disqualifies the word `Sup3rs3kr3tP@24431w0rd` because it contains an at-sign (`@`) character, so `john` will only apply this rule to the other three words in our wordlist.
 1. `l` (lowercase letter L) is the simple command to convert the input word to lowercase lettering.
 1. Finally, `Q` is a simple command that tells `john` to compare the result of the mutations applied and include the word in the output list of generated candidates only if it's *actually* different from the original input word. This is why `john` doesn't try guessing `someotherword` twice, which would clearly be a waste of time.
+
+Let's give the `--rules` option a go, and see if `john`'s pre-configured "Wordlist" ruleset gives us any more password hits.
+
+**Do this:**
+
+1. Perform a rule-based attack against the Evil Corp server's shadow file using JtR's default `password.lst` wordlist by invoking `john` with its `--rules` option.
+
+If you've invoked `john` correctly (and have not already cracked the matched passwords), this will have cracked (at least) one more Evil Corp employee's password, revealing the password belonging to the user `jeffpanessa`. You were able to crack Jeff Panessa's password despite the fact that the `password.lst` wordlist didn't include his exact password because it was nonetheless similar *enough* to a reasonable guess that could be expressed with a simple wordlist rule. This is why passwords based on any sort of patterns are not much harder to crack than passwords that are already listed in a dictionary.
+
+**If *your* password uses "clever" character substitutions, omissions, additions, or any other kind of patterned mutation, then you've just seen how easy it is for anyone else to crack.** In this way, wordlist rules can effectively and efficiently expand the size of cracking dictionaries by many orders of magnitude while simultaneously and narrowly targeting only the patterns likely to be devised and used by humans as passwords or passphrases. This makes a good wordlist, coupled with a good ruleset, an extraordinarily efficient method of exploring the search space of possible passwords.
+
+You are well on your way to cracking all of Evil Corp's mail server accounts, but Tyrell Wellick's password remains elusive. To crack the hold-outs, we're going to have use everything we've learned so far
+
+## Writing wordlist rules
 
 > :bulb: A comprehensive overview of John the Ripper's wordlist rule syntax is beyond the scope of this exercise, but if you want a complete accounting of each reject flag and simple command that `john` understands, see the `doc/RULES` file in the official JtR source distribution for more information.
 
@@ -655,9 +670,10 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 
 ## Characteristics of a good password cracking wordlist
 
-:construction: TK-TODO
+:construction: TK-TODO: How much of this should go into "Additional references"? All of it?
 
-[A blog post by g0tmi1k about what makes a password cracking wordlist "good"](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
+* [Generating Wordlists](https://netsec.ws/?p=457) - use `cewl` to generate a custom wordlist by spidering a website
+* [A blog post by g0tmi1k about what makes a password cracking wordlist "good"](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
 
 # Additional references
 
