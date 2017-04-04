@@ -18,7 +18,9 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     1. [Your first crack](#your-first-crack)
     1. [Better wordlists](#better-wordlists)
     1. [Word mangling rules](#word-mangling-rules)
-    1. [Writing wordlist rules](#writing-wordlist-rules)
+    1. [Preparing a personally targeted attack](#preparing-a-personally-targeted-attack)
+        1. [Generating custom wordlists](#generating-custom-wordlists)
+        1. [Writing wordlist rules](#writing-wordlist-rules)
 1. [Discussion](#discussion)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
     * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
@@ -513,7 +515,7 @@ This time, `john` produced 151 password candidates even though the input wordlis
 > 
 > :bulb: A full discussion of John the Ripper's configuration file is beyond the scope of this exercise, but see the `doc/CONFIG` file in the official JtR source distribution for more information about customizing `john`'s behavior.
 
-To see why these specific candidates were generated from the original words, we can examine the specific wordlist rules `john` applied to them. By default, when you invoke `john` with a combination of the `--wordlist` and `--rules` options, it will load the mangling rules in the "`Wordlist`" section of the `john.conf` file. In my copy of `john.conf`, this section header is at line 338 of the file and it begins like this:
+To see why these specific candidates were generated from the original words, we can examine the specific wordlist rules `john` applied to them. By default, when you invoke `john` with a combination of the `--wordlist` and `--rules` options, it will load the mangling rules in the "`Wordlist`" section of the `john.conf` file. You can achieve the same effect while being more explicit by specifying the name of the section you want load rules from, as in `--rules=Wordlist`. In my copy of `john.conf`, this section header is at line 338 of the file and it begins like this:
 
 ```
 # Wordlist mode rules
@@ -572,17 +574,33 @@ Let's give the `--rules` option a go, and see if `john`'s pre-configured "Wordli
 
 1. Perform a rule-based attack against the Evil Corp server's shadow file using JtR's default `password.lst` wordlist by invoking `john` with its `--rules` option.
 
-If you've invoked `john` correctly (and have not already cracked the matched passwords), this will have cracked (at least) one more Evil Corp employee's password, revealing the password belonging to the user `jeffpanessa`. You were able to crack Jeff Panessa's password despite the fact that the `password.lst` wordlist didn't include his exact password because it was nonetheless similar *enough* to a reasonable guess that could be expressed with a simple wordlist rule. This is why passwords based on any sort of patterns are not much harder to crack than passwords that are already listed in a dictionary.
+If you've invoked `john` correctly (and have not already cracked the matched passwords), this will have cracked (at least) one more Evil Corp employee's password, revealing the password belonging to the user `jeffpanessa`. You were able to crack Jeff Panessa's password hash despite the fact that the `password.lst` wordlist didn't include his exact password because it was nonetheless similar enough to a reasonable guess that could be expressed with a simple wordlist rule. This is why passwords based on common patterns or widely-used variations are not much harder to crack than passwords that are already listed in a dictionary; not only may dictionaries that include the exact password be available to attackers, mangling rules that mutate the words in these dictionaries may have already been written for attackers to use.
 
-**If *your* password uses "clever" character substitutions, omissions, additions, or any other kind of patterned mutation, then you've just seen how easy it is for anyone else to crack.** In this way, wordlist rules can effectively and efficiently expand the size of cracking dictionaries by many orders of magnitude while simultaneously and narrowly targeting only the patterns likely to be devised and used by humans as passwords or passphrases. This makes a good wordlist, coupled with a good ruleset, an extraordinarily efficient method of exploring the search space of possible passwords.
+**If *your* password uses character substitutions, omissions, additions, or other kinds of common variations on a theme, then you've just seen how easy it is for anyone else to crack.** In this way, wordlist rules can effectively and efficiently expand the size of cracking dictionaries by many orders of magnitude while simultaneously and narrowly targeting only the patterns likely to be devised and used by humans as passwords. This makes rule-based attacks (i.e., using a good wordlist coupled with a good ruleset) an extremely good way to "make smarter guesses sooner" and crack more passwords faster.
 
-You are well on your way to cracking all of Evil Corp's mail server accounts, but Tyrell Wellick's password remains elusive. To crack the hold-outs, we're going to have use everything we've learned so far
+You are now well on your way to cracking all the passwords used with Evil Corp's mail server accounts, but Tyrell Wellick's password remains elusive. This simply means you don't yet have his password in a wordlist, or don't yet have something close enough to it that the wordlist rules you've used can be expanded to. To crack his password, we'll have to prepare a more targeted password cracking attack.
 
-## Writing wordlist rules
+## Preparing a personally targeted attack
+
+As you've seen, most password hashes can be cracked en-masse. Attackers don't need to target specific individuals to easily crack most account passwords most of the time; you don't need to be particularly "interesting" of a person or be doing something particularly "important" for your account to be targeted and your password cracked. Indeed, the passwords used in this exercise that you've cracked so far are not wildly divergent from real passwords that real people use with their real accounts in real life.
+
+Nevertheless, some passwords will remain elusive. In most cases, that's because these passwords reference *personally identifiable information*, often abbreviated to *PII* by cybersecurity professionals and password crackers alike. PII most directly refers to a person's name, birthday, or private information like a social security number or bank account, but can also refer to any personally meaningful dates like graduations or anniversaries, names of friends, family members, or pets, childhood addresses, schools, workplaces, or other institutions with which the person is or was affiliated, and so on.
+
+Sometimes, personally identifiable information makes its way into wordlists. For example, you may have come across downloadable wordlists of common names in numerous languages when searching for [better wordlists](#better-wordlists) earlier in this exercise. (If you haven't and you wanna try cracking a few more passwords, give that a shot!) Other times, particularly if you're targeting a specific individual, you may have better luck by generating your own wordlist based on your target's publicly available (or less-legally acquired) personal information.
+
+Since we're specifically going after Tyrell Wellick's account, we're more likely to guess his password correctly if we do our research about him, as an individual. We'll do this in two phases. First, we'll make a custom wordlist specifically for targeting Tyrell Wellick's passwords and then, if we still can't crack his password, we'll write our own wordlist rules to generate more guesses based on patterns we think he's likely to have used.
+
+### Writing custom wordlists
+
+:construction:
+
+### Writing wordlist rules
+
+:construction:
 
 > :bulb: A comprehensive overview of John the Ripper's wordlist rule syntax is beyond the scope of this exercise, but if you want a complete accounting of each reject flag and simple command that `john` understands, see the `doc/RULES` file in the official JtR source distribution for more information.
 
-:construction:
+To crack these remaining passwords, we're going to have to use everything we've learned about password cracking so far.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
