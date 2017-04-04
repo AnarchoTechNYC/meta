@@ -27,7 +27,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     * [Hash algorithms](#hash-algorithms)
     * [Hash string formats](#hash-string-formats)
     * [Salted versus unsalted hashes](#salted-versus-unsalted-hashes)
-    * [Characteristics of a good password cracking wordlist](#characteristics-of-a-good-password-cracking-wordlist)
+    * [Generating custom wordlists automatically](#generating-custom-wordlists-automatically)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -653,25 +653,26 @@ This gives us the seeds of a good wordlist, but what else can we find out about 
     * Who are the 5 most popular Dutch musicians in Tyrell's favorite musical style?
     * What is Tyrell's wife's birthdate?
     * What is Tyrell's wife's maiden name?
-    * From what school did Tyrell's wife's graduate?
+    * From what school did Tyrell's wife graduate?
     * What is the name of the gym that Tyrell's friends visit?
     * Who is Tyrell's father's favorite poet?
     * What are the online handles (usernames) of the KDE developers?
 
     Include your answers, and any additional word associations you can come up with, in your wordlist.
-1. Repeat steps 3 through 6 with the people and things closet to Tyrell's life. For instance, perform the same process for Joanna Wellick, Tyrell's wife, his boss, and anyone or anything else you feel is fruitful.
+1. Repeat steps 3 through 6 with the people and things closest to Tyrell's life. For instance, perform the same process for Joanna Wellick, Tyrell's wife, his boss, and anyone or anything else you feel is fruitful.
     * You can continue manually curating your wordlist for as long as you like, but for the purposes of this exercise you needn't continue beyond two to three hundred guesses.
 1. Save your wordlist with a meaningful name (such as `tyrellwellick.wordlist.txt`) inside `john`'s `run` folder.
-1. Perform a dictionary attack using your new wordlist against the Evil Corp server's shadow file.
 
-Unless your guesses were remarkably intuitive, or the passwords you're trying to crack were exceptionally bad, it's not very likely that you've had cracked any new hashes just by manually creating a small wordlist like this, but it never hurts to try. More usefully, you now have the seeds of a highly targeted rule-based attack. Since John the Ripper ships with some default wordlist rules, and since your wordlist is (probably) relatively small, it's worth trying a quick rule-based attack to expand your guesses to some very common variations.
+> :beginner: :bulb: As you can imagine, this process is highly automatable. While there is of course no substitute for human judgement and intuition, a good deal of the tedium can be removed by using a tool like [CeWL, the Custom Wordlist generator](https://digi.ninja/projects/cewl.php). The `cewl` program is a command-line utility that crawls a website you specify and generates a wordlist of all the unique words, email addresses, and other metadata published on it. See the [Discussion](#discussion) about [generating custom wordlists automatically](#generating-custom-wordlists-automatically) for more information.
+
+Unless your guesses were remarkably intuitive, or the passwords you're trying to crack were exceptionally bad, it's not very likely that a straight dictionary attack will crack any new hashes just by manually creating a small wordlist like this. More usefully, you now have the seeds of a highly targeted rule-based attack. Since John the Ripper ships with some default wordlist rules and some of these rulesets include the exact guesses in a wordlist (and since your wordlist is still relatively small), it's worth trying a quick rule-based attack to expand your guesses to some very common variations.
 
 **Do this:**
 
-* Perform a rule-based attack using `john`'s default "`Wordlist`" ruleset using your custom wordlist against the Evil Corp sever's shadow file.
-* Perform another rule-based attack using `john`'s "`Extra`" ruleset using your custom wordlist against the Evil Corp server's shadow file. (Remember, this is done with the `--rules=Extra` option to load the wordlist rules in the section named `List.Rules:Extra`.)
+* Perform a rule-based attack using `john`'s default "`Wordlist`" ruleset using your custom wordlist against the Evil Corp sever's shadow file. Since this ruleset includes the "do nothing" wordlist rule (`:`), this also has the effect of performing a straight dictionary attack using your custom wordlist.
+* Perform another rule-based attack using `john`'s "`Extra`" ruleset using your custom wordlist against the Evil Corp server's shadow file. (Remember, this is done with the `--rules=Extra` option to load the wordlist rules in the section named `List.Rules:Extra`. Also remember that you can interrupt the cracking session by pressing the Control and `C` keys, `^C`, if `john` reports that this will take longer than you'd like to wait.)
 
-
+Although this may have cracked a couple more passwords, we can do even better by further targeting our guesses with our own wordlist rules.
 
 ### Writing wordlist rules
 
@@ -763,11 +764,10 @@ Without salting hashes, assuming we already cracked one account, we could instan
 
 Furthermore, many huge, public, free lookup databases of previously-computed (or previously-encountered) hashes and their original inputs exist online. One such popular database is at [CrackStation.net](https://crackstation.net/). These databases of precomputed hashes and their corresponding original inputs are called [rainbow tables](https://en.wikipedia.org/wiki/Rainbow_table). Some even larger rainbow tables are accessible, for a fee.
 
-## Characteristics of a good password cracking wordlist
+## Generating custom wordlists automatically
 
-:construction: TK-TODO: How much of this should go into "Additional references"? All of it?
+> :construction: TK-TODO: Briefly describe the installation and use of `cewl` and `crunch`.
 
-* [A blog post by g0tmi1k about what makes a password cracking wordlist "good"](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
 * [Generating Wordlists](https://netsec.ws/?p=457) - use `cewl` to generate a custom wordlist by spidering a website.
 * [Making a Perfect Custom Wordlist Using Crunch](https://thehacktoday.com/making-perfect-custom-wordlist-using-crunch/) - use `crunch` to automate the process of composing large wordlists, see espeically the `-t` option.
 
@@ -776,5 +776,6 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 * [Ars Technica: How I became a password cracker](https://arstechnica.com/security/2013/03/how-i-became-a-password-cracker/)
 * [Password Haystacks: How Well-Hidden is Your Needle?](https://www.grc.com/haystack.htm)
 * [Hashcat: Advanced Password Recovery](https://hashcat.net/) - a popular alternative to John the Ripper
+* [Blog post by g0tmi1k about what makes for a good password cracking wordlist](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
 * [Making password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
 
