@@ -19,7 +19,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     1. [Better wordlists](#better-wordlists)
     1. [Word mangling rules](#word-mangling-rules)
     1. [Preparing a personally targeted attack](#preparing-a-personally-targeted-attack)
-        1. [Generating custom wordlists](#generating-custom-wordlists)
+        1. [Writing custom wordlists](#writing-custom-wordlists)
         1. [Writing wordlist rules](#writing-wordlist-rules)
 1. [Discussion](#discussion)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
@@ -568,6 +568,8 @@ The syntax and grammar for composing word mangling rules is rich, but very terse
 1. `l` (lowercase letter L) is the simple command to convert the input word to lowercase lettering.
 1. Finally, `Q` is a simple command that tells `john` to compare the result of the mutations applied and include the word in the output list of generated candidates only if it's *actually* different from the original input word. This is why `john` doesn't try guessing `someotherword` twice, which would clearly be a waste of time.
 
+> :bulb: A comprehensive manual for John the Ripper's wordlist rule syntax is beyond the scope of this exercise, but if you want a complete accounting of each reject flag and simple command that `john` understands, see the `doc/RULES` file in the official JtR source distribution for more information.
+
 Let's give the `--rules` option a go, and see if `john`'s pre-configured "Wordlist" ruleset gives us any more password hits.
 
 **Do this:**
@@ -578,27 +580,102 @@ If you've invoked `john` correctly (and have not already cracked the matched pas
 
 **If *your* password uses character substitutions, omissions, additions, or other kinds of common variations on a theme, then you've just seen how easy it is for anyone else to crack.** In this way, wordlist rules can effectively and efficiently expand the size of cracking dictionaries by many orders of magnitude while simultaneously and narrowly targeting only the patterns likely to be devised and used by humans as passwords. This makes rule-based attacks (i.e., using a good wordlist coupled with a good ruleset) an extremely good way to "make smarter guesses sooner" and crack more passwords faster.
 
-You are now well on your way to cracking all the passwords used with Evil Corp's mail server accounts, but Tyrell Wellick's password remains elusive. This simply means you don't yet have his password in a wordlist, or don't yet have something close enough to it that the wordlist rules you've used can be expanded to. To crack his password, we'll have to prepare a more targeted password cracking attack.
+You are now well on your way to cracking all the passwords used with Evil Corp's mail server accounts, but Tyrell Wellick's password remains elusive. This simply means you don't yet have his password in a wordlist, or don't yet have something close enough to it that the wordlist rules you've used are expanding to. To crack his password, we'll have to prepare a more targeted password cracking attack.
 
 ## Preparing a personally targeted attack
 
-As you've seen, most password hashes can be cracked en-masse. Attackers don't need to target specific individuals to easily crack most account passwords most of the time; you don't need to be particularly "interesting" of a person or be doing something particularly "important" for your account to be targeted and your password cracked. Indeed, the passwords used in this exercise that you've cracked so far are not wildly divergent from real passwords that real people use with their real accounts in real life.
+As you've seen, most password hashes can be cracked en-masse. Attackers don't need to target specific individuals to easily crack most account passwords most of the time; you don't need to be a particularly "interesting" person or be doing something particularly "important" for your account to be targeted and your password cracked. Indeed, the passwords used in this exercise that you've cracked so far are fairly typical of real passwords that real people use with their real accounts in real life.
 
-Nevertheless, some passwords will remain elusive. In most cases, that's because these passwords reference *personally identifiable information*, often abbreviated to *PII* by cybersecurity professionals and password crackers alike. PII most directly refers to a person's name, birthday, or private information like a social security number or bank account, but can also refer to any personally meaningful dates like graduations or anniversaries, names of friends, family members, or pets, childhood addresses, schools, workplaces, or other institutions with which the person is or was affiliated, and so on.
+Nevertheless, some passwords will remain elusive even though they're not particularly complex. In most cases, that's because they reference *personally identifiable information*, often abbreviated to *PII* by cybersecurity professionals and password crackers alike. PII most directly refers to a person's name, birthday, or private information like a social security number or bank account, but can also refer to any personally meaningful information, like dates for graduations or anniversaries, names of friends, family members, or pets, childhood addresses, schools, workplaces, or other institutions with which the person is or was affiliated, and so on.
 
-Sometimes, personally identifiable information makes its way into wordlists. For example, you may have come across downloadable wordlists of common names in numerous languages when searching for [better wordlists](#better-wordlists) earlier in this exercise. (If you haven't and you wanna try cracking a few more passwords, give that a shot!) Other times, particularly if you're targeting a specific individual, you may have better luck by generating your own wordlist based on your target's publicly available (or less-legally acquired) personal information.
+Sometimes, personally identifiable information makes its way into wordlists. For example, you may have come across downloadable wordlists of common names in numerous languages when searching for [better wordlists](#better-wordlists) earlier in this exercise. (If you haven't and you want to try cracking a few more passwords, give that a shot!) Other times, particularly if you're targeting a specific individual, you may get better results by generating your own wordlist based on your target's publicly available (or less-legally acquired) personal information.
 
 Since we're specifically going after Tyrell Wellick's account, we're more likely to guess his password correctly if we do our research about him, as an individual. We'll do this in two phases. First, we'll make a custom wordlist specifically for targeting Tyrell Wellick's passwords and then, if we still can't crack his password, we'll write our own wordlist rules to generate more guesses based on patterns we think he's likely to have used.
 
 ### Writing custom wordlists
 
-:construction:
+The more you know about a person, the more likely it is that you'll be able to guess their passwords. This is simply because the nature of using passwords requires their memorization, and human brains are not good at memorizing completely random information. Quite the contrary, in fact. Humans are exceptionally good at recognizing and memorizing patterns of highly structured, and especially personally meaningful, data. That's why so many people use such easily-guessable passwords in the first place.
+
+To make a custom wordlist for targeting Tyrell Wellick, all we have to do is write down everything we think is important or related to him in some way. This should include everything from the utterly obvious, like his name and birthdate, to the far-fetched or hard to discover, like a distant relative's first job title or references to his favorite childhood lullabies, and everything in between. Naturally, we can't know all of this, but the point is to find out as much as we can and then write everything down in a plain text file, one unique item at a time.
+
+For example: we know his name is Tyrell Wellick, so we should start by including `Tyrell` and `Wellick`. We know he works for Evil Corp, so `Evil Corp` (as one "word," with the space) is a sensible third word. We might also consider `Evil` and `Corp` as the fourth and fifth words. Moreover, we know his position at the company, Senior Vice President of Technology, but since `Senior Vice President of Technology` doesn't feel like a password, we would be better off simply including `Senior`, `Vice`, `President`, and `Technology` as individual words. With just this information, we can construct a wordlist such as the following:
+
+```
+Tyrell
+Wellick
+Evil Corp
+Evil
+Corp
+Senior
+Vice
+President
+Technology
+```
+
+This is a decent start, but of course we know a lot more than just these bland facts about Tyrell. We know he's ambitious, devoting much of his time to clibming the corporate ladder at Evil Corp, so we should put ourselves in his shoes and think about what phrases he might enjoy typing every time he needs to log in to his work webmail account. This is as simple as playing a word association game with ourselves. For example, `CEO`, `power`, `rich`, `money`, `executive`, and `success` are all decent guesses because these are all things we know Tyrell Wellick aspires to have or be. Since we're also trying to crack his webmail account specifically, we should also include words like `mail`, `email`, `work`, `job`, `business`, and anything else we can associate with the purpose of his account.
+
+Further, we know that Tyrell Wellick began his career as a tech and that he prefers the K Desktop Environment ("KDE") over the alternative that Elliot prefers (GNOME). We know he is married, we know his wife's name is Joanna, we know he's Swedish, that he speaks Dutch, and so on. Some of these details are good guesses in themselves; for instance, we should definitely include `Joanna`, `Sweden`, `Dutch`, and `KDE` in our wodlist. Spending a few minutes brainstorming associations with all of these items will give us even more good guesses.
+
+This gives us the seeds of a good wordlist, but what else can we find out about Tyrell Wellick that we don't already know?
+
+> :cinema: :warning: **SPOILER ALERT.** Since Tyrell Wellick is a fictional character, you can find out a lot of information about the Mr. Robot TV show itself by performing the following exercise. If you have not yet watched the full series, this may expose you to some spoilers. As an alternative, you can simply read through this part of the exercise to get a feel for how personally-targeted attacks are constructed rather than actually performing said searches yourself until you have already watched the show.
+
+**Do this:**
+
+1. Open a new blank text document in a text editor (such as Notepad or TextEdit).
+1. Write your basic password guesses, one on each line, in the text document as you come up with them; this will become your Tyrell-specific wordlist.
+1. Use an Internet search engine to find any more details you can about Tyrell Wellick.
+1. Read articles about him or pages and profiles he's made that come up in your search.
+1. Add whatever details you encounter to the wordlist. See if you can find the answers to the following information about him:
+
+    * Where was Tyrell Wellick born?
+    * When is Tyrell Wellick's birthday?
+    * What are the names of Tyrell Wellick's parents?
+    * When was Tyrell Wellick first hired by Evil Corp?
+    * With whom does Tyrell Wellick work?
+    * What is Tyrell's home address? His work address?
+    * What number is the suite to Tyrell's office?
+    * What are some of Tyrell's hobbies?
+    * Which kind of music does Tyrell like to listen to?
+    * What color is Tyrell's hair, eyes?
+    * How much does Tyrell weigh?
+    * When did Tyrell Wellick get married?
+    * What brands of clothing does Tyrell wear?
+
+    Write down guesses relating to all of these answers in your wordlist. For instance, include the first and last names of all the people Tyrell works with as guesses in your wordlist.
+
+1. Follow any links in the articles you found towards, or perform new searches about, any of the additional people, places or things, relevant to your target. See if you can answer the following questions:
+
+    * When was Tyrell's boss hired by Evil Corp?
+    * What is the name of Tyrell's boss's secretary?
+    * What are the colors in the Swedish flag?
+    * What are the 50 most common Dutch surnames?
+    * Who are the 5 most popular Dutch musicians in Tyrell's favorite musical style?
+    * What is Tyrell's wife's birthdate?
+    * What is Tyrell's wife's maiden name?
+    * From what school did Tyrell's wife's graduate?
+    * What is the name of the gym that Tyrell's friends visit?
+    * Who is Tyrell's father's favorite poet?
+    * What are the online handles (usernames) of the KDE developers?
+
+    Include your answers, and any additional word associations you can come up with, in your wordlist.
+1. Repeat steps 3 through 6 with the people and things closet to Tyrell's life. For instance, perform the same process for Joanna Wellick, Tyrell's wife, his boss, and anyone or anything else you feel is fruitful.
+    * You can continue manually curating your wordlist for as long as you like, but for the purposes of this exercise you needn't continue beyond two to three hundred guesses.
+1. Save your wordlist with a meaningful name (such as `tyrellwellick.wordlist.txt`) inside `john`'s `run` folder.
+1. Perform a dictionary attack using your new wordlist against the Evil Corp server's shadow file.
+
+Unless your guesses were remarkably intuitive, or the passwords you're trying to crack were exceptionally bad, it's not very likely that you've had cracked any new hashes just by manually creating a small wordlist like this, but it never hurts to try. More usefully, you now have the seeds of a highly targeted rule-based attack. Since John the Ripper ships with some default wordlist rules, and since your wordlist is (probably) relatively small, it's worth trying a quick rule-based attack to expand your guesses to some very common variations.
+
+**Do this:**
+
+* Perform a rule-based attack using `john`'s default "`Wordlist`" ruleset using your custom wordlist against the Evil Corp sever's shadow file.
+* Perform another rule-based attack using `john`'s "`Extra`" ruleset using your custom wordlist against the Evil Corp server's shadow file. (Remember, this is done with the `--rules=Extra` option to load the wordlist rules in the section named `List.Rules:Extra`.)
+
+
 
 ### Writing wordlist rules
 
 :construction:
-
-> :bulb: A comprehensive overview of John the Ripper's wordlist rule syntax is beyond the scope of this exercise, but if you want a complete accounting of each reject flag and simple command that `john` understands, see the `doc/RULES` file in the official JtR source distribution for more information.
 
 To crack these remaining passwords, we're going to have to use everything we've learned about password cracking so far.
 
@@ -690,8 +767,9 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 
 :construction: TK-TODO: How much of this should go into "Additional references"? All of it?
 
-* [Generating Wordlists](https://netsec.ws/?p=457) - use `cewl` to generate a custom wordlist by spidering a website
 * [A blog post by g0tmi1k about what makes a password cracking wordlist "good"](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
+* [Generating Wordlists](https://netsec.ws/?p=457) - use `cewl` to generate a custom wordlist by spidering a website.
+* [Making a Perfect Custom Wordlist Using Crunch](https://thehacktoday.com/making-perfect-custom-wordlist-using-crunch/) - use `crunch` to automate the process of composing large wordlists, see espeically the `-t` option.
 
 # Additional references
 
