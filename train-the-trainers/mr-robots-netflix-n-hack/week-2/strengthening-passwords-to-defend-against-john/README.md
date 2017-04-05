@@ -732,6 +732,8 @@ At this point, your `john.local.conf` file should look something like this:
 
 John the Ripper will ignore our comments in its configuration files. This is useful because it allows us to write notes to ourselves, but we still need to translate those ideas into a language that `john` will understand. Here's a brief primer:
 
+> :beginner: :bulb: You can find a complete description of John the Ripper's wordlist rule syntax in the `doc/RULES` file in JtR's source distribution, but another helpful reference is [Hashcat's Rule-based Attack page, which has a section named "Implemented compatible functions"](https://hashcat.net/wiki/doku.php?id=rule_based_attack#implemented_compatible_functions) that shows input and output examples for many of John the Ripper's simple commands. Hashcat is an alternative hash cracking tool with its own word mangling rule engine. Mercifully, much of Hashcat's wordlist rule syntax is the same as `john`'s.
+
 * To prepend a single character, the caret (`^`) simple command is used. For example:
     * `^8` will turn `password` into `8password`.
 * To append a single character, the dollar sign (`$`) simple command is used. For example:
@@ -762,38 +764,57 @@ John the Ripper will ignore our comments in its configuration files. This is use
         * `3` is the last character in the range, so `john` will create equivalent rules for everything "from 1 to 3."
         * `]` ends the preprocessor directive.
     * Similarly, `^[a-c]` will turn `password` into `apasswod`, `bpassword`, and `cpassword`, which shows that ranges work with letters, too.
+* To substitute one character with another, use the the `s` simple command. For example:
+    * `ss$` will turn every lowercase letter S (`s`) into the dollar sign symbol `$`, so `password` will become `pa$$word`. Breaking this down:
+    * The first `s` is the "substitute" (or "replace") simple command. It needs to know what to find, and what to replace the found characters with.
+    * The second `s` in this example is the character to find.
+    * The dollar sign character, `$`, in this example is the character to replace all the found characters with.
 
-> :beginner: :bulb: You can find a complete description of John the Ripper's wordlist rule syntax in the `doc/RULES` file in JtR's source distribution, but another helpful reference is [Hashcat's Rule-based Attack page, which has a section named "Implemented compatible functions"](https://hashcat.net/wiki/doku.php?id=rule_based_attack#implemented_compatible_functions) that shows input and output examples for many of John the Ripper's simple commands. Hashcat is an alternative hash cracking tool with its own word mangling rule engine. Mercifully, much of Hashcat's wordlist rule syntax is the same as `john`'s.
+When writing a rule, you can use as many simple commands in sequence as you like. For example, a rule to replace all the `s`'s with dollar signs and then append two exclamation points at the end of each word could be written like this `ss$ Az"!!"`. If you find yourself writing many similar rules, using a preprocessor directive with a range in a rule can be more expressive. For example, a rule to prepend all the four-digit years from 1950 to 1999 to every word could be written in one simple command with two ranges, like `A0"19[5-9][0-9]"`. Don't hesitate to refer to JtR's documentation while writing rules (most professionals do).
+
+> :beginner: As you're writing these wordlist rules, you can test them on a very short wordlist (such as the `sanitycheck.wordlist.txt`) by invoking `john` with its `--stdout` option, as before. This will give you feedback about whether or not your wordlist rules are doing what you expect them to. For example, `./john --wordlist=sanitycheck.wordlist.txt --rules=EvilCorp --stdout` should generated passwords including `g8randomGuess`, `randomGuessg8` and so forth. Be sure to pay attention to how quickly the rules you're writing increase the number of guesses `john` will make; the more guesses, you need to make, the more time you'll need to attempt each guess.
 
 **Do this:**
 
-1. Translate the first two comments into actual wordlist rules.
+1. Translate the first two comments into actual wordlist rules. Your `john.local.conf` configuration file should now begin to look something like this:
 
-Your `john.local.conf` configuration file should now begin like this:
+    ```
+    [List.Rules:EvilCorp]
+    # Prepend and append Internet slang words like 'b4' and 'g8'.
+    A0"b4"
+    $b $4
+    A0"g8"
+    Az"g8"
+    ```
 
-```
-[List.Rules:EvilCorp]
-# Prepend and append Internet slang words like 'b4' and 'g8'.
-A0"b4"
-Az"b4"
-A0"g8"
-Az"g8"
-```
+1. Use your new rules to perform a rule-based attack in conjunction with one or more of your wordlists.
 
-> :beginner: As you're writing these wordlist rules, you can test them on a very short wordlist (such as the `sanitycheck.wordlist.txt`) by invoking `john` with its `--stdout` option, as before. This will give you feedback about whether or not your wordlist rules are doing what you expect them to. For example, `./john --wordlist=sanitycheck.wordlist.txt --rules=EvilCorp --stdout` should generated passwords including `g8randomGuess`, `randomGuessg8` and so forth.
+> :beginner: :cinema: :warning: One thing you're likely to notice immediately is that it takes you a lot longer than the several seconds shown on the Mr. Robot TV show to perform a rule-based attack like this. Don't be disheartened if your rules have ballooned your crack session time from minutes to hours; that's pretty normal and happens when you're using John the Ripper's built-in rulesets, too. You can either further tweak your rules themselves, re-order them to improve your attempt at "making smarter guesses sooner," further refine your wordlist or use a smaller one, or you can press `^C` to cancel a long-running crack session prematurely. Regardless, you can now see how cracking passwords instantly on television is a bit more "movie magic" than reality.
 
-:construction: To crack these remaining passwords, we're going to have to use everything we've learned about password cracking so far.
+If you've written good rules that guessed likely patterns (and have not already cracked the matching passwords), you will have cracked (at least) one more Evil Corp employee's password, revealing the password belonging to the user `janetcleveland`. You may even have cracked Tyrell Wellick's password! (A hint: Tyrell Wellick's password is absolutely crackable at this stage with the right wordlist and rules.) You were able to crack their passwords, and possibly even Tyrell's, because despite the fact that these passwords were not directly included in cracking dictionaries per se, their still relied on relationships to publicly available information from which you were able to draw. Professionals call this information gathering process open-source intelligence ("OSINT"), and it's often used in the construction of highly targeted attacks like these.
+
+**If *your* password is based on, has roots in, or references relationships to any publicly-available information about yourself, even if that information is "personal" or hard to find, you've now seen how attackers can easily find that information and use it to generate huge numbers of guesses to quickly crack your passwords, too.** This combination of a wealth of publicly available information about people, wordlists, and hash cracking tools can make even the cleverest of passwords merely a wordlist rule away from being cracked within hours, if not minutes. That's why the only truly strong passwords are "random" (or, more technically, "high-entropy") passwords.
+
+Congratulations! You've now hopefully cracked Tyrell's password, and can impersonate Evil Corp's Senior Vice President of Technology to the Evil Corp mail server by logging in using Tyrell Wellick's account. However, there are still Evil Corp employee passwords you've not yet cracked. If you want to totally own Evil Corp's network, and crack these remaining passwords, you can try to use a couple more advanced techniques to "make smarter guesses sooner" before you're forced to fall back to a time-consuming "brute-force" search.
+
+* If you want to continue cracking Evil Corp account passwords, continue to [statistical hash cracking techniques](#statistical-hash-cracking-techniques).
+* If you want to protect your passwords from being hacked by Tyrell Wellick, continue to [using a password manager](#using-a-password-manager).
+
+## Statistical hash cracking techniques
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
-> 1. Next, introduce the idea that we can devise our own password guessing strategies, write our own rules files, etc.
->     * Doing this correctly should reveal yet another couple of passwords; have the passwords be Mr. Robot themed but the rules common (adding numbers at the end, 1337 speak, and so on). Importantly, Tyrell's "bad noob" password is crackable with the right wordlist and --rules.
-> 1. Optionally, continue cracking more passwords with advanced modes such as `--loopback` and `--markov`; another "aha" moment with regards to the "smarts" of wordlists and why the only "good" passwords are *random* passwords.
-> 1. There will be at least one password hash that is still uncrackable, so finally, after all else fails, explain how to do an actual brute force ("incremental") search. The aha moment here is "see, this will take fucking forever, and that's the point." <-- This is what using a password manager correctly forces attackers to do.
+> Optionally, continue cracking more passwords with advanced modes such as `--loopback` and `--markov`; another "aha" moment with regards to the "smarts" of wordlists and why the only "good" passwords are *random* passwords.
+
+## Cracking hashes with brute-force
+
+> :construction: TK-TODO:
 > 
-> Obvi, we already "know" Tyrell's password so doesn't really matter if we actually crack his. But it's good that we already know is that students can "check their work" against a known quantity.
-> 
-> Don't forget we also then need to write up the defense:
+> There will be at least one password hash that is still uncrackable, so finally, after all else fails, explain how to do an actual brute force ("incremental") search. The aha moment here is "see, this will take fucking forever, and that's the point." <-- This is what using a password manager correctly forces attackers to do.
+
+## Using a password manager
+
+> :construction: TK-TODO: Don't forget we also then need to write up the defense:
 > 
 > 1. Get a password manager. Generate a password with it. Etc.
 
