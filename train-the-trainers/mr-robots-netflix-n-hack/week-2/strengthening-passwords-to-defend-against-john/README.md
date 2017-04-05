@@ -602,18 +602,19 @@ The more you know about a person, the more likely it is that you'll be able to g
 
 To make a custom wordlist for targeting Tyrell Wellick, all we have to do is write down everything we think is important or related to him in some way. This should include everything from the utterly obvious, like his name and birthdate, to the far-fetched or hard to discover, like a distant relative's first job title or references to his favorite childhood lullabies, and everything in between. Naturally, we can't know all of this, but the point is to find out as much as we can and then write everything down in a plain text file, one unique item at a time.
 
-For example: we know his name is Tyrell Wellick, so we should start by including `Tyrell` and `Wellick`. We know he works for Evil Corp, so `Evil Corp` (as one "word," with the space) is a sensible third word. We might also consider `Evil` and `Corp` as the fourth and fifth words. Moreover, we know his position at the company, Senior Vice President of Technology, but since `Senior Vice President of Technology` doesn't feel like a password, we would be better off simply including `Senior`, `Vice`, `President`, and `Technology` as individual words. With just this information, we can construct a wordlist such as the following:
+For example: we know his name is Tyrell Wellick, so we should start by including `Tyrell` and `Wellick`, and probably `Tyrell Wellick` as its own "word," as well. We know he works for E Corp, so `E Corp` is a sensible fourth word, and its variant `E Corporation` is a sensible fifth word. Moreover, we know his position at the company, Senior Vice President of Technology, but since `Senior Vice President of Technology` doesn't feel like a password, we might be better off simply including `Senior`, `Vice`, `President`, and `Technology` as individual words or in some combination thereof. With just this information, we can construct a wordlist such as the following:
 
 ```
 Tyrell
 Wellick
-Evil Corp
-Evil
-Corp
+Tyrell Wellick
+E Corp
+E Corporation
 Senior
 Vice
 President
 Technology
+Vice President
 ```
 
 This is a decent start, but of course we know a lot more than just these bland facts about Tyrell. We know he's ambitious, devoting much of his time to clibming the corporate ladder at Evil Corp, so we should put ourselves in his shoes and think about what phrases he might enjoy typing every time he needs to log in to his work webmail account. This is as simple as playing a word association game with ourselves. For example, `CTO`, `power`, `rich`, `money`, `executive`, and `success` are all decent guesses because these are all things we know Tyrell Wellick aspires to have or be. Since we're also trying to crack his webmail account specifically, we should also include words like `mail`, `email`, `work`, `job`, `business`, and anything else we can associate with the purpose of his account.
@@ -734,9 +735,9 @@ John the Ripper will ignore our comments in its configuration files. This is use
 
 > :beginner: :bulb: You can find a complete description of John the Ripper's wordlist rule syntax in the `doc/RULES` file in JtR's source distribution, but another helpful reference is [Hashcat's Rule-based Attack page, which has a section named "Implemented compatible functions"](https://hashcat.net/wiki/doku.php?id=rule_based_attack#implemented_compatible_functions) that shows input and output examples for many of John the Ripper's simple commands. Hashcat is an alternative hash cracking tool with its own word mangling rule engine. Mercifully, much of Hashcat's wordlist rule syntax is the same as `john`'s.
 
-* To prepend a single character, the caret (`^`) simple command is used. For example:
+* To prepend a single character, use the caret (`^`) simple command. For example:
     * `^8` will turn `password` into `8password`.
-* To append a single character, the dollar sign (`$`) simple command is used. For example:
+* To append a single character, use the dollar sign (`$`) simple command. For example:
     * `$1` will turn `password` into `password1`.
 * To prepend a string of two or more characters, the "string command" is used. This command always begins with a capital letter A, followed by the number for where to insert the characters, a delimeter, the string literal to insert, and the delimeter again. For example:
 
@@ -753,7 +754,7 @@ John the Ripper will ignore our comments in its configuration files. This is use
 
     * `Az"g8"` will turn `password` into `passwordg8`. This is composed in exactly the same way as the previous example, but uses `z` instead of a number since this will work regardless of how many characters are in the given input word.
 
-    Of course, another way to get the same result is `$g $8`.
+    Of course, another way to get the same result is `$g $8`, but the string command (`A`) is faster because `john` need merely interpret one instruction instead of two.
 
 * To generate password candidates with a range of characters at once, we can write those characters in square brackets with a dash in between indicating the range from the start to the end character. For example:
     * `$[1-3]` will turn `password` into `password1`, `password2`, and `password3`. This is equivalent to the three rules `$1`, `$2`, and `$3` on three different lines, but is more concise and easier to write. Breaking this down:
@@ -764,15 +765,25 @@ John the Ripper will ignore our comments in its configuration files. This is use
         * `3` is the last character in the range, so `john` will create equivalent rules for everything "from 1 to 3."
         * `]` ends the preprocessor directive.
     * Similarly, `^[a-c]` will turn `password` into `apasswod`, `bpassword`, and `cpassword`, which shows that ranges work with letters, too.
-* To substitute one character with another, use the the `s` simple command. For example:
+* To substitute one character with another, use the `s` simple command. For example:
     * `ss$` will turn every lowercase letter S (`s`) into the dollar sign symbol `$`, so `password` will become `pa$$word`. Breaking this down:
     * The first `s` is the "substitute" (or "replace") simple command. It needs to know what to find, and what to replace the found characters with.
     * The second `s` in this example is the character to find.
     * The dollar sign character, `$`, in this example is the character to replace all the found characters with.
+* To remove all the characters from a word, use the "purge" command, an at-sign (`@`). For example:
+    * `@s` will turn `password` into `paword`.
+* Many of the simple commands that expect a single character can also understand a *character class*, which matches any character from a pre-defined set. For example:
+
+    * `?l` will match all the lowercase letters.
+    * `?v` will match English vowels of either lower- or upper-case.
+    * `?d` will match digits.
+    * `?w` will match whitespace characters, including a literal single space (`␠`), which would otherwise be ignored.
+
+    This means that to write a literal question mark (`?`) in a rule where a character class is possible, you denote that intent with two question marks, `??`, which is literally "the character class that will match a question mark." For example, to "delete all vowels from a word," you can write `@?v`, which will turn `password` into `psswrd`.
 
 When writing a rule, you can use as many simple commands in sequence as you like. For example, a rule to replace all the `s`'s with dollar signs and then append two exclamation points at the end of each word could be written like this `ss$ Az"!!"`. If you find yourself writing many similar rules, using a preprocessor directive with a range in a rule can be more expressive. For example, a rule to prepend all the four-digit years from 1950 to 1999 to every word could be written in one simple command with two ranges, like `A0"19[5-9][0-9]"`. Don't hesitate to refer to JtR's documentation while writing rules (most professionals do).
 
-> :beginner: As you're writing these wordlist rules, you can test them on a very short wordlist (such as the `sanitycheck.wordlist.txt`) by invoking `john` with its `--stdout` option, as before. This will give you feedback about whether or not your wordlist rules are doing what you expect them to. For example, `./john --wordlist=sanitycheck.wordlist.txt --rules=EvilCorp --stdout` should generated passwords including `g8randomGuess`, `randomGuessg8` and so forth. Be sure to pay attention to how quickly the rules you're writing increase the number of guesses `john` will make; the more guesses, you need to make, the more time you'll need to attempt each guess.
+> :beginner: As you're writing these wordlist rules, you can test them on a very short wordlist (such as the `sanitycheck.wordlist.txt`) by invoking `john` with its `--stdout` option, as before. This will give you feedback about whether or not your wordlist rules are doing what you expect them to. For example, `./john --wordlist=sanitycheck.wordlist.txt --rules=EvilCorp --stdout` should generate passwords including `g8randomGuess`, `randomGuessg8` and so forth. Be sure to pay attention to how quickly the rules you're writing increase the number of guesses `john` will make; the more guesses you need to make, the more time you'll need to attempt all the guess.
 
 **Do this:**
 
@@ -814,9 +825,33 @@ Congratulations, you are now a [*1337 h4x0r*](https://www.urbandictionary.com/de
 
 ## Using a password manager
 
-> :construction: TK-TODO: Don't forget we also then need to write up the defense:
-> 
-> 1. Get a password manager. Generate a password with it. Etc.
+Although password cracking can get extremely complex, as you've seen, defending against this attack is extremely simple, and it's probably advice you've heard before: use a unique, long, randomly-generated password for each of your accounts. The challenge with this is that using such a password is difficult to remember, even moreso when you need to "remember" one for each of your accounts, and that single characteristic is this strategy's Achilles heel. This paradox is what leads people to use easily-guessable passwords and, ultimately, what makes them so crackable.
+
+The simplest way to mitigate this concern may be counter-intuitive: write your passwords down so you don't have to remember them. However, if you're writing down passwords like "`g8password`", that's not much better than not writing the password down at all. On the other hand, if your password is something more like "`,Fxi4nB3`*m1iAY.|{q}f\\o'-C50Gpx,JhYOd+Y#+3[.Qno|ujcKuo@+09(x8i`, then your account is pretty safe as long as you don't ever use this same password anywhere else. The problem with a password like that, of course, is that takes several minutes to type it all out, which is a real pain. Mis-type a single character, and you've got to try again. Augh!
+
+This is where password managers come in. A *password manager* is an app that acts like a set of digital sticky notes, helping you remember which password you used for which account, and since it's digital, allows you to copy-and-paste these incredibly long, difficult to type passwords into the password fields of log in forms. You can (and probably should) memorize one last password to password-protect the password manager app itself, but this is for all intents and purposes the very last password you'll ever have to remember.
+
+The reason why this is such a superior method for securing your online accounts against password cracking attacks is because when hackers acquire password hashes from an online service such as a webmail provider, they're not hacking *your laptop*, they're hacking the computers belonging to the service on which you have registered an account. Those service provider's computers (the "servers") keep the hash of the password you use to access your account, *not* the password you use to access your password manager. Recall that this is exactly what Elliot did at the start of this exercise; you acquired the hashes from the Evil Corp mail server, not Tyrell Wellick's personal laptop or workstation.
+
+This simple separation between an easier-to-remember password used to "unlock" your password manager locally, on your personal computer, versus a dramatically more complex one you paste into a login form of a remote service is all that's necessary to stop password cracking attacks in their tracks. That's why "use a password manager" is such an important personal security measure to protect everything from social media to webmail to corporate employee accounts.
+
+**Do this:**
+
+1. Choose one or two low-priority (unimportant) online accounts that you have. These will be the first accounts whose passwords you will reset to much stronger ones. Use low-priority accounts so you can practice using the password manager before relying on it for your high-priority accounts.
+1. Search the Internet for a guide to using the password manager of your choice. Here are recommended guides for KeePassX and LastPass:
+    * [Tuts+: Guide to KeePassX](https://web.archive.org/web/20170314130128/https://computers.tutsplus.com/tutorials/the-tuts-guide-to-keepass--cms-21308)
+    * [LastPass User Manual: Getting Started with LastPass](https://helpdesk.lastpass.com/)
+1. Follow the guide. :) Be certain that you also:
+    1. Generate a strong, randomized, unique password for your online service account using your password manager of choice.
+    1. Reset your online account's password to the unique password your password manager generated for you.
+    1. Log out of the online account.
+    1. Quit or close your password manager.
+    1. Re-open your password manager.
+    1. Copy the password from your password manager, and paste it into the login form of the online service account.
+    1. Practice these steps with another account.
+1. Once you're comfortable with this process, do the same to strengthen the passwords of your high-priority (important) online service accounts.
+
+This isn't glamorous, and might feel clunky or awkward until you get the hang of it. Despite that, it's the single most important cybersecurity self-defense measure you can take to prevent your account from being hijacked or accessed by attackers. Once you do get the feel for this, you can start using a "password" manager to manage many different kinds of secrets, including private notes to yourself or highly-sensitive information such as bank account numbers, Wi-Fi network passkeys, and any other secrets you need to remember. 
 
 # Discussion
 
@@ -901,5 +936,6 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 * [Password Haystacks: How Well-Hidden is Your Needle?](https://www.grc.com/haystack.htm)
 * [Hashcat: Advanced Password Recovery](https://hashcat.net/) - a popular alternative to John the Ripper
 * [Blog post by g0tmi1k about what makes for a good password cracking wordlist](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
+* [Lifehacker: Five Best Password Managers](https://lifehacker.com/5529133/five-best-password-managers)
 * [Making password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
 
