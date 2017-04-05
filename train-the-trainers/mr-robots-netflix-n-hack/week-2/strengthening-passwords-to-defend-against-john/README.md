@@ -21,6 +21,9 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     1. [Preparing a personally targeted attack](#preparing-a-personally-targeted-attack)
         1. [Writing custom wordlists](#writing-custom-wordlists)
         1. [Writing wordlist rules](#writing-wordlist-rules)
+    1. [Statistical hash cracking techniques](#statistical-hash-cracking-techniques)
+    1. [Cracking hashes with brute-force](#cracking-hashes-with-brute-force)
+    1. [Using a password manager](#using-a-password-manager)
 1. [Discussion](#discussion)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
     * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
@@ -827,7 +830,7 @@ Congratulations, you are now a [*1337 h4x0r*](https://www.urbandictionary.com/de
 
 Although password cracking can get extremely complex, as you've seen, defending against this attack is extremely simple, and it's probably advice you've heard before: use a unique, long, randomly-generated password for each of your accounts. The challenge with this is that using such a password is difficult to remember, even moreso when you need to "remember" one for each of your accounts, and that single characteristic is this strategy's Achilles heel. This paradox is what leads people to use easily-guessable passwords and, ultimately, what makes them so crackable.
 
-The simplest way to mitigate this concern may be counter-intuitive: write your passwords down so you don't have to remember them. However, if you're writing down passwords like "`g8password`", that's not much better than not writing the password down at all. On the other hand, if your password is something more like "`,Fxi4nB3`*m1iAY.|{q}f\\o'-C50Gpx,JhYOd+Y#+3[.Qno|ujcKuo@+09(x8i`, then your account is pretty safe as long as you don't ever use this same password anywhere else. The problem with a password like that, of course, is that takes several minutes to type it all out, which is a real pain. Mis-type a single character, and you've got to try again. Augh!
+The simplest way to mitigate this concern may be counter-intuitive: write your passwords down so you don't have to remember them. However, if you're writing down passwords like "`g8password`", that's not much better than not writing the password down at all. On the other hand, if your password is something more like "`,Fxi4nB3"*m1iAY.|{q}f\\o'-C50Gpx,JhYOd+Y#+3[.Qno|ujcKuo@+09(x8i`, then your account is pretty safe as long as you don't ever use this same password anywhere else. The problem with a password like that, of course, is that takes several minutes to type it all out, which is a real pain. Worse, incorrectly type a single character and you've got to start over. Augh! :(
 
 This is where password managers come in. A *password manager* is an app that acts like a set of digital sticky notes, helping you remember which password you used for which account, and since it's digital, allows you to copy-and-paste these incredibly long, difficult to type passwords into the password fields of log in forms. You can (and probably should) memorize one last password to password-protect the password manager app itself, but this is for all intents and purposes the very last password you'll ever have to remember.
 
@@ -851,7 +854,9 @@ This simple separation between an easier-to-remember password used to "unlock" y
     1. Practice these steps with another account.
 1. Once you're comfortable with this process, do the same to strengthen the passwords of your high-priority (important) online service accounts.
 
-This isn't glamorous, and might feel clunky or awkward until you get the hang of it. Despite that, it's the single most important cybersecurity self-defense measure you can take to prevent your account from being hijacked or accessed by attackers. Once you do get the feel for this, you can start using a "password" manager to manage many different kinds of secrets, including private notes to yourself or highly-sensitive information such as bank account numbers, Wi-Fi network passkeys, and any other secrets you need to remember. 
+This isn't glamorous, and might feel clunky or awkward until you get the hang of it. Despite that, it's the single most important cybersecurity self-defense measure you can take to prevent your account from being hijacked or accessed by attackers. Moreover, it makes changing your password periodically much easier and less stressful because there's nothing new for you to remember. It even makes switching between multiple accounts on the same service easier, since many password manager apps have options to automatically fill-in log in forms or to do so by hitting a keyboard shortcut on a laptop, or notification area icon on a mobile phone.
+
+Once you do get the feel for this, you can start using a "password" manager to manage many different kinds of secrets, including private notes to yourself or highly-sensitive information such as bank account numbers, Wi-Fi network passkeys, and any other secrets you need to remember.
 
 # Discussion
 
