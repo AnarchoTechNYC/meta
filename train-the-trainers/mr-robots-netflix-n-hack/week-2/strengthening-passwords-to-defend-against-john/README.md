@@ -630,7 +630,7 @@ This gives us the seeds of a good wordlist, but what else can we find out about 
 1. Write your basic password guesses, one on each line, in the text document as you come up with them; this will become your Tyrell-specific wordlist.
 1. Use an Internet search engine to find any more details you can about Tyrell Wellick.
 1. Read articles about him or pages and profiles he's made that come up in your search.
-1. Add whatever details you encounter to the wordlist. See if you can find the answers to the following information about him:
+1. Add whatever details you encounter to the wordlist. See if you can find the answers to the following questions about him:
 
     * Where was Tyrell Wellick born?
     * When is Tyrell Wellick's birthday?
@@ -682,7 +682,7 @@ Although this may have cracked a couple more passwords, we can do even better by
 
 Equipped with a custom wordlist, we can now use it as the basis for patterned guessing by mangling those words in specific ways. Of course, once we've written our own rules, we can apply them to any wordlist we have. We will probably want to append and prepend numbers and some symbols, because that's a very common password pattern, but we can also do smarter things like insert specific abbreviations, mnemonics, or phrases meaningful to our target, replace certain characters with others, and more.
 
-John the Ripper's wordlist rules are always loaded from one or more configuration files. While we could directly edit the `john.conf` file that JtR ships with, there's a better way: we can write our custom rules in a new named section within a second configuration called called `john.local.conf`. This file is automatically loaded each time we invoke `john` because the very last line of the first configuration file, `john.conf`, instructs `john` to do exactly that, as shown here:
+John the Ripper's wordlist rules are always loaded from one or more configuration files. While we could directly edit the `john.conf` file that JtR ships with, there's a better way: we can write our custom rules in a new named section within a second configuration file called `john.local.conf`. This file is automatically loaded each time we invoke `john` because the very last line of the first configuration file, `john.conf`, instructs `john` to do exactly that, as shown here:
 
 ```
 # include john.local.conf (defaults to being empty, but never overwritten)
@@ -735,14 +735,22 @@ John the Ripper will ignore our comments in its configuration files. This is use
 * To append a single character, the dollar sign (`$`) simple command is used. For example:
     * `$1` will turn `password` into `password1`.
 * To prepend a string of two or more characters, the "string command" is used. This command always begins with a capital letter A, followed by the number for where to insert the characters, a delimeter, the string literal to insert, and the delimeter again. For example:
+
     * `A0"g8"` will turn `password` into `g8password`. Breaking this down:
         * `A` signals to `john` that this is a string simple command.
         * `0` indicates the starting position, in this case `0`, meaning "before the first character."
         * `"` is the chosen delimeter. In this example, we used a double-quote, but we could also use any other character we like, so long as the character we choose doesn't appear in the string literal we want to insert.
         * `g8` is the string literal we want to insert.
         * `"` is the second, and closing instance, of our chosen string delimeter.
+
+    Note that the simple command `A0"g8"` is equivalent to a wordlist rule with the two simple commands `^8 ^g`. In this rule, `john` will first prepend (`^`) the character `8`, turning `password` into `8password` as instructed by the first simple command in the rule. Then `john` proceeds to follow the instruction of the second simple command, which takes the result of the previous command and further mangles it, this time prepending `g` (turning `8password` into `g8password`).
+
 * To append a string of two or more characters, we use the string command again, but with a `z` as the character position "number." For example:
+
     * `Az"g8"` will turn `password` into `passwordg8`. This is composed in exactly the same way as the previous example, but uses `z` instead of a number since this will work regardless of how many characters are in the given input word.
+
+    Of course, another way to get the same result is `$g $8`.
+
 * To generate password candidates with a range of characters at once, we can write those characters in square brackets with a dash in between indicating the range from the start to the end character. For example:
     * `$[1-3]` will turn `password` into `password1`, `password2`, and `password3`. This is equivalent to the three rules `$1`, `$2`, and `$3` on three different lines, but is more concise and easier to write. Breaking this down:
         * `$` is the command to append a single character, same as above.
