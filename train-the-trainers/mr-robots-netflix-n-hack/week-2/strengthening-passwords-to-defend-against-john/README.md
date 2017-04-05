@@ -515,7 +515,11 @@ This time, `john` produced 151 password candidates even though the input wordlis
 > 
 > :bulb: A full discussion of John the Ripper's configuration file is beyond the scope of this exercise, but see the `doc/CONFIG` file in the official JtR source distribution for more information about customizing `john`'s behavior.
 
-To see why these specific candidates were generated from the original words, we can examine the specific wordlist rules `john` applied to them. By default, when you invoke `john` with a combination of the `--wordlist` and `--rules` options, it will load the mangling rules in the "`Wordlist`" section of the `john.conf` file. You can achieve the same effect while being more explicit by specifying the name of the section you want load rules from, as in `--rules=Wordlist`. In my copy of `john.conf`, this section header is at line 338 of the file and it begins like this:
+To see why these specific candidates were generated from the original words, we can examine the specific wordlist rules `john` applied to them. By default, when you invoke `john` with a combination of the `--wordlist` and `--rules` options, it will load the mangling rules in the "`Wordlist`" section of the `john.conf` file. You can achieve the same effect while being more explicit by specifying the name of the section you want load rules from, as in `--rules=Wordlist`.
+
+> :beginner: :bulb: John the Ripper ships with four wordlist rulesets: `Single`, `Extra`, `Wordlist`, and `NT`. Any of those names can be passed to the `--rules` option to load the wordlist rules defined in that section of the `john.conf` file. There are also two additional named wordlist rule sections configured by default. The first, `Single-Extra`, loads the `Single` ruleset followed by the `Extra` ruleset. The other, `Jumbo`, loads all four rulesets one after the other, which results in a dramatically expanded password candidate list and greatly increases cracking session time.
+
+In my copy of `john.conf`, this section header is at line 338 of the file and it begins like this:
 
 ```
 # Wordlist mode rules
@@ -568,7 +572,7 @@ The syntax and grammar for composing word mangling rules is rich, but very terse
 1. `l` (lowercase letter L) is the simple command to convert the input word to lowercase lettering.
 1. Finally, `Q` is a simple command that tells `john` to compare the result of the mutations applied and include the word in the output list of generated candidates only if it's *actually* different from the original input word. This is why `john` doesn't try guessing `someotherword` twice, which would clearly be a waste of time.
 
-> :bulb: A comprehensive manual for John the Ripper's wordlist rule syntax is beyond the scope of this exercise, but if you want a complete accounting of each reject flag and simple command that `john` understands, see the `doc/RULES` file in the official JtR source distribution for more information.
+> :bulb: Although we'll explore [writing wordlist rules](#writing-wordlist-rules) more soon, a comprehensive manual for John the Ripper's wordlist rule syntax is beyond the scope of this exercise. If you want a complete accounting of each reject flag and simple command that `john` understands, see the `doc/RULES` file in the official JtR source distribution for more information.
 
 Let's give the `--rules` option a go, and see if `john`'s pre-configured "Wordlist" ruleset gives us any more password hits.
 
@@ -612,7 +616,7 @@ President
 Technology
 ```
 
-This is a decent start, but of course we know a lot more than just these bland facts about Tyrell. We know he's ambitious, devoting much of his time to clibming the corporate ladder at Evil Corp, so we should put ourselves in his shoes and think about what phrases he might enjoy typing every time he needs to log in to his work webmail account. This is as simple as playing a word association game with ourselves. For example, `CEO`, `power`, `rich`, `money`, `executive`, and `success` are all decent guesses because these are all things we know Tyrell Wellick aspires to have or be. Since we're also trying to crack his webmail account specifically, we should also include words like `mail`, `email`, `work`, `job`, `business`, and anything else we can associate with the purpose of his account.
+This is a decent start, but of course we know a lot more than just these bland facts about Tyrell. We know he's ambitious, devoting much of his time to clibming the corporate ladder at Evil Corp, so we should put ourselves in his shoes and think about what phrases he might enjoy typing every time he needs to log in to his work webmail account. This is as simple as playing a word association game with ourselves. For example, `CTO`, `power`, `rich`, `money`, `executive`, and `success` are all decent guesses because these are all things we know Tyrell Wellick aspires to have or be. Since we're also trying to crack his webmail account specifically, we should also include words like `mail`, `email`, `work`, `job`, `business`, and anything else we can associate with the purpose of his account.
 
 Further, we know that Tyrell Wellick began his career as a tech and that he prefers the K Desktop Environment ("KDE") over the alternative that Elliot prefers (GNOME). We know he is married, we know his wife's name is Joanna, we know he's Swedish, that he speaks Dutch, and so on. Some of these details are good guesses in themselves; for instance, we should definitely include `Joanna`, `Sweden`, `Dutch`, and `KDE` in our wodlist. Spending a few minutes brainstorming associations with all of these items will give us even more good guesses.
 
@@ -649,8 +653,9 @@ This gives us the seeds of a good wordlist, but what else can we find out about 
     * When was Tyrell's boss hired by Evil Corp?
     * What is the name of Tyrell's boss's secretary?
     * What are the colors in the Swedish flag?
-    * What are the 50 most common Dutch surnames?
-    * Who are the 5 most popular Dutch musicians in Tyrell's favorite musical style?
+    * What are the 50 most common Swedish surnames? The 50 most common Danish surnames?
+    * What are some famous historical moments in Sweden? When did these events occur? When were these people born? When did they die?
+    * Who are the 5 most popular Swedish musicians in Tyrell's favorite musical style?
     * What is Tyrell's wife's birthdate?
     * What is Tyrell's wife's maiden name?
     * From what school did Tyrell's wife graduate?
@@ -670,20 +675,107 @@ Unless your guesses were remarkably intuitive, or the passwords you're trying to
 **Do this:**
 
 * Perform a rule-based attack using `john`'s default "`Wordlist`" ruleset using your custom wordlist against the Evil Corp sever's shadow file. Since this ruleset includes the "do nothing" wordlist rule (`:`), this also has the effect of performing a straight dictionary attack using your custom wordlist.
-* Perform another rule-based attack using `john`'s "`Extra`" ruleset using your custom wordlist against the Evil Corp server's shadow file. (Remember, this is done with the `--rules=Extra` option to load the wordlist rules in the section named `List.Rules:Extra`. Also remember that you can interrupt the cracking session by pressing the Control and `C` keys, `^C`, if `john` reports that this will take longer than you'd like to wait.)
 
-Although this may have cracked a couple more passwords, we can do even better by further targeting our guesses with our own wordlist rules.
+Although this may have cracked a couple more passwords, we can do even better by further expanding these guesses with our own wordlist rules that hit specific patterns of likely passwords. Also, while there's some good inspiration available to us in JtR's default wordlist rulesets, using all of them (with `--rules=Jumbo`, for instance), might just take too long. We can save ourselves time and zero-in on the "smartest" guesses by crafting our own rules based what we know about our target, Mr. Wellick.
 
 ### Writing wordlist rules
 
-:construction:
+Equipped with a custom wordlist, we can now use it as the basis for patterned guessing by mangling those words in specific ways. Of course, once we've written our own rules, we can apply them to any wordlist we have. We will probably want to append and prepend numbers and some symbols, because that's a very common password pattern, but we can also do smarter things like insert specific abbreviations, mnemonics, or phrases meaningful to our target, replace certain characters with others, and more.
 
-To crack these remaining passwords, we're going to have to use everything we've learned about password cracking so far.
+John the Ripper's wordlist rules are always loaded from one or more configuration files. While we could directly edit the `john.conf` file that JtR ships with, there's a better way: we can write our custom rules in a new named section within a second configuration called called `john.local.conf`. This file is automatically loaded each time we invoke `john` because the very last line of the first configuration file, `john.conf`, instructs `john` to do exactly that, as shown here:
+
+```
+# include john.local.conf (defaults to being empty, but never overwritten)
+.include "$JOHN/john.local.conf"
+```
+
+We'll need to tell `john` that we're writing a wordlist ruleset, and we'll need to give this ruleset a name. The syntax for this is `[List.Rules:A_NEW_NAME]` on a line by itself, where `A_NEW_NAME` is the name we want to use. For instance, if the first line of the `john.local.conf` file was `[List.Rules:EvilCorp]`, then you could invoke `john` with `--rules=EvilCorp` to load the ruleset written in that section.
+
+**Do this:**
+
+1. Open the `john.local.conf` file with a text editor. (If the file doesn't exist, create a new text document and save it in `john`'s `run` folder with that name.)
+1. Type a named wordlist rule section header at the first line of this file; you can copy-and-paste `[List.Rules:EvilCorp]` if you like.
+
+Beneath the named section header of a `List.Rules` section, we can compose the specific wordlist rules we want to use. This is the trickiest part, because it not only requires knowing what we want to do, but also how to express our intent in `john`'s wordlist rule mini-language. Let's take it one step at a time.
+
+First, let's imagine some common password variations. We'll record these ideas in English-language *comments* in the configuration file as we think of them. Then we'll come back to each English-language expression of these patterns and translate them into John the Ripper's wordlist syntax.
+
+For instance, Internet slang often appears in passwords because it mixes letters and numbers, like `b4` to mean "before" and `g8` to mean "great." So, for instance, we can compose a wordlist rule that takes each word (password guess) from our wordlist and prepends `g8` to it, turning something like `password` into `g8password` (which is, of course, not actually a great password), appends it, turning `password` into `passwordg8`, inserts it in a specific character position, turning `password` into `passg8word`, and so on. We are limited only by the original wordlist and our understanding of `john`'s wordlist rule syntax.
+
+In English, we can express these ideas by simply writing, "Prepend and append Internet slang words like 'b4' or 'g8'." To make this a configuration file comment, all we have to do is put an octothorpe (or pound-sign, `#`) before the English text. It would look like this:
+
+```
+[List.Rules:EvilCorp]
+# Prepend and append Internet slang words like 'b4' and 'g8'.
+```
+
+Another common variation on passwords is to prepend or append (a loved) someone's year of birth. A naive approach would be to write rules for all possible four-digit years (`0000`, `0001`, `0002`, and so on), but since everyone currently living was born in the 1900's or 2000's, that's pretty silly. Instead, we should focus just on the late 1900's and early 2000's. Once again, we can express this in our native human language first as a comment in the configuration file. We can deal with translating that idea to John the Ripper's syntax later.
+
+There are, of course, many other common variations and substitions. For instance, people often replace the letter `a` in passwords with the digit `4`, or sometimes the at-sign (the `@` symbol), and they do similar things for the letter `i` (lowercase I) with the digit `1`. For now, simply write these ideas out in natural language as comments, with the ones you think Tyrell Wellick is more likely to use before the ones you think he's less likely to use.
+
+**Do this:**
+
+1. On the second line of your `john.local.conf` file, immediately underneath the section header, write a comment. You can copy-and-paste `# Prepend and append Internet slang words like 'b4' and 'g8'.` if you want.
+1. On the third line, write another comment that reads, "`Prepend and append birthyears.`"
+1. Come up with another variation or two, and write a comment in the configuration file that expresses your idea in human language.
+
+At this point, your `john.local.conf` file should look something like this:
+
+```
+[List.Rules:EvilCorp]
+# Prepend and append Internet slang words like 'b4' and 'g8'.
+# Prepand and append birthyears.
+# […your next idea here…]
+```
+
+John the Ripper will ignore our comments in its configuration files. This is useful because it allows us to write notes to ourselves, but we still need to translate those ideas into a language that `john` will understand. Here's a brief primer:
+
+* To prepend a single character, the caret (`^`) simple command is used. For example:
+    * `^8` will turn `password` into `8password`.
+* To append a single character, the dollar sign (`$`) simple command is used. For example:
+    * `$1` will turn `password` into `password1`.
+* To prepend a string of two or more characters, the "string command" is used. This command always begins with a capital letter A, followed by the number for where to insert the characters, a delimeter, the string literal to insert, and the delimeter again. For example:
+    * `A0"g8"` will turn `password` into `g8password`. Breaking this down:
+        * `A` signals to `john` that this is a string simple command.
+        * `0` indicates the starting position, in this case `0`, meaning "before the first character."
+        * `"` is the chosen delimeter. In this example, we used a double-quote, but we could also use any other character we like, so long as the character we choose doesn't appear in the string literal we want to insert.
+        * `g8` is the string literal we want to insert.
+        * `"` is the second, and closing instance, of our chosen string delimeter.
+* To append a string of two or more characters, we use the string command again, but with a `z` as the character position "number." For example:
+    * `Az"g8"` will turn `password` into `passwordg8`. This is composed in exactly the same way as the previous example, but uses `z` instead of a number since this will work regardless of how many characters are in the given input word.
+* To generate password candidates with a range of characters at once, we can write those characters in square brackets with a dash in between indicating the range from the start to the end character. For example:
+    * `$[1-3]` will turn `password` into `password1`, `password2`, and `password3`. This is equivalent to the three rules `$1`, `$2`, and `$3` on three different lines, but is more concise and easier to write. Breaking this down:
+        * `$` is the command to append a single character, same as above.
+        * `[` begins a *preprocessor directive*, which tells `john` to treat the next sequence as a set of characters to automatically create rules for, independent.
+        * `1` is the first character in the range.
+        * `-` is the range specifier, which tells `john` to automatically fill in "from 1 to…" the ending character.
+        * `3` is the last character in the range, so `john` will create equivalent rules for everything "from 1 to 3."
+        * `]` ends the preprocessor directive.
+    * Similarly, `^[a-c]` will turn `password` into `apasswod`, `bpassword`, and `cpassword`, which shows that ranges work with letters, too.
+
+> :beginner: :bulb: You can find a complete description of John the Ripper's wordlist rule syntax in the `doc/RULES` file in JtR's source distribution, but another helpful reference is [Hashcat's Rule-based Attack page, which has a section named "Implemented compatible functions"](https://hashcat.net/wiki/doku.php?id=rule_based_attack#implemented_compatible_functions) that shows input and output examples for many of John the Ripper's simple commands. Hashcat is an alternative hash cracking tool with its own word mangling rule engine. Mercifully, much of Hashcat's wordlist rule syntax is the same as `john`'s.
+
+**Do this:**
+
+1. Translate the first two comments into actual wordlist rules.
+
+Your `john.local.conf` configuration file should now begin like this:
+
+```
+[List.Rules:EvilCorp]
+# Prepend and append Internet slang words like 'b4' and 'g8'.
+A0"b4"
+Az"b4"
+A0"g8"
+Az"g8"
+```
+
+> :beginner: As you're writing these wordlist rules, you can test them on a very short wordlist (such as the `sanitycheck.wordlist.txt`) by invoking `john` with its `--stdout` option, as before. This will give you feedback about whether or not your wordlist rules are doing what you expect them to. For example, `./john --wordlist=sanitycheck.wordlist.txt --rules=EvilCorp --stdout` should generated passwords including `g8randomGuess`, `randomGuessg8` and so forth.
+
+:construction: To crack these remaining passwords, we're going to have to use everything we've learned about password cracking so far.
 
 > :construction: TK-TODO: Just the "basics." Remember: the focus is demonstrating why the answer is *always* "just STFU and use a password manager." That means this section should be optimized for "aha" moments, along the lines of:
 > 
-> 1. Do the thing again, this time with `--rules` and so on.
->     * This should crack maybe one or two more passwords, again, to provide that "aha" moment for what `--rules` are and do.
 > 1. Next, introduce the idea that we can devise our own password guessing strategies, write our own rules files, etc.
 >     * Doing this correctly should reveal yet another couple of passwords; have the passwords be Mr. Robot themed but the rules common (adding numbers at the end, 1337 speak, and so on). Importantly, Tyrell's "bad noob" password is crackable with the right wordlist and --rules.
 > 1. Optionally, continue cracking more passwords with advanced modes such as `--loopback` and `--markov`; another "aha" moment with regards to the "smarts" of wordlists and why the only "good" passwords are *random* passwords.
@@ -774,6 +866,7 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 # Additional references
 
 * [Ars Technica: How I became a password cracker](https://arstechnica.com/security/2013/03/how-i-became-a-password-cracker/)
+* [How crackers ransack passwords like “qeadzcwrsfxv1331”](https://arstechnica.com/security/2013/05/how-crackers-make-minced-meat-out-of-your-passwords/)
 * [Password Haystacks: How Well-Hidden is Your Needle?](https://www.grc.com/haystack.htm)
 * [Hashcat: Advanced Password Recovery](https://hashcat.net/) - a popular alternative to John the Ripper
 * [Blog post by g0tmi1k about what makes for a good password cracking wordlist](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
