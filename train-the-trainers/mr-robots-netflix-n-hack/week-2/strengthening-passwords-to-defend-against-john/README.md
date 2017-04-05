@@ -689,7 +689,9 @@ John the Ripper's wordlist rules are always loaded from one or more configuratio
 .include "$JOHN/john.local.conf"
 ```
 
-We'll need to tell `john` that we're writing a wordlist ruleset, and we'll need to give this ruleset a name. The syntax for this is `[List.Rules:A_NEW_NAME]` on a line by itself, where `A_NEW_NAME` is the name we want to use. For instance, if the first line of the `john.local.conf` file was `[List.Rules:EvilCorp]`, then you could invoke `john` with `--rules=EvilCorp` to load the ruleset written in that section.
+> :beginner: :bulb: This is what's known as an "include directive" in John the Ripper's configuration file, sometimes more generically referred to as a "dot-command," because the directive begins with a dot (`.`). In this case, it translates to English as "read the contents of the `john.local.conf` file in whatever directories `john` searches for such files inside of (`$JOHN`) as though those files's contents were written here." The actual directory or directories to which the symbol `$JOHN` refers depends on how you've installed `john`, but if you've followed the instructions in the [set up](#set-up) section, it will always mean "`john`'s `run` folder."
+
+We'll need to tell `john` that we're writing a wordlist ruleset, and we'll need to give this ruleset a name. The syntax for this is `[List.Rules:A_NEW_NAME]` on a line by itself. Section headers in a JtR configuration file begin and end with square brackets, `List.Rules` signifies that the section will contain wordlist rules, the colon (`:`) introduces the section's name, and so `A_NEW_NAME` is the name we want to use. For instance, if the first line of the `john.local.conf` file was `[List.Rules:EvilCorp]`, then you could invoke `john` with `--rules=EvilCorp` to load the ruleset written in that section.
 
 **Do this:**
 
