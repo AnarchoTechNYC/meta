@@ -1,6 +1,6 @@
 # Securing your Wi-Fi router from infiltrators
 
-In this exercise, we will remotely take over a standard, off-the-shelf consumer Wi-Fi router, such as those often used in homes, cafés, and local businesses After we have taken control of the router, we will install an after-market system on one of our own routers and reconfigure it in a highly secure manner to immunize ourselves against the same sort of attack(s). Our goal is to understand how to better protect our homes, community establishments, and those networks' users from a variety of malicious attackers as well as how these attackers might target one of the most common electronic devices found in a home: the Wi-Fi router itself.
+In this exercise, we will remotely take over a standard, off-the-shelf consumer Wi-Fi router, such as those often used in homes, cafés, and local businesses. After we have taken control of the router, we will install an after-market system on one of our own routers and reconfigure it in a highly secure manner to immunize ourselves against the same sort of attack(s). Our goal is to understand how to better protect our homes, community establishments, and those networks' users from a variety of malicious attackers as well as how these attackers might target one of the most common electronic devices found in a home: the Wi-Fi router itself.
 
 Essentially, we will be probing for several types of [common wireless network vulnerabilities](https://en.wikipedia.org/wiki/Cracking_of_wireless_networks) and learn how to configure a small office or home office ("SoHo") Wi-Fi network securely.
 
@@ -16,7 +16,7 @@ Essentially, we will be probing for several types of [common wireless network vu
 
 When you complete this exercise, you will have acquired the following capabilities:
 
-* The ability to assess whether or not the Wi-Fi network you are using is "safe" or not for you, as its user, particularly useful for "public Wi-Fi networks."
+* The ability to assess whether or not the Wi-Fi network you are using is "safe" or not for you, as its user, which is particularly useful for "public Wi-Fi networks."
 * The ability to probe an arbitrary Wi-Fi network and its controlling device (the router) for basic security holes.
 * The ability to "flash" a consumer router, that is, to install and configure an after-market system firmware on it.
 
