@@ -67,7 +67,7 @@ As the sender, you must prepare an Onion site able to transmit the files to the 
 1. After Tor has successfully connected, you will see a Web browser window open and display (something that looks similar to) the following page:  
    ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20170303022638/http://core0.staticworld.net/images/article/2014/09/torbrowserhero-100449223-orig.png)
 1. Launch OnionShare. (Usually, this is as simple as double-clicking its icon.) You will be presented with the main OnionShare window:  
-   ![Screenshot of main OnionShare window on Windows.](https://web.archive.org/web/20170303022952/https://cdn.ghacks.net/wp-content/uploads/2017/03/onionshare.png)
+   ![Screenshot of main OnionShare window on Windows.](https://web.archive.org/web/20180427184305/http://temp.run/images/onionshare/onionshare_home_screen.png)
 1. Drag-and-drop the Death Star plans into the main OnionShare window, or click either the *Add Files* or *Add Folder* button and browse to the location of the Death Star plans on your computer to add them to your soon-to-be Onion site.
 1. Click the *Start Sharing* button. Wait a few moments as OnionShare prepares your Onion site.
     * When the Onion site is successfully running, the red indicator light will turn green and the "Start Sharing" button will change to read "Stop Sharing" instead.
