@@ -68,10 +68,12 @@ As the sender, you must prepare an Onion site able to transmit the files to the 
    ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20170303022638/http://core0.staticworld.net/images/article/2014/09/torbrowserhero-100449223-orig.png)
 1. Launch OnionShare. (Usually, this is as simple as double-clicking its icon.) You will be presented with the main OnionShare window:  
    ![Screenshot of main OnionShare window on Windows.](https://web.archive.org/web/20180427184305/http://temp.run/images/onionshare/onionshare_home_screen.png)
-1. Drag-and-drop the Death Star plans into the main OnionShare window, or click either the *Add Files* or *Add Folder* button and browse to the location of the Death Star plans on your computer to add them to your soon-to-be Onion site.
+1. Drag-and-drop the Death Star plans into the main OnionShare window, or click either the *Add Files* or *Add Folder* button and browse to the location of the Death Star plans on your computer to add them to your soon-to-be Onion site:  
+   ![Screenshot of main OnionShare window with Death Star Plans ready to be shared.](https://web.archive.org/web/20180427193254if_/https://user-images.githubusercontent.com/7214911/39380175-a3b3d6ea-4a2b-11e8-814a-84bfe61271e4.png)
 1. Click the *Start Sharing* button. Wait a few moments as OnionShare prepares your Onion site.
     * When the Onion site is successfully running, the red indicator light will turn green and the "Start Sharing" button will change to read "Stop Sharing" instead.
     * Additionally, two new buttons will appear ("Copy URL" and "Copy HidServAuth") next to a Web address that will look something like `http://fjqkh7xe7ol4tqws.onion/duct-crock`.
+    ![Screenshot of main OnionShare window with Onion service server started sharing Death Star Plans file.](https://web.archive.org/web/20180427193318if_/https://user-images.githubusercontent.com/7214911/39380176-a3c2dfb4-4a2b-11e8-96f1-8f574711354c.png)
 
 Now comes the tricky part! You must find a way to securely, secretly communicate this Web address to your friend. Remember, if you are caught communicating this secret information to your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
 
@@ -101,7 +103,7 @@ As the receiver, you must acquire knowledge of the secret Onion site where the D
 Now comes the tricky part! You must find a way to securely, secretly communicate with your friend to learn the Web address of their Onion site. Remember, if you are caught requesting this secret information from your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
 
 1. Once you have acquired the Onion site's Web address, carefully type it verbatim (or copy-and-paste it) into the location bar of your open Tor Browser, then press the "Go" button or press the Return key. If successful, you should see a page like the following:  
-   ![Screenshot of the OnionShare server providin the Death Star plans.](https://web.archive.org/web/20170303030140/https://i.imgur.com/4lSL92q.png)
+   ![Screenshot of the OnionShare server providin the Death Star plans.](https://web.archive.org/web/20180427193343if_/https://user-images.githubusercontent.com/7214911/39380177-a3d363e8-4a2b-11e8-9d49-eeb1b686185d.png)
 1. Click on the blue download link; it will start with "onionshare" and then have some random letters and numbers at the end.
     * OnionShare always packages all files in `.zip` format.
 1. After the download is complete, [uncompress the downloaded ZIP file](http://www.computerhope.com/issues/ch000506.htm) and confirm that the Death Star plans are now in your posession.
