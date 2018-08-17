@@ -4,7 +4,7 @@ Secure Shell (SSH) is an encrypted network protocol originally developed in 1995
 
 To learn SSH, you need at least two computers talking to each other: one playing client (the administrator's workstation or laptop), and one playing server (the remote system that the admin wants to log in to from afar). These days, multi-machine setups like this are easy to create using the magic of Virtual Machine (VM) hypervisors, which can create many (virtual) machines in just a few clicks. Sometimes referred to as a “Virtual Private Cloud” (VPC), these lab environments offer completely free and astonishingly powerful educational and operational opportunities.
 
-This workshop presents a brief crash course in configuring and hardening SSH. Along the way, we’ll also touch on some basics of spinning up a simple VPC using VirtualBox and Vagrant. We’ll have to create both the machines themselves and their virtualized network environment, so we'll cover some basic network engineering concepts as well. Finally, we’ll dig into the gritty of hardening your SSH server and client configurations so you can let your comrades in and keep the CIA out.
+This workshop presents a brief crash course in configuring and hardening SSH. Along the way, we’ll also touch on some basics of spinning up a simple VPC using VirtualBox and Vagrant. We’ll have to create both the machines themselves and their virtualized network environment, so we'll cover some basic network engineering concepts as well. Finally, we’ll dig into the gritty of hardening your SSH server and client configurations so you can let your comrades in and keep [the CIA](https://www.ssh.com/ssh/cia-bothanspy-gyrfalcon) out.
 
 # Contents
 
