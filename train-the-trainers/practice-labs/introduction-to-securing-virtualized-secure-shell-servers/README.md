@@ -27,7 +27,7 @@ This folder contains the following files and folders:
 
 * `README.md` - This file.
 * `Virtualized Network Topology.svg` - A Scalable Vector Graphics image file displaying the desired network topology for this lab.
-* `Virtualized Network Topology.xml` - An editable diagram that produces the `Virtualized Network Topology.svg` image file.
+* `Virtualized Network Topology.xml` - An editable [Draw.IO](https://draw.io/) diagram that can be exported as SVG to produce the `Virtualized Network Topology.svg` image file.
 * `centos-7/` - Used for the CentOS 7 Vagrant VM.
     * `Vagrantfile` - The Vagrant configuration for the CentOS 7 virtual machine.
 * `ubuntu-xenial64/` - Used for the Ubuntu Xenial 64  Vagrant VM.
