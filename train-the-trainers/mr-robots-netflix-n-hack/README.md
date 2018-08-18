@@ -4,8 +4,8 @@ In this folder, you'll find cybersecurity exercises and suggested demos that you
 
 This project is organized in the following way:
 
-* `week-<N>` folder, containing
-    * *`<exercise name>`* folder, containing material for each individual exercise or demo, consisting of
+* `week-<N>` folder, containing:
+    * *`<exercise name>`* folder, containing material for each individual exercise or demo, consisting of:
         * `README.md` file containing a detailed walkthrough of the exercise or demo, which is at a minimum comprised of the following sections:
             1. `Objectives` - a short list of achievable goals, no more than three or four. (If you are trying to accomplish more than four goals in one exercise, consider the possibility that you would be better off creating two separate exercises.)
             1. `Scenario` - a brief narrative describing the context relevant to the goals.
