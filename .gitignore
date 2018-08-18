@@ -1,0 +1,18 @@
+# This file tells git what files to ignore when staging commits.
+# Lines that start with '#' are comments.
+#
+# See https://help.github.com/articles/ignoring-files/ for more info.
+#
+######################################################################
+
+# The popular text editor `vi` and its derivatives (like `vim`) make
+# files with this extension when auto-saving files being edited.
+*.swp
+
+# Another popular text editor, `emacs`, also produces backup files
+# automatically. These end in the `~` character.
+*~
+
+# Mac OS X makes these files to hold Finder window settings.
+# See https://en.wikipedia.org/wiki/.DS_Store for more info.
+.DS_Store
