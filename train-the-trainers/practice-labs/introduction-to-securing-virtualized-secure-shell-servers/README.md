@@ -37,7 +37,7 @@ When you complete this lab, you will have acquired the following capabilities:
 * The ability to use Vagrant to create VirtualBox-backed virtual machines.
 * The ability to perform basic configuration and troubleshooting of VirtualBox-backed virtual networks.
 * The ability to audit an SSH server and client configuration file to spot potential security weaknesses.
-* The ability log in to an SSH server using SSH's built-in public key-based ("passwordless") authentication mechanism.
+* The ability to log in to an SSH server using SSH's built-in public key-based ("passwordless") authentication mechanism.
 
 # Bill of materials
 
@@ -75,7 +75,7 @@ In addition to your laptop or desktop computer, you will need to acquire the fol
 
 There are pre-built versions of the VirtualBox hypervisor software for Windows, macOS, GNU/Linux, and Solaris available for download from the [VirtualBox downloads page](https://www.virtualbox.org/wiki/Downloads). Your operating system's package repositories may also include a copy of VirtualBox, but be certain to double-check the version available there before installing it to ensure you are using a new-enough version of the software. For [FreeBSD users, VirtualBox is provided as a package or a source port and can be installed by following the instructions in the FreeBSD Handbook, §21.6](https://www.freebsd.org/doc/handbook/virtualization-host-virtualbox.html).
 
-Similarly, there are pre-built versions of Vagrant for Windows, macOS, and numerous differnt GNU/Linux flavors available from the [Vagrant downloads page](https://www.vagrantup.com/downloads.html). [Vagrant is also provided as a FreeBSD port](https://svnweb.freebsd.org/ports/head/sysutils/vagrant/). Solaris users can [install Vagrant by installing from source](https://www.vagrantup.com/docs/installation/source.html).
+Similarly, there are pre-built versions of Vagrant for Windows, macOS, and numerous different GNU/Linux flavors available from the [Vagrant downloads page](https://www.vagrantup.com/downloads.html). [Vagrant is also provided as a FreeBSD port](https://svnweb.freebsd.org/ports/head/sysutils/vagrant/). Solaris users can [install Vagrant by installing from source](https://www.vagrantup.com/docs/installation/source.html).
 
 ## VirtualBox installation
 
