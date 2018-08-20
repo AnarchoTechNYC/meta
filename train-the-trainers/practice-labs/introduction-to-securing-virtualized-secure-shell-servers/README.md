@@ -28,6 +28,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
         1. [Vagrant installation on Solaris](#vagrant-installation-on-solaris)
     1. [Vagrantfile creation](#vagrantfile-creation)
     1. [Virtual machine startup](#virtual-machine-startup)
+    1. [Network connectivity checking](#network-connectivity-checking)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
 1. [Discussion](#discussion)
@@ -211,9 +212,9 @@ Your Vagrant projects are now configured. :)
 
 ## Virtual machine startup
 
-With your `Vagrantfile`s written, you're ready to start up the virtual machines they describe. A number of additional things happen the very first time you turn on the virtual machines in a Vagrant project. This may include downloading their Vagrant boxes from the Internet as well as performing Vagrant's own initial setup of the virtual machine's operating system and user accounts. This often means that the first time you boot a virtual machine with Vagrant, it can take a bit more time than on subsequent startups.
+With your `Vagrantfile`s written, you're ready to start up the virtual machines they describe. A number of additional things happen the very first time you turn on the virtual machines in a Vagrant project. This may include downloading their Vagrant boxes from the Internet as well as performing Vagrant's own initial setup of the virtual machine's operating system and user accounts. This often means that the first time you boot a virtual machine with Vagrant it can take a bit more time to complete than it will on subsequent startups.
 
-To power on a virtual machine described in a `Vagrantfile` for the first time, you must first be somewhere within the Vagrant project root. Then, you invoke [the `vagrant up` command](https://www.vagrantup.com/docs/cli/up.html). This instructs Vagrant to look for a `Vagrantfile` in the current directory, or continue searching up the filesystem hierarchy in subsequent directories if a `Vagrantfile` is not in the current directory. We'll do this twice; once to start up our CentOS 7 virtual machine, and a second time to start up our Ubuntu Xenial virtual machine. The order in which you boot the virtual machines doesn't particularly matter, but you will eventually need both virtual machines powered on to complete this practice lab.
+To power on a virtual machine described in a `Vagrantfile` for the first time, you must first be somewhere within the Vagrant project root. Then, you invoke [the `vagrant up` command](https://www.vagrantup.com/docs/cli/up.html). This instructs Vagrant to look for a `Vagrantfile` in the current directory, or continue [searching up the filesystem hierarchy in subsequent directories](https://www.vagrantup.com/docs/vagrantfile/#lookup-path) if a `Vagrantfile` is not in the current directory. We'll do this twice; once to start up our CentOS 7 virtual machine, and a second time to start up our Ubuntu Xenial virtual machine. The order in which you boot the virtual machines doesn't particularly matter, but you will eventually need both virtual machines powered on to complete this practice lab.
 
 **Do this**:
 
@@ -234,9 +235,15 @@ To power on a virtual machine described in a `Vagrantfile` for the first time, y
 
 If successful, you should now have the two virtual machines running on the VirtualBox hypervisor. You can check that this is so by invoking [the `vagrant status` command](https://www.vagrantup.com/docs/cli/status.html) from within one of the Vagrant project directories. Alternatively, you can invoke [the `vagrant global-status` command](https://www.vagrantup.com/docs/cli/global-status.html) to see the current status of all your Vagrant projects in one list, regardless of your current working directory.
 
-> :beginner: As you might expect, Vagrant can also shut down virtual machines, not just start them up. The command for this is `vagrant halt`. Additionally, Vagrant can also interface with numerous VirtualBox features such as [snapshots](https://www.virtualbox.org/manual/ch01.html#snapshots) (via [the `vagrant snapshot` command](https://www.vagrantup.com/docs/cli/snapshot.html)) and [saving or restoring the running state of the virtual machine](https://www.virtualbox.org/manual/ch01.html#idm485) (via [the `vagrant suspend`](https://www.vagrantup.com/docs/cli/suspend.html) and [vagrant resume](https://www.vagrantup.com/docs/cli/resume.html) commands, respectively). We strongly encourage you to peruse the excellent [Vagrant CLI documentation](https://www.vagrantup.com/docs/cli/) to learn more about what you can do using Vagrant's command-line interface.
+> :beginner: As you might expect, Vagrant can also shut down virtual machines, not just start them up. The command for this is [`vagrant halt`](https://www.vagrantup.com/docs/cli/halt.html). Additionally, Vagrant can also interface with numerous VirtualBox features such as [snapshots](https://www.virtualbox.org/manual/ch01.html#snapshots) (via [the `vagrant snapshot` command](https://www.vagrantup.com/docs/cli/snapshot.html)) and [saving or restoring the running state of the virtual machine](https://www.virtualbox.org/manual/ch01.html#idm485) (via [the `vagrant suspend`](https://www.vagrantup.com/docs/cli/suspend.html) and [`vagrant resume`](https://www.vagrantup.com/docs/cli/resume.html) commands, respectively). We strongly encourage you to peruse the excellent [Vagrant CLI documentation](https://www.vagrantup.com/docs/cli/) to learn more about what you can do using Vagrant's command-line interface.
 >
-> Importantly, when you're well and truly done with your Vagrant project or this practice lab, you'll want to use [the `vagrant destroy` command](https://www.vagrantup.com/docs/cli/destroy.html) to delete the virtual machine in its entirety and reclaim your physical (host) machine's hard disk space and clean up after yourself.
+> Importantly, when you're well and truly done with your Vagrant project or this practice lab, you'll want to use [the `vagrant destroy` command](https://www.vagrantup.com/docs/cli/destroy.html). This will delete the virtual machines defined in your `Vagrantfile` in their entirety, reclaiming your physical (host) machine's hard disk space and generally cleaning up after yourself.
+
+Another way to check that your virtual machines are, in fact, powered on is simply to open the graphical VirtualBox Manager application. You should see that both virtual machines are now registered with VirtualBox and are shown to be in the "Running" state. Once both of the practice lab's virtual machines are up and running, you can continue to the next section.
+
+## Network connectivity checking
+
+> :construction: TK-TODO
 
 # Practice
 
