@@ -6,8 +6,6 @@ To learn SSH, you need at least two computers talking to each other: one playing
 
 This workshop presents a brief crash course in configuring and hardening SSH. Along the way, we’ll also touch on some basics of spinning up a simple VPC using the free and open source [VirtualBox](https://en.wikipedia.org/wiki/VirtualBox) type-2 [hypervisor](https://en.wikipedia.org/wiki/Hypervisor) and the [Vagrant](https://en.wikipedia.org/wiki/Vagrant_%28software%29) hypervisor automation utility. We’ll have to create both the machines themselves and their virtualized network environment, so we'll cover some basic network engineering concepts as well. Finally, we’ll dig into the gritty of hardening (securing) your SSH server and client configurations so you can let your comrades in and keep [the CIA](https://www.ssh.com/ssh/cia-bothanspy-gyrfalcon) out.
 
-![Desired state of the virtualized network topology.](https://github.com/AnarchoTechNYC/meta/raw/master/train-the-trainers/practice-labs/introduction-to-securing-virtualized-secure-shell-servers/Virtualized%20Network%20Topology.svg?sanitize=true)
-
 # Contents
 
 1. [Objectives](#objectives)
@@ -43,8 +41,12 @@ When you complete this lab, you will have acquired the following capabilities:
 
 * The ability to use Vagrant to create VirtualBox-backed virtual machines.
 * The ability to perform basic configuration and troubleshooting of VirtualBox-backed virtual networks.
-* The ability to audit an SSH server and client configuration file to spot potential security weaknesses.
-* The ability to log in to an SSH server using SSH's built-in public key-based ("passwordless") authentication mechanism.
+* The ability to audit SSH server and client configuration files to spot potential security weaknesses and prove that these hardened configurations are in effect on both server and client endpoints.
+* The ability to log in to an SSH server using SSH's public key-based ("passwordless") authentication mechanism.
+
+To successfully complete this lab, you will need to construct a virtualized network that matches the diagram shown below. We suggest that you refer to this diagram throughout this practice lab to check your understand of the material presented herein.
+
+![Desired state of the virtualized network topology.](https://github.com/AnarchoTechNYC/meta/raw/master/train-the-trainers/practice-labs/introduction-to-securing-virtualized-secure-shell-servers/Virtualized%20Network%20Topology.svg?sanitize=true)
 
 # Bill of materials
 
@@ -244,6 +246,39 @@ Another way to check that your virtual machines are, in fact, powered on is simp
 ## Network connectivity checking
 
 > :construction: TK-TODO
+
+
+> :construction: No DHCP reply may result in an IP address configuration like so on Ubuntu:
+```
+$ ip address
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 02:48:3e:15:b5:0c brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global enp0s3
+       valid_lft forever preferred_lft forever
+    inet6 fe80::48:3eff:fe15:b50c/64 scope link
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:62:c4:26 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::a00:27ff:fe62:c426/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+Same dealio on the CentOS 7 box:
+
+```
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:aa:0a:e6 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::a00:27ff:feaa:ae6/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+> :beginner: :construction: TK-TODO: Note the difference in the device names, i.e., `eth1` versus `enp0s8`. See the [Predictable Network Interface Names page on the Freedesktop Project's wiki](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/) for details.
 
 # Practice
 
