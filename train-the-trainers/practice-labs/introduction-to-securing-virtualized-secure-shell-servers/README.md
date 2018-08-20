@@ -27,11 +27,13 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
         1. [Vagrant installation on FreeBSD](#vagrant-installation-on-freebsd)
         1. [Vagrant installation on Solaris](#vagrant-installation-on-solaris)
     1. [Vagrantfile creation](#vagrantfile-creation)
+    1. [Virtual machine startup](#virtual-machine-startup)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
     1. [VirtualBox networking modes](#virtualbox-networking-modes)
+    1. [VirtualBox DHCP servers](#virtualbox-dhcp-servers)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -205,7 +207,13 @@ Both of our `Vagrantfile`s will need this same line, and by including this same 
 1. Add the `config.vm.network` method call as described above inside the configuration block (i.e., immediately following the `config.vm.box` line), then save the file.
 1. Repeat the first two steps for your Ubuntu Xenial Vagrant project, as well.
 
-Your Vagrant projects are now configured. :) You're ready to begin the practice lab.
+Your Vagrant projects are now configured. :)
+
+## Virtual machine startup
+
+With your `Vagrantfile`s written, you're ready to start up the virtual machines they describe. A number of additional things happen the very first time you turn on the virtual machines in a Vagrant project. This may include downloading their Vagrant boxes from the Internet as well as performing Vagrant's own initial setup of the virtual machine's operating system and user accounts. This often means that the first time you boot a virtual machine with Vagrant, it can take a bit more time than most subsequent startups.
+
+> :construction: TK-TODO
 
 # Practice
 
@@ -247,6 +255,10 @@ For the purposes of this lab, the important networking modes you should be aware
 * `Internal Network` - This networking mode creates an entirely new network that is wholly separate from both the outside world and any other virtual network. VirtualBox's internal networks can be *named* so that more than one virtual machine can be connected to the same internal network. This is handy for creating networks that are completely disconnected from any other network (including disconnected from the Internet!) but that can nevertheless house more than one virtual machine at a time.
 
 More complete information about VirtualBox's various networking modes, including additional networking modes not mentioned in this section, are detailed in [§6.2, "Introduction to networking modes," of the VirtualBox Manual](https://www.virtualbox.org/manual/ch06.html#networkingmodes).
+
+## VirtualBox DHCP servers
+
+> :construction: TK-TODO
 
 # Additional references
 
