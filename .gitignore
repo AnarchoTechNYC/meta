@@ -16,3 +16,10 @@
 # Mac OS X makes these files to hold Finder window settings.
 # See https://en.wikipedia.org/wiki/.DS_Store for more info.
 .DS_Store
+
+# We maintain several Vagrant projects as practice labs or other
+# instructional material. When a Vagrant project is started, a folder
+# named `.vagrant` is created to store metadata associated with that
+# project. These are generated automatically, so we never want to
+# commit them into this repository. They are therefor ignored here.
+.vagrant
