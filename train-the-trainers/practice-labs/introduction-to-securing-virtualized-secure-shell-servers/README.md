@@ -53,9 +53,9 @@ To successfully complete this lab, you will need to construct a virtualized netw
 This folder contains the following files and folders:
 
 * `README.md` - This file.
+* `Screenshots/` - Contains images used to augment the lab's textual material; these are not directly related to the lab's practice steps.
 * `Virtualized Network Topology.svg` - A Scalable Vector Graphics image file displaying the desired network topology for this lab.
 * `Virtualized Network Topology.xml` - An editable [Draw.IO](https://draw.io/) diagram that can be exported as SVG to produce the `Virtualized Network Topology.svg` image file.
-* `Screenshots/` - Contains images used to augment the lab's textual material; these are not related to the lab's practice steps directly.
 * `centos-7/` - Used for the CentOS 7 Vagrant VM.
     * `Vagrantfile` - The Vagrant configuration for the CentOS 7 virtual machine.
 * `ubuntu-xenial64/` - Used for the Ubuntu Xenial 64  Vagrant VM.
@@ -216,7 +216,7 @@ Your Vagrant projects are now configured. :)
 
 With your `Vagrantfile`s written, you're ready to start up the virtual machines they describe. A number of additional things happen the very first time you turn on the virtual machines in a Vagrant project. This may include downloading their Vagrant boxes from the Internet as well as performing Vagrant's own initial setup of the virtual machine's operating system and user accounts. This often means that the first time you boot a virtual machine with Vagrant it can take a bit more time to complete than it will on subsequent startups.
 
-To power on a virtual machine described in a `Vagrantfile` for the first time, you must first be somewhere within the Vagrant project root. Then, you invoke [the `vagrant up` command](https://www.vagrantup.com/docs/cli/up.html). This instructs Vagrant to look for a `Vagrantfile` in the current directory, or continue [searching up the filesystem hierarchy in subsequent directories](https://www.vagrantup.com/docs/vagrantfile/#lookup-path) if a `Vagrantfile` is not in the current directory. We'll do this twice; once to start up our CentOS 7 virtual machine, and a second time to start up our Ubuntu Xenial virtual machine. The order in which you boot the virtual machines doesn't particularly matter, but you will eventually need both virtual machines powered on to complete this practice lab.
+To power on a virtual machine described in a `Vagrantfile` for the first time, you must first be somewhere within the Vagrant project. Then, you invoke [the `vagrant up` command](https://www.vagrantup.com/docs/cli/up.html). This instructs Vagrant to look for a `Vagrantfile` in the current directory, or continue [searching up the filesystem hierarchy in subsequent directories](https://www.vagrantup.com/docs/vagrantfile/#lookup-path) if a `Vagrantfile` is not in the current directory. We'll do this twice; once to start up our CentOS 7 virtual machine, and a second time to start up our Ubuntu Xenial virtual machine. The order in which you boot the virtual machines doesn't particularly matter, but you will eventually need both virtual machines powered on to complete this practice lab.
 
 **Do this**:
 
@@ -245,8 +245,11 @@ Another way to check that your virtual machines are, in fact, powered on is simp
 
 ## Network connectivity checking
 
-> :construction: TK-TODO
+Recall that the purpose of SSH is to securely access one computer from a second. This implies that the two computers must be able to send messages to and receive messages from one another, whether secured or not. If the two computers can't interact for any reason, then whether you have hardened your SSH session is a moot point, since you cannot make use of the SSH protocol in the first place. Therefor, before we even concern ourselves with SSH, we need to ensure that the one machine is able to contact the other, and vice versa.
 
+Further, in order for one machine to send a message to another, it must have the name of the place at which the intended recipient can be found. This name is called an *address*. At this fundamental level, computer addresses work exactly the same way as postal address. If you've ever sent a postcard to a family member or friend while on vacation, you've written an address. Likewise, if you've ever sent an email to a coworker, chatted with a friend on Facebook, or placed a telephone call, you've used an address to direct the message towards your recipient. Postcards use *mailing addresses*, Facebook chats use Facebook *user names*, e-mails use *email addresses*, and telephone calls use *telephone numbers*. These are all examples of addresses.
+
+In digital networks (like the Internet), the place in this network at which a given machine can be found is an address called an *[Internet Protocol (IP)](https://simple.wikipedia.org/wiki/Internet_Protocol) address*. In order for our virtual machines to be able to communicate with one another, both of them need to have their own IP address. When one sends a message to the other, it will write its own IP address on the message's envelope in the *source IP* field and, unsurprisingly, it will write the IP address of the intended recipient of the message on the message's envelope in the *destination IP* field. These message envelopes are called *IP packet headers*.
 
 > :construction: No DHCP reply may result in an IP address configuration like so on Ubuntu:
 ```
