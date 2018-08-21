@@ -176,13 +176,13 @@ At this point it would behoove you to inspect the Vagrantfiles, so open each in 
 
 For instance, the CentOS 7 machine's `Vagrantfile` should have a line that looks like this:
 
-```
+```ruby
 config.vm.box = "centos/7"
 ```
 
 Meanwhile, the Ubuntu Xenial machine's `Vagrantfile` should have a similar line, but the `config.vm.box` variable should be assigned a different value:
 
-```
+```ruby
 config.vm.box = "ubuntu/xenial64"
 ```
 
@@ -198,7 +198,7 @@ In order for our two virtual machines to be able to hear one another when they s
 
 Each time we call the `config.vm.network` method, Vagrant tries adding another NIC to the virtual machine it's building for us. We'll want to ensure that our second NIC is not accessible by the outside world, so we'll pass [`private_network`](https://www.vagrantup.com/docs/networking/private_network.html) as the first [(positional) argument](https://ruby-doc.org/core-2.0.0/doc/syntax/calling_methods_rdoc.html#label-Positional+Arguments) to the method. Further, we want to have Vagrant configure the virtual machine's operating system to automatically configure an IP address for that network interface, so we'll also pass `type: "dhcp"` as a [keyword argument](https://ruby-doc.org/core-2.0.0/doc/syntax/calling_methods_rdoc.html#label-Keyword+Arguments). Finally, we don't just want to attach the network interface card to any random network, but a specific network, so we'll give this network a name, say `sshtestnet`, by passing `virtualbox__intnet: "sshtestnet"` as another keyword argument. The full method call will look like this:
 
-```
+```ruby
 config.vm.network "private_network", type: "dhcp", virtualbox__intnet: "sshtestnet"
 ```
 
