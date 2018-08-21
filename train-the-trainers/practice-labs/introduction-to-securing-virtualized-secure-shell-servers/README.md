@@ -250,9 +250,9 @@ Another way to check that your virtual machines are, in fact, powered on is simp
 
 In order to complete this lab, we must first be able to operate within the context of virtual machine itself. Put another way, we need to leave our physical machine and enter the virtual machine. We can do this in one of two ways.
 
-1. Use VirtualBox to bring up a simulated video display and keyboard plugged directly into the VM's virtualized hardware.
-1. Use the SSH facility provided by Vagrant to access a command shell running in the VM's operating system.
-    > :beginner: Yes, it's a little ironic that Vagrant already provides an SSH facility for us to use. This is in fact the same SSH facility that we will be hardening. Not to worry, though! All this means is that we won't need to *install* the SSH software ourselves, since all Vagrant boxes already package SSH as part of their base box. This, like the first network adapter, is a hard requirement of all Vagrant boxes since Vagrant itself uses SSH to remotely administer the virtual machine. In fact, commands like `vagrant halt` are simply shortcuts for opening an SSH connection to your virtual machine and issuing the `shutdown(1)` command (or an equivalent, if the virtual machine is not running an operating system for which `shutdown` is a recognized command.
+* Use VirtualBox to bring up a simulated video display and keyboard plugged directly into the VM's virtualized hardware.
+* Use the SSH facility provided by Vagrant to access a command shell running in the VM's operating system.
+    > :beginner: Yes, it's a little ironic that Vagrant already provides an SSH facility for us to use. This is in fact the same SSH facility that we will be hardening. Not to worry, though! All this means is that we won't need to *install* the SSH software ourselves, since all Vagrant boxes already package SSH as part of their base box. This, like the first network adapter, is a hard requirement of all Vagrant boxes since Vagrant itself uses SSH to remotely administer the virtual machine. In fact, commands like `vagrant halt` are simply shortcuts for opening an SSH connection to your virtual machine and issuing the `shutdown(1)` command (or an equivalent, if the virtual machine is not running an operating system for which `shutdown` is a recognized command).
 
 It's useful to know about both of these methods because it's very possible that you will nullify your ability to use the second method (Vagrant's SSH facility) if you make certain errors during this practice lab. In case you do, you'll still be able to use the first method (the direct VirtualBox console) to recover. Your third option, of course, is to start over (discarding all your progress) by using [the `vagrant destroy` command](https://www.vagrantup.com/docs/cli/destroy.html).
 
@@ -262,9 +262,9 @@ Let's showcase the VirtualBox console first, and then try out Vagrant's (arguabl
 
 1. Launch the graphical VirtualBox Manager application if it is not already opened as described in [§1.7, "Starting Virtual" of the VirtualBox Manual](https://www.virtualbox.org/manual/ch01.html#idm272).
 1. Look for two virtual machines in the list on the left-hand sidebar of the main "Oracle VM VirtualBox Manager" window with names that begin with `centos-7_default` and `ubuntu-xenial64_default` and end in numbers. These are the virtual machines Vagrant created for you.
-    > :beginner: The numbers in your Vagrant virtual machine names are timestamps that indicate when the virtual machine was created. You can customize the name that Vagrant gives to a VirtualBox virtual machine by adding [a special, VirtualBox-specific variable in your `Vagrantfile`](https://www.vagrantup.com/docs/virtualbox/configuration.html#virtual-machine-name). Without this special variable, Vagrant defaults to using the name of the folder containing the `Vagrantfile` with `_default` and a timestamp appended to it as the name of the VirtualBox VM.
+    > :beginner: The numbers in your Vagrant virtual machine names are timestamps that indicate when the virtual machine was created. You can customize the name that Vagrant gives to a VirtualBox virtual machine by adding [a special, VirtualBox-specific variable in your `Vagrantfile`](https://www.vagrantup.com/docs/virtualbox/configuration.html#virtual-machine-name). Without this special variable, Vagrant defaults to using the name of the folder containing the `Vagrantfile` with `_default_` and a timestamp appended to it as the name of the VirtualBox VM.
 1. Double-click on one of the Vagrant virtual machines in the list. This will open a new window whose contents is the video output of the virtual machine's display.
-1. Click once inside the window (which may be blank, or all black) to let VirtualBox *capture* your mouse and keyboard motion. VirtualBox will now route all your keyboard presses and mouse movements to the input of the virtual machine and away from your physical computer.
+1. Click once inside the window (which may be blank, or all black) to let VirtualBox *capture* your keyboard and mouse movements. VirtualBox will now route all your keyboard presses and mouse movements to the input of the virtual machine and away from your physical computer.
 1. Press the `Enter` or `Return` key on your keyboard. Eventually, your virtual machine will notice the input and display a login prompt, as shown below:  
     ![Login prompt of the CentOS 7 virtual machine running in VirtualBox.](Screenshots/virtualbox-vm-centos-7-gui-login.png)
 1. At either login prompt, type `vagrant` as the username, then press `Return`.
@@ -272,7 +272,7 @@ Let's showcase the VirtualBox console first, and then try out Vagrant's (arguabl
 
 You should now be logged in to a command shell inside the virtual machine, as shown below:
 
-![Screenshot showing successful login to a CentOS 7 virtual machine via VirtualBox console.](Screenshots/virtualbox-vm-cnetos-7-gui-login-command-prompt.png)
+![Screenshot showing successful login to a CentOS 7 virtual machine via VirtualBox console.](Screenshots/virtualbox-vm-centos-7-gui-login-command-prompt.png)
 
 This method of accessing your virtual machine emulates having a physical keyboard, video monitor, and possibly also a mouse directly attached to the virtual machine. The window that VirtualBox presents to you is the output of the virtual machine's video card. Your keyboard and mouse or trackpad is routing its input directly to the virtual machine. It's as though you have physically sat down in front of the machine itself.
 
