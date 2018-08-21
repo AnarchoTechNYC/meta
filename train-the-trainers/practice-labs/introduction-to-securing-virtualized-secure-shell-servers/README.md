@@ -26,6 +26,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
         1. [Vagrant installation on Solaris](#vagrant-installation-on-solaris)
     1. [Vagrantfile creation](#vagrantfile-creation)
     1. [Virtual machine startup](#virtual-machine-startup)
+    1. [Virtual machine operation](#virtual-machine-operation)
     1. [Network connectivity checking](#network-connectivity-checking)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
@@ -243,13 +244,79 @@ If successful, you should now have the two virtual machines running on the Virtu
 
 Another way to check that your virtual machines are, in fact, powered on is simply to open the graphical VirtualBox Manager application. You should see that both virtual machines are now registered with VirtualBox and are shown to be in the "Running" state. Once both of the practice lab's virtual machines are up and running, you can continue to the next section.
 
+## Virtual machine operation
+
+> :beginner: A quick note on terminology: when discussing the relationship between a physical machine and a virtual machine, we say that the physical machine is the *host* machine and the virtualized machine is its *guest*. This is because the virtual machine (guest) is, ultimately, sharing resources with the underlying physical machine; it is at the mercy of its host. In this lab, we take care to make this distinction as clear as possible, though you will often hear the terms *host* and *guest* without much additional context.
+
+In order to complete this lab, we must first be able to operate within the context of virtual machine itself. Put another way, we need to leave our physical machine and enter the virtual machine. We can do this in one of two ways.
+
+1. Use VirtualBox to bring up a simulated video display and keyboard plugged directly into the VM's virtualized hardware.
+1. Use the SSH facility provided by Vagrant to access a command shell running in the VM's operating system.
+    > :beginner: Yes, it's a little ironic that Vagrant already provides an SSH facility for us to use. This is in fact the same SSH facility that we will be hardening. Not to worry, though! All this means is that we won't need to *install* the SSH software ourselves, since all Vagrant boxes already package SSH as part of their base box. This, like the first network adapter, is a hard requirement of all Vagrant boxes since Vagrant itself uses SSH to remotely administer the virtual machine. In fact, commands like `vagrant halt` are simply shortcuts for opening an SSH connection to your virtual machine and issuing the `shutdown(1)` command (or an equivalent, if the virtual machine is not running an operating system for which `shutdown` is a recognized command.
+
+It's useful to know about both of these methods because it's very possible that you will nullify your ability to use the second method (Vagrant's SSH facility) if you make certain errors during this practice lab. In case you do, you'll still be able to use the first method (the direct VirtualBox console) to recover. Your third option, of course, is to start over (discarding all your progress) by using [the `vagrant destroy` command](https://www.vagrantup.com/docs/cli/destroy.html).
+
+Let's showcase the VirtualBox console first, and then try out Vagrant's (arguably more comfortable) SSH facility.
+
+**Do this:**
+
+1. Launch the graphical VirtualBox Manager application if it is not already opened as described in [§1.7, "Starting Virtual" of the VirtualBox Manual](https://www.virtualbox.org/manual/ch01.html#idm272).
+1. Look for two virtual machines in the list on the left-hand sidebar of the main "Oracle VM VirtualBox Manager" window with names that begin with `centos-7_default` and `ubuntu-xenial64_default` and end in numbers. These are the virtual machines Vagrant created for you.
+    > :beginner: The numbers in your Vagrant virtual machine names are timestamps that indicate when the virtual machine was created. You can customize the name that Vagrant gives to a VirtualBox virtual machine by adding [a special, VirtualBox-specific variable in your `Vagrantfile`](https://www.vagrantup.com/docs/virtualbox/configuration.html#virtual-machine-name). Without this special variable, Vagrant defaults to using the name of the folder containing the `Vagrantfile` with `_default` and a timestamp appended to it as the name of the VirtualBox VM.
+1. Double-click on one of the Vagrant virtual machines in the list. This will open a new window whose contents is the video output of the virtual machine's display.
+1. Click once inside the window (which may be blank, or all black) to let VirtualBox *capture* your mouse and keyboard motion. VirtualBox will now route all your keyboard presses and mouse movements to the input of the virtual machine and away from your physical computer.
+1. Press the `Enter` or `Return` key on your keyboard. Eventually, your virtual machine will notice the input and display a login prompt, as shown below:  
+    ![Login prompt of the CentOS 7 virtual machine running in VirtualBox.](Screenshots/virtualbox-vm-centos-7-gui-login.png)
+1. At either login prompt, type `vagrant` as the username, then press `Return`.
+1. At the password prompt, type `vagrant` as the password, then press `Return`. Unlike the username prompt, the password you type will not be echoed back to your screen.
+
+You should now be logged in to a command shell inside the virtual machine, as shown below:
+
+![Screenshot showing successful login to a CentOS 7 virtual machine via VirtualBox console.](Screenshots/virtualbox-vm-cnetos-7-gui-login-command-prompt.png)
+
+This method of accessing your virtual machine emulates having a physical keyboard, video monitor, and possibly also a mouse directly attached to the virtual machine. The window that VirtualBox presents to you is the output of the virtual machine's video card. Your keyboard and mouse or trackpad is routing its input directly to the virtual machine. It's as though you have physically sat down in front of the machine itself.
+
+Using the VirtualBox Manager in this manner means no network connections are involved. In fact, your virtual machine doesn't even need to have a network adapter installed for this to function. If you are ever unable to access your virtual machine using a network connection (like SSH), you can still control it through this emulated physical connection. You might hear this method described as a *direct console*, *serial console*, or *physical console*.
+
+> :beginner: In order to disconnect your physical keyboard and mouse from the virtual machine and return to using your host computer normally, VirtualBox watches for any press of a special key it calls the *host key*. On most computers, this is the right Control key. On macOS computers, it is the left Command key. Learn more about [capturing and releasing keyboard and mouse input in §1.9.2 of the VirtualBox Manual](https://www.virtualbox.org/manual/ch01.html#keyb_mouse_normal).
+
+Now that you can reliably control your virtual machine regardless of network connectivity, let's try using Vagrant's SSH facility to do the same thing.
+
+**Do this:**
+
+1. Release your keyboard and mouse from the virtual machine by pressing the VirtualBox host key. On most host machines, this is the right Control key. On macOS hosts, it is the left Command key.
+1. From the *Machine* menu, choose *Detach GUI*. This will close the window showing the virtual machine's monitor without shutting down the virtual machine itself.
+1. Return to your host terminal.
+1. Navigate to the `centos-7` folder.
+1. Use Vagrant to make an SSH connection and remotely log in to the CentOS 7 virtual machine using [the `vagrant ssh` command](https://www.vagrantup.com/docs/cli/ssh.html). If successful, you should see output similar to the following snippet:
+    ```sh
+    you@your-host$ vagrant ssh
+    Last login: Tue Aug 21 22:26:15 2018
+    [vagrant@localhost ~]$
+    ```
+1. Confirm that you are now remotely logged in to the virtual machine and have assumed the `vagrant` user identity by issuing a command such as `whoami(1)` or `who(1)`. For example:
+    ```sh
+    [vagrant@localhost ~]$ whoami
+    vagrant
+    [vagrant@localhost ~]$ who
+    vagrant  tty1         2018-08-21 22:26
+    vagrant  pts/0        2018-08-21 22:56 (10.0.2.2)
+    [vagrant@localhost ~]$
+    ```
+
+You are now at the command line of the CentOS 7 virtual machine. Using `vagrant ssh` from a Vagrant project directory, you can immediately access the command line of the virtual machine using the pre-provisioned SSH server that came as part of the Vagrant box and the first (NAT'ed) network adapter that Vagrant instructs VirtualBox to attach to the virtual machine. The next step is to ensure that your two virtual machines can communicate with one another through the second network interface card that you configured in their respective `Vagrantfile`.
+
 ## Network connectivity checking
 
 Recall that the purpose of SSH is to securely access one computer from a second. This implies that the two computers must be able to send messages to and receive messages from one another, whether secured or not. If the two computers can't interact for any reason, then whether you have hardened your SSH session is a moot point, since you cannot make use of the SSH protocol in the first place. Therefor, before we even concern ourselves with SSH, we need to ensure that the one machine is able to contact the other, and vice versa.
 
 Further, in order for one machine to send a message to another, it must have the name of the place at which the intended recipient can be found. This name is called an *address*. At this fundamental level, computer addresses work exactly the same way as postal address. If you've ever sent a postcard to a family member or friend while on vacation, you've written an address. Likewise, if you've ever sent an email to a coworker, chatted with a friend on Facebook, or placed a telephone call, you've used an address to direct the message towards your recipient. Postcards use *mailing addresses*, Facebook chats use Facebook *user names*, e-mails use *email addresses*, and telephone calls use *telephone numbers*. These are all examples of addresses.
 
-In digital networks (like the Internet), the place in this network at which a given machine can be found is an address called an *[Internet Protocol (IP)](https://simple.wikipedia.org/wiki/Internet_Protocol) address*. In order for our virtual machines to be able to communicate with one another, both of them need to have their own IP address. When one sends a message to the other, it will write its own IP address on the message's envelope in the *source IP* field and, unsurprisingly, it will write the IP address of the intended recipient of the message on the message's envelope in the *destination IP* field. These message envelopes are called *IP packet headers*.
+In many modern digital networks (like the Internet), the "place" in the network at which a given machine can be found is an address called an *[Internet Protocol (IP)](https://simple.wikipedia.org/wiki/Internet_Protocol) address*. In order for our virtual machines to be able to communicate with one another, both of them need to have their own IP address. When one sends a message to the other, it will write its own IP address on the message's envelope in the *source IP* field and, unsurprisingly, it will write the IP address of its intended recipient on the message's envelope in the *destination IP* field. These message envelopes are called *packet headers*.
+
+> :beginner: :bulb: If you think about it, of course, it's not enough merely to give two machines addresses. These addresses need to be *routable* between each other. That is, there needs to be an unbroken pathway from point A (the source) to point B (the destination), which further means each intermediary device handling their messages can forward them in the appropriate direction. Internetwork routing is beyond the scope of this lab, but have a look at [Henrik Frystyk's excellent (and superbly brief) *Introduction to the Internet*](https://www.w3.org/People/Frystyk/thesis/Internet.html), circa 1994, for more information. His article also lists references that, while old, are still profoundly relevant today.
+
+In order to check the virtual machine for network connectivity, :construction: TK-TODO
 
 > :construction: No DHCP reply may result in an IP address configuration like so on Ubuntu:
 ```
