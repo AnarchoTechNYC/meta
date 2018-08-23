@@ -28,11 +28,14 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
     1. [Virtual machine startup](#virtual-machine-startup)
     1. [Virtual machine operation](#virtual-machine-operation)
     1. [Network connectivity checking](#network-connectivity-checking)
+    1. [VirtualBox DHCP server configuration](#virtualbox-dhcp-server-configuration)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
     1. [VirtualBox networking modes](#virtualbox-networking-modes)
+    1. [Network interfaces on GNU/Linux](#network-interfaces-on-gnulinux)
+    1. [DHCP options](#dhcp-options)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -202,7 +205,7 @@ Each time we call the `config.vm.network` method, Vagrant tries adding another N
 config.vm.network "private_network", type: "dhcp", virtualbox__intnet: "sshtestnet"
 ```
 
-> :beginner: :construction: TK-TODO This is the first time we've encountered the term "DHCP" so remark on that and link to a future section; maybe a discussion section, maybe a future set up step?
+> :beginner: While the `sshtestnet` (part of the `virtualbox__intnet` keyword argument) is arbitrary—it merely needs to be the same for both `Vagrantfile`s—the `type: "dhcp"` keyword argument is not. It refers to the [Dynamic Host Configuration Protocol](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol). DHCP is a way that network administrators can automatically inform machines joining their network what networking parameters they should use in order to have access to network services, not least of which is acess to the Internet. You may not have heard about it before, but you probably use DHCP every time you connect to a Wi-Fi network. We describe the use and purpose of DHCP in the [VirtualBox DHCP server configuration](#virtualbox-dhcp-server-configuration) section, a little further on in this lab set up guide.
 
 Both of our `Vagrantfile`s will need this same line, and by including this same line in both projects, both virtual machines will be attached to the same virtual network.
 
@@ -317,39 +320,69 @@ In many modern digital networks (like the Internet), the "place" in the network 
 
 > :beginner: :bulb: If you think about it, of course, it's not enough merely to give two machines addresses. These addresses need to be *routable* between each other. That is, there needs to be an unbroken pathway from point A (the source) to point B (the destination), which further means each intermediary device handling their messages can forward them in the appropriate direction. Internetwork routing is beyond the scope of this lab, but have a look at [Henrik Frystyk's excellent (and superbly brief) *Introduction to the Internet*](https://www.w3.org/People/Frystyk/thesis/Internet.html), circa 1994, for more information. His article also lists references that, while old, are still profoundly relevant today.
 
-In order to check the virtual machine for network connectivity, :construction: TK-TODO
+In this lab, both virtual machines are connected to two different networks: the NAT network required by Vagrant connects the virtual machine to the Internet, and the VirtualBox internal network we named `sshtestnet` is intended to allow the virtual machines to communicate with one another. It is our connections to this second network that we will be examining more closely.
 
-> :construction: No DHCP reply may result in an IP address configuration like so on Ubuntu:
-```
-$ ip address
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host
-       valid_lft forever preferred_lft forever
-2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 02:48:3e:15:b5:0c brd ff:ff:ff:ff:ff:ff
-    inet 10.0.2.15/24 brd 10.0.2.255 scope global enp0s3
-       valid_lft forever preferred_lft forever
-    inet6 fe80::48:3eff:fe15:b50c/64 scope link
-       valid_lft forever preferred_lft forever
-3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 08:00:27:62:c4:26 brd ff:ff:ff:ff:ff:ff
-    inet6 fe80::a00:27ff:fe62:c426/64 scope link
-       valid_lft forever preferred_lft forever
-```
+**Do this:**
 
-Same dealio on the CentOS 7 box:
+1. Log in to the CentOS 7 virtual machine using `vagrant ssh` if you have not already done so.
+1. Look up the current IP network address configurations of the virtual machine by invoking [the `ip address` command](https://explainshell.com/explain?cmd=ip+address). You will see a readout showing you information about each of the machine's IP network devices and the current state of each of them:
+    ```sh
+    $ ip address
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+           valid_lft forever preferred_lft forever
+        inet6 ::1/128 scope host
+           valid_lft forever preferred_lft forever
+    2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+        link/ether 52:54:00:c9:c7:04 brd ff:ff:ff:ff:ff:ff
+        inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic eth0
+           valid_lft 85862sec preferred_lft 85862sec
+        inet6 fe80::5054:ff:fec9:c704/64 scope link
+           valid_lft forever preferred_lft forever
+    3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+        link/ether 08:00:27:aa:0a:e6 brd ff:ff:ff:ff:ff:ff
+        inet6 fe80::a00:27ff:feaa:ae6/64 scope link
+           valid_lft forever preferred_lft forever
+    ```
+    > :beginner: If you're not familiar with IP internetwork routing, the amount of information presented here can feel overwhelming. Don't worry, though, we'll only be concerning ourselves with a few important bits. These are:
+    >
+    > * The *logical device name*. In the output above, we see three devices. The first is named `lo`, the second is named `eth0`, and the third is named `eth1`. You can see this in the lines that begin with `1: lo`, `2: eth0`, and `3: eth1`.
+    > * The IP address assigned to the named device. In this case, the `lo` device has the IP address `127.0.0.1/8`, the `eth0` device has the IP address `10.0.2.15/24`, and the `eth1` doesn't have an IP address at all. You can see this in the indented lines that start with `inet`. Note that the third device's indented block does not have a line that begins with `inet` at all.
+    >
+    > Each of these devices corresponds to a (virtualized, in our case) hardware network adapter installed in the virtual machine, or a virtual network interface, such as the `lo` device in this example. Yes, that's a virtual network interface in a virtual machine. For more information about network devices, see the [Network interfaces in GNU/Linux](#network-interfaces-in-gnulinux) discussion.
+    >
+    > Finally, note that each of the IP addresses end with a forward slash (`/`) and another number. This is called a *network mask* or *netmask* for short. We'll cover netmasks in just a moment but, for now, all you need to know is that reading netmasks correctly is an important part of determining how, and if, two machines can route messages to each other. When reading IP addresses, remember to look at the netmask as well!
+1. Exit the virtual machine by using [the `exit` command](https://explainshell.com/explain?cmd=exit). This will return you to your host operating system.
+1. Log in to the Ubuntu Xenial virtual machine and investigate its IP address configuration by using the `ip address` command again. You'll see similar but probably not identical output as you did on CentOS:
+    ```sh
+    $ ip address
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+           valid_lft forever preferred_lft forever
+        inet6 ::1/128 scope host
+           valid_lft forever preferred_lft forever
+    2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+        link/ether 02:48:3e:15:b5:0c brd ff:ff:ff:ff:ff:ff
+        inet 10.0.2.15/24 brd 10.0.2.255 scope global enp0s3
+           valid_lft forever preferred_lft forever
+        inet6 fe80::48:3eff:fe15:b50c/64 scope link
+           valid_lft forever preferred_lft forever
+    3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+        link/ether 08:00:27:62:c4:26 brd ff:ff:ff:ff:ff:ff
+        inet6 fe80::a00:27ff:fe62:c426/64 scope link
+           valid_lft forever preferred_lft forever
+    ```
+    > :beginner: Did you notice the difference in these device names? For example, it was `eth1` on CentOS 7 but is `enp0s8` on Ubuntu Xenial. The `eth` prefix is a historical abbreviation for [ethernet](https://simple.wikipedia.org/wiki/Ethernet), the lower-level networking technology on which many IP networks still depend. In contrast, `enp` stands for ethernet network peripheral. See the [Predictable Network Interface Names page on the Freedesktop Project's wiki](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/) for details about these naming choices.
 
-```
-3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 08:00:27:aa:0a:e6 brd ff:ff:ff:ff:ff:ff
-    inet6 fe80::a00:27ff:feaa:ae6/64 scope link
-       valid_lft forever preferred_lft forever
-```
+Astute readers will no doubt have noticed that `eth0` on the CentOS machine and `enp0s3` on the Ubuntu machine both have the same IP address. This is because both devices are set to use VirtualBox's NAT [networking mode](#virtualbox-networking-modes). These devices are attached to completely separated networks and can therefore have the same IP address without conflicting with one another. This is like two people sharing the same name, but being in totally different conversations. No one will be confused about who is being referred to by the name "Alex" if there is only one Alex in the room.
 
-> :beginner: :construction: TK-TODO: Note the difference in the device names, i.e., `eth1` versus `enp0s8`. See the [Predictable Network Interface Names page on the Freedesktop Project's wiki](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/) for details.
+If your IP address configurations look like the above, there is an obvious problem: the two virtual machines cannot yet communicate with one another. This is because VirtualBox has not given them IP addresses to use while on the `sshtestnet` internal network. To resolve this situation, we need to instruct VirtualBox to start doling out IP addresses to machines that are connected to this named internal network.
+
+## VirtualBox DHCP server configuration
+
+> :construction: TK-TODO
 
 # Practice
 
@@ -395,6 +428,18 @@ For the purposes of this lab, the important networking modes you should be aware
 * `Internal Network` - This networking mode creates an entirely new network that is wholly separate from both the outside world and any other virtual network. VirtualBox's internal networks can be *named* so that more than one virtual machine can be connected to the same internal network. This is handy for creating networks that are completely disconnected from any other network (including disconnected from the Internet!) but that can nevertheless house more than one virtual machine at a time.
 
 More complete information about VirtualBox's various networking modes, including additional networking modes not mentioned in this section, are detailed in [§6.2, "Introduction to networking modes," of the VirtualBox Manual](https://www.virtualbox.org/manual/ch06.html#networkingmodes).
+
+## Network interfaces on GNU/Linux
+
+> :construction: TK-TODO
+
+> TK-TODO: Talk a little bit about `udev`, the `/dev` hierarchy, and what a "[device file](https://en.wikipedia.org/wiki/Device_file)" is. Also touch on [looback devices](https://en.wikipedia.org/wiki/Localhost#Loopback).
+
+## DHCP options
+
+> :construction: TK-TODO
+
+> More about what you can do with DHCP: set a client's DNS server, provide PXE boot addresses, etc.
 
 # Additional references
 
