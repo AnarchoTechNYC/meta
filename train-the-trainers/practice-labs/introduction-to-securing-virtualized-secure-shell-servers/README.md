@@ -34,7 +34,8 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
     1. [VirtualBox networking modes](#virtualbox-networking-modes)
-    1. [Network interfaces on GNU/Linux](#network-interfaces-on-gnulinux)
+    1. [Network interfaces in GNU/Linux](#network-interfaces-in-gnulinux)
+    1. [IPv6 addressing](#ipv6-addressing)
     1. [DHCP options](#dhcp-options)
 1. [Additional references](#additional-references)
 
@@ -314,7 +315,7 @@ You are now at the command line of the CentOS 7 virtual machine. Using `vagrant 
 
 Recall that the purpose of SSH is to securely access one computer from a second. This implies that the two computers must be able to send messages to and receive messages from one another, whether secured or not. If the two computers can't interact for any reason, then whether you have hardened your SSH session is a moot point, since you cannot make use of the SSH protocol in the first place. Therefor, before we even concern ourselves with SSH, we need to ensure that the one machine is able to contact the other, and vice versa.
 
-Further, in order for one machine to send a message to another, it must have the name of the place at which the intended recipient can be found. This name is called an *address*. At this fundamental level, computer addresses work exactly the same way as postal address. If you've ever sent a postcard to a family member or friend while on vacation, you've written an address. Likewise, if you've ever sent an email to a coworker, chatted with a friend on Facebook, or placed a telephone call, you've used an address to direct the message towards your recipient. Postcards use *mailing addresses*, Facebook chats use Facebook *user names*, e-mails use *email addresses*, and telephone calls use *telephone numbers*. These are all examples of addresses.
+Further, in order for one machine to send a message to another, it must have the name of the place at which the intended recipient can be found. This name is called an *address*. At this fundamental level, computer addresses work exactly the same way as postal addresses. If you've ever sent a postcard to a family member or friend while on vacation, you've written an address. Likewise, if you've ever sent an email to a coworker, chatted with a friend on Facebook, or placed a telephone call, you've used an address to direct the message towards your recipient. Postcards use *mailing addresses*, Facebook chats use Facebook *user names*, e-mails use *email addresses*, and telephone calls use *telephone numbers*. These are all examples of addresses.
 
 In many modern digital networks (like the Internet), the "place" in the network at which a given machine can be found is an address called an *[Internet Protocol (IP)](https://simple.wikipedia.org/wiki/Internet_Protocol) address*. In order for our virtual machines to be able to communicate with one another, both of them need to have their own IP address. When one sends a message to the other, it will write its own IP address on the message's envelope in the *source IP* field and, unsurprisingly, it will write the IP address of its intended recipient on the message's envelope in the *destination IP* field. These message envelopes are called *packet headers*.
 
@@ -348,11 +349,13 @@ In this lab, both virtual machines are connected to two different networks: the 
     > :beginner: If you're not familiar with IP internetwork routing, the amount of information presented here can feel overwhelming. Don't worry, though, we'll only be concerning ourselves with a few important bits. These are:
     >
     > * The *logical device name*. In the output above, we see three devices. The first is named `lo`, the second is named `eth0`, and the third is named `eth1`. You can see this in the lines that begin with `1: lo`, `2: eth0`, and `3: eth1`.
-    > * The IP address assigned to the named device. In this case, the `lo` device has the IP address `127.0.0.1/8`, the `eth0` device has the IP address `10.0.2.15/24`, and the `eth1` doesn't have an IP address at all. You can see this in the indented lines that start with `inet`. Note that the third device's indented block does not have a line that begins with `inet` at all.
+    > * The IP address assigned to the named device. In this case, the `lo` device has the IP address `127.0.0.1/8`, the `eth0` device has the IP address `10.0.2.15/24`, and the `eth1` device doesn't have an IP address at all. You can see this in the indented lines that start with `inet`. Note that the third device's indented block does not have a line that begins with `inet` at all.
     >
     > Each of these devices corresponds to a (virtualized, in our case) hardware network adapter installed in the virtual machine, or a virtual network interface, such as the `lo` device in this example. Yes, that's a virtual network interface in a virtual machine. For more information about network devices, see the [Network interfaces in GNU/Linux](#network-interfaces-in-gnulinux) discussion.
     >
     > Finally, note that each of the IP addresses end with a forward slash (`/`) and another number. This is called a *network mask* or *netmask* for short. We'll cover netmasks in just a moment but, for now, all you need to know is that reading netmasks correctly is an important part of determining how, and if, two machines can route messages to each other. When reading IP addresses, remember to look at the netmask as well!
+    >
+    > :beginner: :bulb: In the output shown by the `ip address` command, lines starting with `inet` denote Internet Protocol version 4 information. There is another, newer version of the Internet Protocol called [IP version 6, or IPv6](https://en.wikipedia.org/wiki/IPv6) for short. Information about your devices IPv6 addresses is also shown by the `ip address` command. Look for lines that start with `inet6` to see it. A network adapter can have an IPv4 and an IPv6 address at the same time. You'll see that IPv6 addresses look different than IPv4 addresses: they use hexadecimal numbers separated by a colon, instead of decimal number separated by a dot, but both versions still end with a forward slash and a decimal number to denote the address's netmask. For the purposes of this lab, we won't be dealing with IPv6 at all, but have a look at the [IPv6 addressing](#ipv6-addressing) discussion section for more information about the differences between IPv4 and IPv6.
 1. Exit the virtual machine by using [the `exit` command](https://explainshell.com/explain?cmd=exit). This will return you to your host operating system.
 1. Log in to the Ubuntu Xenial virtual machine and investigate its IP address configuration by using the `ip address` command again. You'll see similar but probably not identical output as you did on CentOS:
     ```sh
@@ -374,7 +377,7 @@ In this lab, both virtual machines are connected to two different networks: the 
         inet6 fe80::a00:27ff:fe62:c426/64 scope link
            valid_lft forever preferred_lft forever
     ```
-    > :beginner: Did you notice the difference in these device names? For example, it was `eth1` on CentOS 7 but is `enp0s8` on Ubuntu Xenial. The `eth` prefix is a historical abbreviation for [ethernet](https://simple.wikipedia.org/wiki/Ethernet), the lower-level networking technology on which many IP networks still depend. In contrast, `enp` stands for ethernet network peripheral. See the [Predictable Network Interface Names page on the Freedesktop Project's wiki](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/) for details about these naming choices.
+    > :beginner: Did you notice the difference in these device names? For example, it was `eth1` on CentOS 7 but is `enp0s8` on Ubuntu Xenial. The `eth` prefix is a historical abbreviation for *[ethernet](https://simple.wikipedia.org/wiki/Ethernet)*, the lower-level networking technology on which many IP networks still depend. In contrast, `enp` stands for *ethernet network peripheral*. See the [Predictable Network Interface Names page on the Freedesktop Project's wiki](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/) for details about these naming choices.
 
 Astute readers will no doubt have noticed that `eth0` on the CentOS machine and `enp0s3` on the Ubuntu machine both have the same IP address. This is because both devices are set to use VirtualBox's NAT [networking mode](#virtualbox-networking-modes). These devices are attached to completely separated networks and can therefore have the same IP address without conflicting with one another. This is like two people sharing the same name, but being in totally different conversations. No one will be confused about who is being referred to by the name "Alex" if there is only one Alex in the room.
 
@@ -429,11 +432,15 @@ For the purposes of this lab, the important networking modes you should be aware
 
 More complete information about VirtualBox's various networking modes, including additional networking modes not mentioned in this section, are detailed in [§6.2, "Introduction to networking modes," of the VirtualBox Manual](https://www.virtualbox.org/manual/ch06.html#networkingmodes).
 
-## Network interfaces on GNU/Linux
+## Network interfaces in GNU/Linux
 
 > :construction: TK-TODO
 
 > TK-TODO: Talk a little bit about `udev`, the `/dev` hierarchy, and what a "[device file](https://en.wikipedia.org/wiki/Device_file)" is. Also touch on [looback devices](https://en.wikipedia.org/wiki/Localhost#Loopback).
+
+## IPv6 addressing
+
+> :construction: TK-TODO
 
 ## DHCP options
 
