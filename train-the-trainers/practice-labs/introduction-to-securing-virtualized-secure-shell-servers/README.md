@@ -385,7 +385,85 @@ If your IP address configurations look like the above, there is an obvious probl
 
 ## VirtualBox DHCP server configuration
 
-> :construction: TK-TODO
+When a machine first joins a network, it doesn't necessarily have an IP address. Among other issues, this means it won't be able to receive messages from other machines, since no other machine knows how to address their messages to it. This is the catch 22 that the [Dynamic Host Configuration Protocol (DHCP)](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol) was designed to solve.
+
+A DHCP server, then, is typically a machine that has joined a network ahead of time and is ready to assign IP addresses to new machines as they join the network. These machines are called *DHCP clients*. DHCP services could be offered by an entirely separate, wholly dedicated machine attached to the network, or they could be offered by any other machine running DHCP server software. For example, in a small home network, the Wi-Fi router probably has a DHCP server running on it. By using DHCP, you can avoid the need of manually configuring the IP network settings of each device that wants to use the network each time that device joins the network, which is a real time-saver!
+
+> :beginner: :bulb: DHCP is not limited to assigning IP addresses. It can be used to automatically configure all sorts of network settings, such as the address of upstream DNS servers, network boot images, and more. See the [DHCP options](#dhcp-options) discussion section for more details about some more things that DHCP can actually do.
+
+Much like your home Wi-Fi router, VirtualBox itself has the ability to offer DHCP services to any of the networks it virtualizes. We'll be using this VirtualBox feature to ensure that the virtual machines on the `sshtestnet` network have IP addresses. Using the `[VBoxManage list](https://www.virtualbox.org/manual/ch08.html#vboxmanage-list) dhcpservers` command, you can review a list of all the DHCP servers that VirtualBox has added to its virtualized networks.
+
+> :beginner: The `VBoxManage(1)` command is the command-line equivalent of the VirtualBox Manager graphical application you used earlier. Everything that can be accomplished with the graphical point-and-click application can be accomplished with the `VBoxManage` command line, and then some. Each `VBoxManage` command takes a subcommand (such as `list` in the example above), which then may take additional options and arguments. Use the `--help` option to get a quick reference guide for how to use `VBoxManage`. For example, `VBoxManage --help` will show you a usage reference for every `VBoxManage` subcommand, while `VBoxManage list --help` will show you the usage reference just for the `VBoxManage list` subcommand. [Chapter 8 of the VirtualBox Manual](https://www.virtualbox.org/manual/ch08.html) covers the `VBoxManage` command in more complete detail.
+
+**Do this:**
+
+1. Open a terminal on your host machine.
+1. Get a list of all the VirtualBox DHCP servers currently installed. Your output will look something like the snippet below, which is truncated for length and clarity:
+    ```sh
+    $ VBoxManage list dhcpservers
+    NetworkName:    NatNetwork
+    IP:             10.0.2.3
+    NetworkMask:    255.255.255.0
+    lowerIPAddress: 10.0.2.4
+    upperIPAddress: 10.0.2.254
+    Enabled:        Yes
+
+    NetworkName:    intnet
+    IP:             172.16.222.1
+    NetworkMask:    255.255.255.0
+    lowerIPAddress: 172.16.222.100
+    upperIPAddress: 172.16.222.111
+    Enabled:        Yes
+    ```
+
+In the output above, we see two of VirtualBox's default DHCP servers. (There will probably more than two in the complete output; the above is just a small snippet.) Each DHCP server listing has the same format:
+
+* `NetworkName` displays the name of the VirtualBox network to which this DHCP server is attached. In the example above, `NatNetwork` refers to the `NAT` [VirtualBox networking mode](#virtualbox-networking-modes). This is the DHCP server from which your virtual machines received an IP address assignment when they started up the first time.
+* `IP` is the IP address of the DHCP server itself. Like any other machine, the DHCP server needs an IP address so that it can communicate with other machines on the network. DHCP servers themselves typically get *static* IP addresses, which is to say, their IP addresses are assigned manually by network administrators. You'll be doing this yourself in just a moment.
+* `NetworkMask` is the other important part of an IP address, and is displayed here by VirtualBox in the older dotted decimal notation, rather than the newer CIDR notation. A netmask of `255.255.255.0` in this older notation is equivalent to `/24` in CIDR notation.
+    > :beginner: :construction: TK-TODO: More about netmasks and translating classfull to CIDR notation.
+* `lowerIPAddress` is the first IP address available for DHCP clients. This is the lower bound in the range of IP addresses you'd like to make available for new machines to use as they join.
+* `upperIPAddress` is the last IP address available for DHCP clients. This is the upper bound in the range of IP addresses you'd like to make available for new machines to use as they join.
+    > :beginner: Taken together, lower and upper IP address range is called an `IP address pool`. So, for example, if your lower IP address is 1.1.1.1 and your upper IP address is 1.1.1.2, you have an IP address pool consisting of two IP addresses. This means only two machines at a time will be given an IP address. If a third machine joins the same network, it must wait until one of the first two machines are done using their addresses before it will get an IP address of its own. This may take some time, hours or even days, depending on how the DHCP server is configured.
+    >
+    > :construction: TK-TODO: Discuss the concept of a DHCP lease, reservation, and lease time. Describe `release`ing a DHCP lease (re-requesting a new DHCP lease), as well, which is a common command that Windows user will be familiar with: `ipconfig /renew`.
+* `Enabled` shows whether or not the VirtualBox DHCP server is actually turned on or not. If the DHCP server is not enabled, it will of course not respond to requests for IP assignments. :)
+
+In order to add DHCP services to our `sshtestnet` network, we merely need to instruct VirtualBox to enable a DHCP server on that named network. We do this using [the `VBoxManage dhcpserver` command](https://www.virtualbox.org/manual/ch08.html#vboxmanage-dhcpserver). If you didn't see a DHCP server listed for the `sshtestnet` network when you ran `VBoxManage list dhcpservers`, you'll need to use the `VBoxManage dhcpserver add` command to install a new DHCP server on the network. Otherwise, if you did see a DHCP server listed for the `sshtestnet` network, you can use `VBoxManage dhcpserver modify` with the exact same arguments as you would have used for the `add` invocation to edit the DHCP server's settings.
+
+Let's configure the DHCP server for the `sshtestnet` network now.
+
+**Do this:**
+
+1. At a terminal on your host machine, add a new DHCP server for the `sshtestnet` network that will offer a small number of IP addresses for the virtual machines to use:
+    ```sh
+    VBoxManage dhcpserver add --netname sshtestnet --ip 172.16.1.1 --netmask 255.255.255.0 --lowerip 172.16.1.10 --upperip 172.16.1.20 --enable
+    ```
+1. If you receive an error like `VBoxManage: error: DHCP server already exists`, run the same command but replace `add` with `modify`:
+    ```sh
+    VBoxManage dhcpserver modify --netname sshtestnet --ip 172.16.1.1 --netmask 255.255.255.0 --lowerip 172.16.1.10 --upperip 172.16.1.20 --enable
+    ```
+
+> :beginner: :construction: TK-TODO: Go over this command invocation in more detail.
+
+With the DHCP server in place and enabled, you can now instruct your virtual machines to request IP addresses from it. The easiest way to do this is simply to reboot them. Vagrant provides [the `vagrant reload` command](https://www.vagrantup.com/docs/cli/reload.html) as a shortcut for `vagrant halt` and a subsequent `vagrant up` to turn off a virtual machine and then immediately turn it back on.
+
+**Do this:**
+
+1. Reboot both your CentOS 7 and your Ubuntu Xenial virtual machines using Vagrant.
+1. Log in to one of your virtual machines using `vagrant ssh` again.
+1. Look up the IP address configuration of the virtual machine. If the VirtualBox DHCP server is configured and responding correctly, the network adapter attached to the `sshtestnet` network should now have an IP address associated with it. You can use the `ip address show dev eth1` command to show the IP address(es) assigned to the logical network interface device named `eth1`. (You'll want to replace `eth1` with the name of the device in your virtual machine; this is likely `enp0s8` in the Ubuntu Xenial guest.) Doing this on the CentOS 7 virtual machine should now show you output similar to the following:
+    ```sh
+    $ ip address show dev eth1
+    3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+        link/ether 08:00:27:aa:0a:e6 brd ff:ff:ff:ff:ff:ff
+        inet 172.16.1.10/24 brd 172.16.1.255 scope global noprefixroute dynamic eth1
+           valid_lft 1162sec preferred_lft 1162sec
+        inet6 fe80::a00:27ff:feaa:ae6/64 scope link
+           valid_lft forever preferred_lft forever
+    ```
+
+Notice the presence of the `inet` line. This readout indicates that the virtual machine has been assigned an IP address. The address itself is in the range that we configured as the IP address pool for the DHCP server to oversee, which is a good indication that the DHCP server is responding correctly.
 
 # Practice
 
