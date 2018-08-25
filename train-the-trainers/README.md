@@ -10,7 +10,7 @@ Files in this directory are materials for the second and third items, above. The
 
 This directory contains the following subprojects:
 
-* [Black Hat Bash Back](black-hat-bash-back/) - TK-TODO
+* [Black Hat Bash Back](black-hat-bash-back/) - Stand-alone exercises focusing on "the three D's" of computer network operations: degrade, disrupt, and deceive.
 * [Blue Feather Book](blue-feather-book/) - TK-TODO
 * [Mr. Robot's Netflix 'n' Hack](mr-robots-netflix-n-hack/) - Cybersecurity exercises and suggested demos that you can use to supplement "Mr. Robot's Netflix 'n' Hack" events.
 * [Practice Labs](practice-labs/) - Stand-alone workshop materials focusing on hands-on experience and skill building.
