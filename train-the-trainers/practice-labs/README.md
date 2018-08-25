@@ -1,6 +1,6 @@
 # Practice Labs
 
-In this folder, you'll find stand-alone workshop materials that focus on gaining hands-on experience for practical skills. All exercise material added here should be written in a manner that makes it accessible to beginners, even if you feel that the topic of the exercise is "advanced." If you cannot write the exercise so it is accessible to a beginner, you probably do not understand it well enough yourself.
+In this folder, you'll find stand-alone workshop materials that focus on gaining hands-on experience with foundational and practical skills. All exercise material added here should be written in a manner that makes it accessible to beginners, even if you feel that the topic of the exercise is "advanced." If you cannot write the exercise so it is accessible to a beginner, you probably do not understand it well enough yourself.
 
 This project is organized in the following way:
 
