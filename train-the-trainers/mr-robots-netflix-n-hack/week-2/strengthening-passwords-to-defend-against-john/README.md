@@ -971,8 +971,9 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 * [Ars Technica: How I became a password cracker](https://arstechnica.com/security/2013/03/how-i-became-a-password-cracker/)
 * [How crackers ransack passwords like “qeadzcwrsfxv1331”](https://arstechnica.com/security/2013/05/how-crackers-make-minced-meat-out-of-your-passwords/)
 * [Password Haystacks: How Well-Hidden is Your Needle?](https://www.grc.com/haystack.htm)
-* [Hashcat: Advanced Password Recovery](https://hashcat.net/) - a popular alternative to John the Ripper
+* [Hashcat: Advanced Password Recovery](https://hashcat.net/) - Popular alternative to John the Ripper with support for using the video/graphics cards to boost hash speeds.
 * [Blog post by g0tmi1k about what makes for a good password cracking wordlist](https://blog.g0tmi1k.com/2011/06/dictionaries-wordlists/)
 * [Lifehacker: Five Best Password Managers](https://lifehacker.com/5529133/five-best-password-managers)
 * [Making password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
-* [OSINTFramework.com](http://osintframework.com/) - a collection of open-sources records databases broken down by category
+* [OSINTFramework.com](http://osintframework.com/) - Collection of open-sources records databases broken down by category.
+* [danielmiessler/SecLists](https://github.com/danielmiessler/SecLists) - Collection of multiple types of lists used during security assessments such as usernames, passwords, and more.
