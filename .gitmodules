@@ -1,3 +1,6 @@
 [submodule "meta.wiki"]
 	path = meta.wiki
 	url = https://github.com/AnarchoTechNYC/meta.wiki.git
+[submodule "train-the-trainers/black-hat-bash-back/CTF"]
+	path = train-the-trainers/black-hat-bash-back/CTF
+	url = https://github.com/AnarchoTechNYC/CTF.git

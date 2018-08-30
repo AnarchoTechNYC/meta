@@ -6,6 +6,7 @@ The materials herein expect that you have a working familiarity with the foundat
 
 This project is organized in the following way:
 
+* `CTF/` folder, containing the AnarchoTechNYC CTF team's repository (and the CTF team wiki).
 * `exercise-name` folder, containing:
     * `README.md` file, which describes the purpose of the exercise in broad strokes. Each exercise will have at least two roles, one for the attacker ("Red Team") and one for the defender ("Blue Team"). The contents of the `README.md` file should conform to a convenitonal structure, as follows:
         1. `Scenario` section, which briefly describes an example scenario in which the exercise would be relevant in the real world.
