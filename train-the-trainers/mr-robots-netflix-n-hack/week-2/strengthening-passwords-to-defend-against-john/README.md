@@ -107,11 +107,27 @@ A pre-built macOS version of John the Ripper is available for modern Apple's Mac
 
 ### JtR installation on Debian and its derivatives
 
-There are pre-built versions of [John the Ripper available in the Debian package archive as the `john` package](https://tracker.debian.org/pkg/john). These can be installed using [`apt(1)`](https://wiki.debian.org/Apt):
+There are pre-built versions of [John the Ripper available in the Debian package archive as the `john` package](https://tracker.debian.org/pkg/john). These can be installed using [`apt(1)`](https://wiki.debian.org/Apt), the default package manager on most Debian-derived systems:
 
-```sh
-sudo apt update && sudo apt install john
-```
+**Do this:**
+
+1. Open your terminal application.
+1. If you are not running as a user with administrative (sometimes called "superuser" or "root") privileges, become one. For example, if your local administrator account is called `localadmin`, use [the `su(1)` command](https://en.wikipedia.org/wiki/Su_%28Unix%29) to substitute the `localadmin` user as yourself:
+    ```sh
+    su localadmin # You will be asked for a passphrase. Enter it, even though your typing will not be echoed back to you.
+    ```
+1. As a user with administrative privileges, update your package manager's local cache to learn about any new software updates that may have been made available to you:
+    ```sh
+    sudo apt update
+    ```
+1. Finally, install the `john` package:
+    ```sh
+    sudo apt install john
+    ```
+1. Return to your ordinary user account, if your administrative account is different from the one you use every day. (For greater security, you should never operate your computer with administrative privileges during mundane day-to-day use.)
+    ```sh
+    exit
+    ```
 
 # Practice
 
