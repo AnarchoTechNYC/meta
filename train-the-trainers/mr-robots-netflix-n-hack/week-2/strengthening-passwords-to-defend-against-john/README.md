@@ -103,7 +103,15 @@ A pre-built macOS version of John the Ripper is available for modern Apple's Mac
 
 ## JtR installation on GNU/Linux
 
-> :construction: TK-TODO: These instructions are currently missing. Please add them!
+> :construction: TK-TODO
+
+### JtR installation on Debian and its derivatives
+
+There are pre-built versions of [John the Ripper available in the Debian package archive as the `john` package](https://tracker.debian.org/pkg/john). These can be installed using [`apt(1)`](https://wiki.debian.org/Apt):
+
+```sh
+sudo apt update && sudo apt install john
+```
 
 # Practice
 
