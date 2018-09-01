@@ -1,0 +1,65 @@
+# Vagrant configuration for a simple ARP cache poisoning demo.
+#
+# This configuration sets up three different virtual machines.
+# These machines are:
+#
+# * `red` - The attacker's machine.
+# * `blue_desktop` - The "desktop" machine being attacked.
+# * `blue_server` - The server that the `red` machine 
+#
+# Each of these are attached to a VirtualBox internal network
+# called "arpspoofnet" and are assigned an IP address in the
+# 172.22.33.0 network. Hopefully, this IP range will not conflict
+# with a network in use on your system. (Change it if it does.)
+#
+# Moreover, the relevant virtual NIC of each machine has a specific
+# MAC address associated with it that mirrors the IP address so as
+# to make identifying the machine a little bit easier. The final
+# byte of the MAC address matches the decimal number of the given
+# machine's IP address.
+#
+# For example, the final octet of this machine's IP address is `55`
+# and so the final hexadecimal number of its MAC address is `55`:
+#
+# ```sh
+# 3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+#     link/ether 08:00:27:00:00:55 brd ff:ff:ff:ff:ff:ff
+#     inet 172.22.33.55/24 brd 172.22.33.255 scope global enp0s8
+#        valid_lft forever preferred_lft forever
+# ```
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "red" do |c|
+    c.vm.box = "ubuntu/xenial64"
+    c.vm.hostname = "red"
+    c.vm.network "private_network",
+      ip: "172.22.33.55",
+      netmask: "255.255.255.0",
+      :mac => "080027000055",
+      virtualbox__intnet: "arpspoofnet"
+  end
+
+  config.vm.define "blue_desktop" do |c|
+    c.vm.box = "ubuntu/xenial64"
+    c.vm.hostname = "blue-desktop"
+    c.vm.network "private_network",
+      ip: "172.22.33.50",
+      netmask: "255.255.255.0",
+      :mac => "080027000050",
+      virtualbox__intnet: "arpspoofnet"
+  end
+
+  config.vm.define "blue_server" do |c|
+    c.vm.box = "centos/7"
+    c.vm.hostname = "blue-server"
+    c.vm.network "private_network",
+      ip: "172.22.33.10",
+      netmask: "255.255.255.0",
+      :mac => "080027000010",
+      virtualbox__intnet: "arpspoofnet"
+    c.vm.provision "shell", inline: "chown vagrant:vagrant /srv"
+    c.vm.provision "file", source: "www", destination: "/srv/www"
+  end
+
+end
