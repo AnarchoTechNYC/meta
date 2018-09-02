@@ -23,3 +23,6 @@
 # project. These are generated automatically, so we never want to
 # commit them into this repository. They are therefor ignored here.
 .vagrant
+
+# Numerous processes may create log files. We don't care about these.
+*.log

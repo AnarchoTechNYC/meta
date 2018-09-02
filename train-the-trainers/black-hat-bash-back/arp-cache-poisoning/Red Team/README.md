@@ -85,16 +85,6 @@ sudo ifconfig $INTERFACE ${VICTIM_IP}/24 alias
 # GNU/Linux users will probably want to do this instead:
 #ip address add ${VICTIM_IP}/24 dev $INTERFACE
 
-# Let's take a closer look at the IP address in that command:
-#
-#sudo ifconfig en0 192       . 168       . 9         . 10        /24 add
-#                  1100 0000 . 1010 1000 . 0000 1001 . 0000 1010
-#                       ^
-#                       | The 1s mean "read this bit as part of a network ID."
-#                       v
-#                  255       . 255       . 255       . 0
-#                  1111 1111 . 1111 1111 . 1111 1111 . 0000 0000
-
 # Now that we know the server's IP address, let's note its MAC address.
 # If it responds to ICMP echo requests, `ping` will show us output:
 ping $VICTIM_IP

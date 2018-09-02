@@ -352,7 +352,7 @@ In this lab, both virtual machines are connected to two different networks: the 
     >
     > Each of these devices corresponds to a (virtualized, in our case) hardware network adapter installed in the virtual machine, or a virtual network interface, such as the `lo` device in this example. Yes, that's a virtual network interface in a virtual machine. For more information about network devices, see the [Network interfaces in GNU/Linux](#network-interfaces-in-gnulinux) discussion section.
     >
-    > Finally, note that each of the IP addresses end with a forward slash (`/`) and another number. The number following the forward slash is called a *network mask* or *netmask* for short. The forward slash itself indicates a particular notation called [Classless Inter-Domain Routing (CIDR)](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation. We'll cover netmasks shortly but, for now, all you need to know is that reading netmasks correctly is an important part of determining how, and if, two machines can route messages to each other. When reading IP addresses, remember to look at the netmask as well!
+    > Finally, note that each of the IP addresses end with a forward slash (`/`) and another number. The number following the forward slash is called a *network mask* or *netmask* for short. The forward slash itself indicates a particular notation called [Classless Inter-Domain Routing (CIDR)](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation. For a more thorough treatment of netmasks and their use for creating sub-networks (networks within networks), see the [Network masks and subnetting](#network-masks-and-subnetting) discussion section. For now, all you need to know is that reading netmasks correctly is an important part of determining how, and if, two machines can route messages to each other, because the netmask determines whether or not the two machines are logically located within "the same network" or not. So when reading IP addresses, remember to look at the netmask as well!
     >
     > :beginner: :bulb: In the output shown by the `ip address` command, lines starting with `inet` denote Internet Protocol version 4 information. There is another, newer version of the Internet Protocol called [IP version 6, or IPv6](https://en.wikipedia.org/wiki/IPv6) for short. Information about a machine's IPv6 addresses is also shown by the `ip address` command on lines that start with `inet6`. A network adapter can have an IPv4 and an IPv6 address at the same time. You'll see that IPv6 addresses look different than IPv4 addresses: they use hexadecimal numbers separated by a colon, instead of decimal numbers separated by a dot, but both versions still end with a forward slash and a decimal number to denote the address's netmask. For the purposes of this lab, we won't be dealing with IPv6 at all, but have a look at the [IPv6 addressing](#ipv6-addressing) discussion section for more information about the differences between IPv4 and IPv6.
 1. Exit the virtual machine by using [the `exit` command](https://explainshell.com/explain?cmd=exit). This will return you to your host operating system.
@@ -419,8 +419,7 @@ In the output above, we see two of VirtualBox's default DHCP servers. (There wil
 
 * `NetworkName` displays the name of the VirtualBox network to which this DHCP server is attached. In the example above, `NatNetwork` refers to the `NAT` [VirtualBox networking mode](#virtualbox-networking-modes). This is the DHCP server from which your virtual machines received an IP address assignment when they started up the first time.
 * `IP` is the IP address of the DHCP server itself. Like any other machine, the DHCP server needs an IP address so that it can communicate with other machines on the network. DHCP servers themselves typically get *static* IP addresses, which is to say, their IP addresses are assigned manually by network administrators. You'll be doing this yourself in just a moment.
-* `NetworkMask` is the other important part of an IP address, and is displayed by VirtualBox in this output using the older dotted decimal notation, rather than the newer CIDR notation. A netmask of `255.255.255.0` in this older notation is equivalent to `/24` in CIDR notation.
-    > :beginner: :construction: TK-TODO: More about netmasks and translating classfull to CIDR notation.
+* [`NetworkMask` is the other important part of an IP address](#network-masks-and-subnetting), and is displayed by VirtualBox in this output using the older dotted decimal notation, rather than the newer CIDR notation. A netmask of `255.255.255.0` in this older notation is equivalent to `/24` in CIDR notation.
 * `lowerIPAddress` is the first IP address available for DHCP clients. This is the lower bound in the range of IP addresses you'd like to make available for new machines to use as they join.
 * `upperIPAddress` is the last IP address available for DHCP clients. This is the upper bound in the range of IP addresses you'd like to make available for new machines to use as they join.
     > :beginner: Taken together, the lower and upper IP address range is called an *IP address pool*. So, for example, if your lower IP address is 1.1.1.1 and your upper IP address is 1.1.1.2, you have an IP address pool consisting of two IP addresses. This means only two machines at a time will be given an IP address. If a third machine joins the same network, it must wait until one of the first two machines are done using their addresses before it will get an IP address of its own. This may take some time, hours or even days, depending on how the DHCP server is configured and how promptly the DHCP clients notify the server that they no longer need to use the IP address assigned to them.
@@ -522,6 +521,24 @@ More complete information about VirtualBox's various networking modes, including
 > :construction: TK-TODO
 
 > TK-TODO: Talk a little bit about `udev`, the `/dev` hierarchy, and what a "[device file](https://en.wikipedia.org/wiki/Device_file)" is. Also touch on [looback devices](https://en.wikipedia.org/wiki/Localhost#Loopback).
+
+## Network masks and subnetting
+
+> :construction: TK-TODO
+
+Let's take a closer look at an example IP address and network mask combination, say `192.168.9.10/24` for example.
+
+```
+192       . 168       . 9         . 10        /24
+1100 0000 . 1010 1000 . 0000 1001 . 0000 1010
+     ^
+     | The 1s mean "read this bit as part of a network ID."
+     v
+255       . 255       . 255       . 0
+1111 1111 . 1111 1111 . 1111 1111 . 0000 0000
+```
+
+See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetworking.net/stand-alone/subnetting-mastery/) is a pretty decent introduction.
 
 ## IPv6 addressing
 
