@@ -23,3 +23,6 @@ ProtectKernelTunables=true
 ProtectSystem=full
 RestrictAddressFamilies=AF_INET
 RestrictRealtime=true
+
+[Install]
+WantedBy=multi-user.target

