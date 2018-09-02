@@ -5,7 +5,7 @@
 #
 # * `red` - The attacker's machine.
 # * `blue_desktop` - The "desktop" machine being attacked.
-# * `blue_server` - The server that the `red` machine 
+# * `blue_server` - Box that the `red` machine will impersonate.
 #
 # Each of these are attached to a VirtualBox internal network
 # called "arpspoofnet" and are assigned an IP address in the
@@ -31,7 +31,7 @@
 Vagrant.configure("2") do |config|
 
   # A quick 'n' dirty provisioner for the Debian-derived systems.
-  $debian_script = <<-DEBIAN_SCRIPT
+  debian_script = <<-DEBIAN_SCRIPT
     apt update
     apt install -y avahi-utils xinit lxde lxsession-logout
     sudo -u vagrant echo "exec startlxde" > ~vagrant/.xinitrc
@@ -45,12 +45,12 @@ Vagrant.configure("2") do |config|
       netmask: "255.255.255.0",
       :mac => "080027000055",
       virtualbox__intnet: "arpspoofnet"
-    c.vm.provision "Debian base", type: "shell", inline: $debian_script
+    c.vm.provision "Debian base", type: "shell", inline: debian_script
     c.vm.provision "Red team", type: "shell", inline: <<-SCRIPT
       apt install --yes \
         nmap arp-scan arping ettercap-text-only \
         golang-1.10 libpcap-dev libnetfilter-queue-dev \
-        dsniff # dsniff has `arpspoof` and friends"
+        dsniff # dsniff has `arpspoof` and friends
       ln -s /usr/lib/go-1.10/bin/go /usr/local/bin/go
       go get github.com/bettercap/bettercap
       mv ~/go/bin/bettercap /usr/local/bin/bettercap
@@ -65,7 +65,7 @@ Vagrant.configure("2") do |config|
       netmask: "255.255.255.0",
       :mac => "080027000050",
       virtualbox__intnet: "arpspoofnet"
-    c.vm.provision "Debian base", type: "shell", inline: $debian_script
+    c.vm.provision "Debian base", type: "shell", inline: debian_script
   end
 
   config.vm.define "blue_server" do |c|
@@ -79,13 +79,13 @@ Vagrant.configure("2") do |config|
     c.vm.provision "shell", inline: "mkdir -p /srv/www && chown vagrant:vagrant /srv/www"
     c.vm.provision "file", source: "server/www", destination: "/srv/www"
     c.vm.provision "shell" do |s|
-      $script = <<-SHELL
+      script = <<-SHELL
         cp /vagrant/server/python-simplehttpserver.service /etc/systemd/system/ \
           && systemctl enable python-simplehttpserver.service \
           && systemctl start  python-simplehttpserver.service
         yum -y install avahi && systemctl start avahi-daemon.service
       SHELL
-      s.inline = $script
+      s.inline = script
     end
   end
 
