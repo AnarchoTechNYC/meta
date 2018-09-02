@@ -1,0 +1,25 @@
+#
+# Service unit file for the simplest Web server demo ever.
+#
+
+[Unit]
+Description=Python SimpleHTTPServer process
+
+[Service]
+WorkingDirectory=/srv/www
+ExecStart=/usr/bin/python -m SimpleHTTPServer 80
+
+# Security precautions.
+LockPersonality=true
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+PrivateUsers=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=full
+RestrictAddressFamilies=AF_INET
+RestrictRealtime=true
