@@ -80,10 +80,10 @@ Vagrant.configure("2") do |config|
       :mac => "080027000010",
       virtualbox__intnet: "arpspoofnet"
     c.vm.provision "shell", inline: "mkdir -p /srv/www && chown vagrant:vagrant /srv/www"
-    c.vm.provision "file", source: "server/www", destination: "/srv/www"
+    c.vm.provision "file", source: "Blue Team/server/www", destination: "/srv/www"
     c.vm.provision "Blue server", type: "shell" do |s|
       script = <<-SHELL
-        cp /vagrant/server/python-simplehttpserver.service /etc/systemd/system/ \
+        cp "/vagrant/Blue Team/server/python-simplehttpserver.service" /etc/systemd/system/ \
           && systemctl enable python-simplehttpserver.service \
           && systemctl start  python-simplehttpserver.service
         yum -y install avahi && systemctl start avahi-daemon.service

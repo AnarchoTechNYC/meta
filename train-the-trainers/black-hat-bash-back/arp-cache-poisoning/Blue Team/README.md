@@ -8,7 +8,13 @@
 
 # Bill of materials
 
-> :construction: TK-TODO
+This folder contains the following files and folders:
+
+* `AnarchoTechNYC-BlueTeam.png` - Emblem used as the default desktop background image for Blue Team machines.
+* `README.md` - This file.
+* `server/` - Provisioning configurations for the Blue Team's server.
+    * `python-simplehttpserver.service` - Service unit file to run a Python HTTP server.
+    * `www/` - Web server document root containing static HTML pages for demo purposes.
 
 # Prerequisites
 
