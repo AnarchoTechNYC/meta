@@ -54,6 +54,7 @@ Vagrant.configure("2") do |config|
       ln -s /usr/lib/go-1.10/bin/go /usr/local/bin/go
       go get github.com/bettercap/bettercap
       mv ~/go/bin/bettercap /usr/local/bin/bettercap
+      mv "/vagrant/Red Team/AnarchoTechNYC-RedTeam.png" "/etc/alternatives/desktop-background"
     SCRIPT
   end
 
@@ -66,6 +67,8 @@ Vagrant.configure("2") do |config|
       :mac => "080027000050",
       virtualbox__intnet: "arpspoofnet"
     c.vm.provision "Debian base", type: "shell", inline: debian_script
+    c.vm.provision "Blue desktop", type: "shell",
+      inline: "mv '/vagrant/Blue Team/AnarchoTechNYC-BlueTeam.png' '/etc/alternatives/desktop-background'"
   end
 
   config.vm.define "blue_server" do |c|
@@ -78,7 +81,7 @@ Vagrant.configure("2") do |config|
       virtualbox__intnet: "arpspoofnet"
     c.vm.provision "shell", inline: "mkdir -p /srv/www && chown vagrant:vagrant /srv/www"
     c.vm.provision "file", source: "server/www", destination: "/srv/www"
-    c.vm.provision "shell" do |s|
+    c.vm.provision "Blue server", type: "shell" do |s|
       script = <<-SHELL
         cp /vagrant/server/python-simplehttpserver.service /etc/systemd/system/ \
           && systemctl enable python-simplehttpserver.service \
