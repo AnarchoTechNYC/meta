@@ -646,12 +646,12 @@ Now you can see how host keys are used as SSH's mechanism for identifying server
         > :beginner: For the remainder of this guide, we assume that the CentOS 7 virtual machine has IP address `172.16.1.11` and that the Ubuntu Xenial virtual machine has the IP address `172.16.1.10`. If your machines are located at different addresses, adjust the commands in this guide accordingly.
 1. Once you have the IP address of the CentOS 7 virtual machine, use `ssh` to start a connection to it:
     ```sh
-    ssh 172.16.1.11 # Remember, your CentOS VM's IP address might be different.
+    vagrant@ubuntu-xenial:~$ ssh 172.16.1.11 # Remember, your CentOS VM's IP address might be different.
     The authenticity of host '172.16.1.11 (172.16.1.11)' can't be established.
     ECDSA key fingerprint is SHA256:bC7KnOz29hPzOtCHTI5faWHfOh7Hw2LmS13UWuZQsO0.
     Are you sure you want to continue connecting (yes/no)?
     ```
-    Before you do anything else, take a moment to read the output here carefully. You are once again confronted with the message, "`The authenticity of host…can't be established.`" Following that, you see the fingerprint of one of the server's host keys (the ECDSA one, in this case). This fingerprint uniquely identifies the machine to which you are connecting. Notice that even though the IP address of the host is different this time than last time (where it was `localhost (::1)`), the fingerprint is the same. Again, IP addresses are addresses, not server identities. Always use the server's key fingerprints to ensure you are connecting to the endpoint you intend.
+    Before you do anything else, take a moment to read the output here carefully. You are once again confronted with the message, "`The authenticity of host '172.16.1.11 (172.16.1.11)' can't be established.`" Following that, you see the fingerprint of one of the server's host keys (the ECDSA one, in this case). This fingerprint uniquely identifies the machine to which you are connecting. Notice that even though the IP address of the host is different this time than last time (where it was `localhost (::1)`), the fingerprint is the same. Again, IP addresses are addresses, not server identities. Always use the server's key fingerprint to ensure you are connecting to the endpoint you intend.
 1. Type `no` and then press the `Return` or `Enter` keys to abort your connection.
 
 Don't worry, we'll connect again in just a moment. Before we do, though, we need to become familiar with a few important files that your SSH client uses regularly. These are all located in your user account's home folder, inside a hidden folder called `.ssh`. Let's have a look inside it.
@@ -972,7 +972,7 @@ See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetwo
 
 > More about what you can do with DHCP: set a client's DNS server, provide PXE boot addresses, etc.
 
-## What are NIST curves and why do they suck?
+## What are NIST curves and why can't they be trusted?
 
 > :construction: TK-TODO: See https://blog.cr.yp.to/20140323-ecdsa.html and https://projectbullrun.org/dual-ec/vulnerability.html for now.
 
