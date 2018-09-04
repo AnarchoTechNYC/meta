@@ -477,7 +477,110 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 ## Introduction
 
-> :construction: TK-TODO
+Secure Shell (SSH) servers are more common than you might think. Although we've been focusing on creating a practice lab environment to experiment in, you should know that almost every computer has the capacity to function as an SSH server. The laptop you use every day can do it and especially if you've been given a machine from your employer it's possible that an SSH server is already running specifically so that the IT department can remotely administer it. Many home routers have both a Web interface and a command line interface, and many times it is SSH that provides this command-line access.
+
+Of course, if *you* can access a machine's command line over SSH, so too can anyone else. This is why *securing* SSH access is so critically important. An SSH server is something like the "front door" to your computer. An unsecured SSH server on a network is by far the first thing most intruders look for. These days, if you put an SSH server up on the Internet, you'll see login attempts within minutes.
+
+Of course, whether or not someone can actually log in to your computer via its SSH server depends on a number of factors. Most obviously, they must possess the appropriate *access credentials*. For example, they need to know the username and password combination for a user with SSH access, or they must have a copy of that user's private SSH key, which is literally a key to the front door. In this lab, we'll explore both of these *authentication methods*, and we'll see why password-based authentication is much less secure than SSH key-based authentication. We'll also reconfigure the SSH server so that only the more secure options are available for use, a process often known as *hardening*.
+
+Finally, it's worth pointing out that the name "Secure Shell" has, over time, become something of a misnomer. Although originally invented as a mechanism to provide secure command line access to a shell over an unsecured network (hence the name, "secure shell"), SSH is actually a suite of several applications, none of which is a shell and only one of which is actually called `ssh`, along with a [specific communications protocol that was eventually standardized as RFC 4253](https://tools.ietf.org/html/rfc4253). Thanks to this generic communications protocol, SSH can be used to secure any kind of communication between two endpoints, a process often referred to as *SSH tunneling*. For example, you can route your Web browser through an "SSH tunnel," thus making it appear to the Web site you're browsing as though your computer is the SSH server itself, and not your laptop.
+
+SSH tunneling is so termed because the protection SSH provides is on-the-fly encryption by the sender and on-the-fly decryption by the receiver. While a message is travelling from the sender to the receiver, it is impenetrable to any eavesdroppers along the path the message takes to get to its destination. Metaphorically, it has entered "an encrypted tunnel." This same form of impenetrable tunnel is also how vanilla SSH connections work, although in that case we typically say that the connection is simply "using SSH" rather than "being tunnelled."
+
+All that being said, it is possible to configure and use SSH in such a way as it will *not* be secure. Despite its name, the "Secure" Shell still has some security weaknesses. For example, putting aside any legal implications for a moment, it doesn't make a difference if you lock your front door when the lock is easy to pick. Intruders will still be able to get in through that very same front door. This is also true with SSH: using a weak SSH key won't keep any committed intruders out. Similarly, it doesn't matter how good your front door's lock is if the patio window is wide open. Burglars will just enter through the open window. This, too, matters when securing a machine that has an SSH server on it: why bother trying to break in thorugh the SSH server if there's an easier way in?
+
+The takeaway is that security is always going to be a process of raising the bar to unauthorized entry. The more precautions you take, the less likely you'll be chosen as a target of opportunistic attackers, and the longer it will take a concerted adversary to intrude. Your task, as an SSH server administrator, is to slow attackers down as much as possible for as long as possible.
+
+Let's get started by taking a look around.
+
+## Lay of the land
+
+SSH always has two parts: a client, invoked by the `ssh(1)` command, and a server, invoked by the `sshd(8)` command. Typically, you'll start at an SSH client. You will be making connections to (i.e., requests of) a listening SSH server. We say the server is "listening" because it is waiting (listening) to be told what to do. Once the server receives a request from a client, it will respond in some way, either allowing or denying the request. Every SSH connection has these two components. We call these components *endpoints* because they are each one end of the connection. This request-and-response model is called a [*client-server architecture*](https://wiki.wikipedia.org/wiki/Client%E2%80%93server_model).
+
+For the purposes of this lab, we will be treating the CentOS 7 virtual machine as the SSH server. The Ubuntu Xenial virtual machine will therefore be our SSH client. However, it doesn't particularly matter which operating system is the client and which the server. All that matters to consider a given machine as "an SSH server" is that the SSH server application is running on it. This same logic holds for the client: wherever the `ssh` client program was run is said to be acting as the client.
+
+Let's have a look around our SSH server first.
+
+**Do this:**
+
+1. Access a command line of your CentOS 7 virtual machine. You can do this through the VirtualBox Manager graphical application or by navigating to the `centos-7` folder in this practice lab and invoking `vagrant ssh`.
+1. Have a close look at the `/etc/ssh` directory by invoking [`ls -l /etc/ssh`](https://explainshell.com/explain?cmd=ls+-l+%2Fetc%2Fssh). You will see a number of files, which are used by the various SSH programs, in a readout that looks something like this:
+    ```sh
+    [vagrant@localhost ~]$ ls -l /etc/ssh
+    total 604
+    -rw-r--r--. 1 root root     581843 Apr 11 04:21 moduli
+    -rw-r--r--. 1 root root       2276 Apr 11 04:21 ssh_config
+    -rw-------. 1 root root       3916 May 12 18:54 sshd_config
+    -rw-r-----. 1 root ssh_keys    227 Aug 20 21:11 ssh_host_ecdsa_key
+    -rw-r--r--. 1 root root        162 Aug 20 21:11 ssh_host_ecdsa_key.pub
+    -rw-r-----. 1 root ssh_keys    387 Aug 20 21:11 ssh_host_ed25519_key
+    -rw-r--r--. 1 root root         82 Aug 20 21:11 ssh_host_ed25519_key.pub
+    -rw-r-----. 1 root ssh_keys   1679 Aug 20 21:11 ssh_host_rsa_key
+    -rw-r--r--. 1 root root        382 Aug 20 21:11 ssh_host_rsa_key.pub
+    ```
+
+We will explore each of these files in detail soon but, for now, it's enough to have a look and see that the files are there. When looking at this list, you'll see there a simple pattern: two are configuration files (`sshd_config`) and (`ssh_config`), and most of the other ones are key pairs (e.g., `ssh_host_ecdsa_key` and `ssh_host_ecdsa_key.pub`).
+
+The `sshd_config` file in the `/etc/ssh` folder on the server is the SSH server's primary configuration file. That is to say it is the file read by the `sshd` (SSH daemon) program when it is first launched. The `sshd` program is the program that starts and runs the SSH server process; it is *the* SSH server part of your "SSH server machine," for all intents and purposes. That's why tweaking the values of the various configuration directives in this file will change the behavior of your SSH server. We will be spending a great deal of this lab modifying the values in this file and ensuring that our changes have been applied.
+
+> :beginner: As you may know, when available on a given system, the `man` command can be used to look up details about command invocations. This same `man` command can also be used to look up information about configuration files. Section 5 of the manual is the canonical place to store file format information, and so invoking `man sshd_config` or `man 5 sshd_config` will often show you a manual page that describes the format of the `sshd_config` file along with many, if not all, of its configuration directives. Unfortunately, [CentOS 7's Vagrant box does not include manual pages for SSH](https://bugs.centos.org/view.php?id=14633), but most other systems do. Try `man sshd_config` on the Ubuntu Xenial virtual machine, for example.
+>
+> :beginner: You may have noticed the `ssh_config` file. Not to be confused with the `sshd_config` file, this is the system-wide configuration file for the `ssh` client program. We will have a closer look at this file when we explore our SSH client's environment. So, for now, simply take care not to confuse the SSH daemon's configuration file (`sshd_config`) with the SSH client program's configuration file (`ssh_config`). Both files exist on the same machine since a single machine might be running both an SSH client and an SSH server at the same time.
+
+The set of files that begin with `ssh_host_` are, rather predictably, called *host keys*. There are a number of them: `ssh_host_ecdsa_key`, `ssh_host_ed25519_key`, `ssh_host_rsa_key`, and so forth. Each of these files contains the server's own, private cryptographic identity, which uniquely identifies *this* SSH server distinct from any other SSH server. Therefore, these files are called *private host keys*. When the server receives a request from a client asking the server to identify itself using the [Elliptic Curve Digital Signature Algorithm (ECDSA)](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm), the server will respond with data partly derived from reading the `ssh_host_ecdsa_key` file. If the client makes a similar request but asks the server to use the [Rivest–Shamir–Adleman (RSA) algorithm](https://en.wikipedia.org/wiki/RSA_%28cryptosystem%29), the server will respond with data partly derived from its `ssh_host_rsa_key` file, and so on.
+
+> :beginner: :construction: TK-TODO: Don't stress about cryptographic public key algorithms. :)
+
+It is critically important that your server's private host keys remain safe and, preferably, physically located on the SSH server itself (i.e., that the files map to data stored on a physical hard disk installed within the SSH server's metal chassis). If an attacker can steal one of these files and install it into their own SSH server, there may be no way for you to know that you are making a connection to the attacker's machine rather than your own. This is why we often refer to key files as *identity files* in SSH parlance.
+
+Each private host key file has a counterpart, which is safe to share more publicly, whose name is the same except for the fact that it ends in `.pub`. These files are predictably termed *public host keys*. The public key file for a given private key is the second "half" of the input data that the server uses to generate its response to a request from a client to identify itself. When you're using SSH to connect to a remote machine, this data is ultimately presented to you, the human, so that you can make a judgement about whether or not you feel safe enough continuing the conversation with the machine on the other end of the line.
+
+Let's have a look at what that means right now.
+
+**Do this:**
+
+1. From a terminal in your CentOS 7 virtual machine, print the contents of the `/etc/ssh/ssh_host_ecdsa_key.pub` file to your screen:
+    ```sh
+    cat /etc/ssh/ssh_host_ecdsa_key.pub
+    ```
+    You'll see a line of text that begins with `ecdsa-sha2-nistp256`, followed by a single space, followed by a long string of letters and numbers, and a few symbols. This long string is the Base64-encoded representation of the server's ECDSA public host key itself.
+1. Next, start a connection from the server to itself using the `ssh` client program:
+    ```sh
+    ssh localhost
+    ```
+    As soon as you do so, you'll be prompted to make a security decision: continue connecting, or not? Your terminal output may look something like this:
+    ```sh
+    The authenticity of host 'localhost (::1)' can't be established.
+    ECDSA key fingerprint is SHA256:bC7KnOz29hPzOtCHTI5faWHfOh7Hw2LmS13UWuZQsO0.
+    ECDSA key fingerprint is MD5:5e:f9:00:ec:e1:83:cb:4a:d2:d0:8a:d7:24:9b:4d:65.
+    Are you sure you want to continue connecting (yes/no)?
+    ```
+    > :beginner: Note that the specific fingerprints shown above will be different for you than they are in this practice lab guide. This is because your SSH server is not the author's. Indeed, when you first performed [the `vagrant up` procedure described in the "Virtual machine startup" section of the set up](#virtual-machine-startup), one of the steps Vagrant takes automatically is to regenerate the SSH server's host keys to ensure that yours is unique.
+    You're being prompted because your user account (`vagrant`, in this case) has never tried connecting to this SSH server before. As far as SSH is concerned, you're talking to a stranger. By defintion, SSH has no a priori knowledge of this server, and therefore wants you to personally approve communication with this particular endpoint. The fingerprint that `ssh` prints is a unique identity (like a literal fingerprint) of the specific SSH server endpoint that responded to your connection request. How do we know if this is the right server or not? Well, since we already have a command line on this server, we can check its public key fingerprint ourselves.
+1. Type `no` at the SSH prompt and hit the `Return` or `Enter` key to abort your connection.
+1. Compute the SSH server's public ECDSA fingerprint using one of the SSH suite's programs, `ssh-keygen(1)`:
+    ```sh
+    ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub
+    ```
+    The `-l` option asks `ssh-keygen` to show fingerprints of keys, while the `-f` option specifies the path to the file containing keys that we care to view. The output of this command should show you an exact match for the fingerprint you saw earlier. For example:
+    ```sh
+    [vagrant@localhost ~]$ ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub
+    256 SHA256:bC7KnOz29hPzOtCHTI5faWHfOh7Hw2LmS13UWuZQsO0 no comment (ECDSA)
+    ```
+    > :beginner: On CentOS 7, `ssh-keygen`'s default is to show keys using the SHA-256 hashing algorithm. You can ask for an alternative representation by passing the `-E` option. For example, to show the same key's MD5 fingerprint instead of its SHA-256 fingerprint:
+    >
+    > ```sh
+    > [vagrant@localhost ~]$ ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub -E md5
+    > 256 MD5:5e:f9:00:ec:e1:83:cb:4a:d2:d0:8a:d7:24:9b:4d:65 no comment (ECDSA)
+    > ```
+    >
+    > Although there are security implications regarding which hashing algorithm you choose (and we strongly recommend avoiding older ones, like MD5), the important thing to notice for now is that regardless of which algorithm you choose, it matches the fingerprint reported by `ssh` when you tried to connect earlier. See [Foundations: Cryptographic hash](https://github.com/AnarchoTechNYC/meta/wiki/Cryptographic-hash) for more information about hashing algorithms.
+
+As you can see, host keys are SSH's mechanism for identifying servers to clients. Inversely, this same mechanism is fundamentally the same for identifying clients to servers. Let's have a look at our SSH client, next.
+
+> :construction: TK-TODO: Connect via the Ubuntu client.
+
+> :beginner: :construction: TK-TODO: Super-brief primer on keypairs and public key cryptography.
 
 # Discussion
 
@@ -549,6 +652,12 @@ See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetwo
 > :construction: TK-TODO
 
 > More about what you can do with DHCP: set a client's DNS server, provide PXE boot addresses, etc.
+
+## Using `ssh-audit.py`
+
+> :construction: See https://github.com/arthepsy/ssh-audit
+>
+> ![Screenshot of ssh-audit.py audit results.](https://cloud.githubusercontent.com/assets/7356025/19233757/3e09b168-8ef0-11e6-91b4-e880bacd0b8a.png)
 
 # Additional references
 
