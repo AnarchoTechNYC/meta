@@ -31,6 +31,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
     1. [VirtualBox DHCP server configuration](#virtualbox-dhcp-server-configuration)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
+    1. [Lay of the land](#introduction)
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
     1. [VirtualBox networking modes](#virtualbox-networking-modes)
@@ -519,7 +520,7 @@ Let's have a look around our SSH server first.
     -rw-r--r--. 1 root root        382 Aug 20 21:11 ssh_host_rsa_key.pub
     ```
 
-We will explore each of these files in detail soon but, for now, it's enough to have a look and see that the files are there. When looking at this list, you'll see there a simple pattern: two are configuration files (`sshd_config`) and (`ssh_config`), and most of the other ones are key pairs (e.g., `ssh_host_ecdsa_key` and `ssh_host_ecdsa_key.pub`).
+We will explore each of these files in detail soon but, for now, it's enough to have a look and see that the files are there. When looking at this list, you'll see there is a simple pattern: two are configuration files (`sshd_config`) and (`ssh_config`), and most of the other ones are key pairs (e.g., `ssh_host_ecdsa_key` and `ssh_host_ecdsa_key.pub`).
 
 The `sshd_config` file in the `/etc/ssh` folder on the server is the SSH server's primary configuration file. That is to say it is the file read by the `sshd` (SSH daemon) program when it is first launched. The `sshd` program is the program that starts and runs the SSH server process; it is *the* SSH server part of your "SSH server machine," for all intents and purposes. That's why tweaking the values of the various configuration directives in this file will change the behavior of your SSH server. We will be spending a great deal of this lab modifying the values in this file and ensuring that our changes have been applied.
 
