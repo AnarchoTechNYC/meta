@@ -41,6 +41,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
     1. [IPv6 addressing](#ipv6-addressing)
     1. [DHCP options](#dhcp-options)
     1. [What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)
+    1. [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -894,9 +895,62 @@ In this case, the server is telling the client that it prefers to use the `ssh-r
 debug1: kex: host key algorithm: ecdsa-sha2-nistp256
 ```
 
-This specific algorithm, "ECDSA using the SHA2 hash family with the NIST P-256 curve," is generally considered very strong at the time of this writing, with one extremely notable problem: it's designed to be vulnerable to the NSA's code-breaking efforts. Exactly why that's true is part of "the long story" that you can read more about in the "[What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)" discussion section, below. For now, suffice it to say that the academic community widely believes nation state actors such as the United State's National Security Agency (NSA), the United Kingdom's Government Communications Headquarters (GCHQ), and other similar agencies have the ability to decrypt (break, or "crack") certain algorithms, including this one.
+This specific algorithm, "ECDSA using the SHA2 hash family with the NIST P-256 curve," is generally considered very strong at the time of this writing, with one extremely notable problem: it's designed to be vulnerable to the NSA's code-breaking efforts. Exactly why that's true is part of "the long story" that you can read more about in the "[What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)" discussion section, below. For now, suffice it to say that the academic community widely believes nation state actors such as the United States's National Security Agency (NSA), the United Kingdom's Government Communications Headquarters (GCHQ), and other similar agencies have the ability to decrypt (break, or "crack") certain algorithms, including this one.
 
 > :beginner: :bulb: Specifically, leaked documents provided by Edward Snowden in 2013 revealed, among other disturbing but hardly surprising things, that the NSA advocated for the National Institute of Standards and Technology (NIST) to publish recommendations that are now understood to be intentionally vulnerable to their supercomputers. This isn't a theory. It's a [well](https://blog.cr.yp.to/20140323-ecdsa.html)-[researched](https://projectbullrun.org/dual-ec/vulnerability.html), [widely published](https://www.wired.com/2013/09/nsa-backdoor/), proven series of events whose bottom line amounts to the NSA intentionally undermining the efficacy of certain cryptographic protocols, and then [bribing prominent security companies to use those weakened algorithms by default](https://www.reuters.com/article/us-usa-security-rsa/exclusive-secret-contract-tied-nsa-and-security-industry-pioneer-idUSBRE9BJ1C220131220). In practice, it means that NIST's recommendations to use certain encryption schemes cannot be trusted. In SSH, those encryption schemes are the ones with `nistp` in their name. Even if you can't be convinced that these facts are facts (we get it, it's emotionally difficult for people who are not psychopaths—like you!—to believe that psychopaths in positions of power are intentionally working to ensure their domination at the scale they are doing so today), why take the risk? There are stronger and even faster algorithms available.
+
+Instructing `ssh` to use a different host key algorithm when connecting to an SSH server is easy. Choosing a better algorithm, however, can be trickier if you aren't a cryptographer yourself. The best most of us can do is think critically about the situation we find ourselves in, review the academic literature in as much detail as we are able, or find a more knowledgable person whom we find trustworthy. For the purpose of this guide, the author assumes you find them trustworthy enough to make decent recommendations. That being said, you are once again encouraged to peruse the "[What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)" discussion section for additional details.
+
+Operationally speaking, choosing safer cryptographic algorithms can be broken down into two major considerations:
+
+* How widely vetted, and publicly disclosed, is the cryptographic scheme? The more skilled cryptographers have audited a given algorithm, and the more they have published about it and its details, the better.
+* How widely implemented in the tools you need to use is the cryptographic scheme? Obviously, if the tool you're trying to use does not support the use of a given cryptographic algorithm, well, you can't use it.
+
+The author's favorite cryptosystem is [the Ed25519 public-key signature system](https://ed25519.cr.yp.to/). It is very similar to NIST's ECDSA scheme, except for the fact that it did not originate with the NSA, uses different mathematical constants ("curves") than the P-256 curve recommended by NIST, and is even faster. Fortunately, many modern SSH suites available today support this algorithm for numerous parts of the SSH connection and encryption process. This can be verified using the `-Q` option to query your `ssh` installation.
+
+> :beginner: :bulb: Ed25519 is so named because it is a variant on the [Edwards-curve Digital Signature Algorithm (EdDSA)](https://en.wikipedia.org/wiki/EdDSA), which uses [Curve25519](https://en.wikipedia.org/wiki/Curve25519). What matters for our purposes is that you can recognize these names in SSH's output. You don't need to be a cryptographer to use these cryptographic systems, much like you don't need to be a computer scientist in order to use a computer. That said, it certainly helps to gain a little bit of familiarity with the terminology of the technology you're using, just as it would help to know English in order to read road signs written in that language.
+
+Let's try using the Ed25519 algorithm for exchanging host keys with out SSH server. To do this, we'll configure our SSH client to propose only this one host key algorithm to the server. SSH configuration directives can be passed directly to the `ssh` client using the `-o` option in the invocation of `ssh` itself, making custom configurations very easy to experiment with. The configuration directive we need to use to change the list of preferred host key algorithms is called `HostKeyAlgorithms`.
+
+> :beginner: Remember that the available configuration directives you can use to change the behavior of the `ssh` client program are listed in the `ssh_config(5)` manual page. This is typically available to you using the `man ssh_config` command. Once again, don't confuse this with the `sshd_config` file or its corresponding manual page, `sshd_config(5)`! Even though many of the same configuration directives are available to both the `sshd` (server) and `ssh` (client) programs, you'll save yourself quite a bit of trouble by reading the correct manual page. :)
+
+**Do this:**
+
+1. First, remove the SSH client's knowledge of any previous connections by deleting the SSH server's host key from your `known_hosts` file:
+    ```sh
+    ssh-keygen -R 172.16.1.11
+    ```
+1. Next, list the host key algorithms available to you: 
+    ```sh
+    ssh -Q key
+    ```
+    Several of the available options should now be at least cursorily familiar. We see the `ecdsa-sha2-nistp256` algorithm that we'd like to avoid from now on, along with the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` algorithms that use the Ed25519 cryptosystem, which we like.
+    > :beginner: The differences between the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` values relate to the use of SSH certificates instead of plain SSH keys. In this introductory lab, we won't be using SSH certificates at all, but you can learn more about the distinction in the [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys) discussion.
+1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o HostKeyAlgorithms=ssh-ed25519` as part of the `ssh` client invocation:
+    ```sh
+    ssh -o "HostKeyAlgorithms=ssh-ed25519" 172.16.1.11
+    ```
+    Having erased any existing host keys for this servers, you will once again be prompted to continue connecting to the server or not. This time, however, notice that the server's Ed25519 public host key fingerprint is presented to you, not its ECDSA public host key fingerprint.
+1. Abort the connection by typing `no` and pressing the `Return` or `Enter` key.
+1. Connect to the SSH server again, but this time ask for level 2 debugging output:
+    ```sh
+    ssh -o "HostKeyAlgorithms=ssh-ed25519" -vv 172.16.1.11 
+    ```
+1. Find the client's `KEXINIT proposal` again, and notice that this time the `host key algorithms` line contains one and only one option. The output will include a snippet like this:
+    ```
+    debug2: local client KEXINIT proposal
+    debug2: KEX algorithms: curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,ext-info-c
+    debug2: host key algorithms: ssh-ed25519
+    ```
+    The `ssh` client has given the server only one option for the host key algorithm. Since this is a host key algorithm that the server is willing and able to use, this is the algorithm ultimately agreed upon during the host key negotiation process. The server thus loads its `ssh_host_ed25519_key.pub` file and uses that, not its `ssh_host_ecdsa_key.pub` file, to present to the client. The client computes the fingerprint of this file, and presents it to you, the human user, asking for your approval to continue connecting.
+
+By specifying a different host key algorithm (using the `HostKeyAlgorithms` configuration directive), we have changed the behavior of our `ssh` client. We have thus hardened this specific SSH connection by choosing a better host key algorithm than the default, and rejecting all other (and weaker) options proposed by the server. This illustrates the basic principle of SSH connection hardening, and we'll be doing a lot more of this throughout the remainder of this lab.
+
+Before we continue to improve our SSH configurations, let's have a close look at some operational security ("OpSec") considerations of host key changes or mismatches, along with a very important implication that such an event might mean: SSH Machine-in-the-Middle (MITM) attacks.
+
+## Host key verification failures
+
+> :construction: TK-TODO
 
 ## Basic SSH authentication methods
 
@@ -976,6 +1030,10 @@ See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetwo
 ## What are NIST curves and why can't they be trusted?
 
 > :construction: TK-TODO: See https://blog.cr.yp.to/20140323-ecdsa.html and https://projectbullrun.org/dual-ec/vulnerability.html for now.
+
+## SSH certificates versus SSH keys
+
+> :construction: TK-TODO: See the `CERTIFICATES` section of the `ssh-keygen` manual page.
 
 ## Using `ssh-audit.py`
 
