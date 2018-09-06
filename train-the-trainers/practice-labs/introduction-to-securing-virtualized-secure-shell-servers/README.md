@@ -998,7 +998,7 @@ Host key verification failed.
 
 This warning message is clearly designed to make you stop what you're doing and take notice. SSH is outright telling you that "it is possible that someone is doing something nasty" and that "someone could be eavesdropping on you right now." This can happen because, again, addreses (like `172.16.1.11`) are not identities: when you connect to an SSH server at a given address, the address itself provides no guarantee that you're actually connecting to the same machine you connected to when trying to reach that address before.
 
-One thing that could be happening is that a machine you expect to be politely delivering your messages to their ultimate destination is actually opening those messages itself. This "machine-in-the-middle" situation is how all networks function. However, when one of these machines in between you and your ultimate destination starts snooping on your messages, a *machine-in-the-middle (MitM) attack*, there isn't anything inherent in the way most networks are built that can alert you to this. Only the fact that this machine in the middle does not have access to your specific SSH server's private host key file offers any meaningful abaility to detect that this interception is happening.
+One thing that could be happening is that a machine you expect to be politely delivering your messages to their ultimate destination is actually opening those messages itself. This "machine-in-the-middle" situation is how all networks function. However, when one of these machines in between you and your ultimate destination starts snooping on your messages, a *machine-in-the-middle (MitM) attack*, there isn't anything inherent in the way most networks are built that can alert you to this. Only the fact that this machine in the middle does not have access to your specific SSH server's private host key file offers any meaningful ability to detect that this interception is happening.
 
 > :beginner: :black_flag: Historically, and in SSH's output today, this kind of active interception is termed a "man-in-the-middle attack." While the author concedes it is undisputably true at the time of this writing that most such malicious behavior is conducted by men, this term carries sexist implications and is also technically inaccurate. We therefore use the gender-neutral and more accurate term "machine-in-the-middle" instead.
 
@@ -1015,6 +1015,8 @@ Rather than delete the server's ECDSA host key fingerprint from our `known_hosts
 Let's take a look at how `ssh`'s behavior changes if we turn `StrictHostKeyChecking` off.
 
 > :beginner: :warning: Turning `StrictHostKeyChecking` off is something you should probably never actually do in a real-world ("production") environment. We're doing it here as an educational exercise, but turning this off can seriously undermine your security and the security of your systems. Friends don't let friends SSH insecurely.
+>
+> :beginner: Since you won't generally need to change the `StrictHostKeyChecking` directive away from the default, we won't discuss its other values here. That said, feel free to dive deeper into this topic by reading through the [additional host key verification options](#additional-host-key-verification-options) section in the extended discussion portion of this guide.
 
 **Do this:**
 
