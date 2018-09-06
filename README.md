@@ -20,6 +20,7 @@ Some projects are included as [Git submodules](https://git-scm.com/book/en/Git-T
 You may encounter the following icons throughout these texts:
 
 * :beginner: (`:beginner:`) is used to introduce a reader to concepts they may not already know.
+* :black_flag: (`:black_flag:`) is used to explicitly mark a political position, or to introduce a note with explicitly political implications.
 * :book: (`:book:`) is used to introduce an aside about a particularly academic, rather than practical, concept, or when providing a narrative distinct from the primary text's narrative.
 * :bulb: (`:bulb:`) is used to introduce a tip or note about an advanced feature or idea.
 * :cinema: (`:cinema:`) is used to introduce an aside about the product or production of media.

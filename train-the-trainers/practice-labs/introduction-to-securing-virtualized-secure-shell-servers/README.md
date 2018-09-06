@@ -33,6 +33,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
     1. [Introduction](#introduction)
     1. [SSH server host keys and fingerprints](#ssh-server-host-keys-and-fingerprints)
     1. [Choosing safer host keys and host key algorithms](#choosing-safer-host-keys-and-host-key-algorithms)
+    1. [Host key verification failures](#host-key-verification-failures)
     1. [Basic SSH authentication methods](#basic-ssh-authentication-methods)
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
@@ -570,7 +571,9 @@ Let's have a look at what it means to make a judgement about whether or not to c
     Are you sure you want to continue connecting (yes/no)?
     ```
     > :beginner: Note that the specific fingerprints shown above will be different for you than they are in this practice lab guide. This is because your SSH server is not the author's. Indeed, when you first performed [the `vagrant up` procedure described in the "Virtual machine startup" section of the set up](#virtual-machine-startup) (a process known as *provisioning*), one of the steps Vagrant automatically takes is to regenerate the SSH server's host keys to ensure that it has a new, unique identity.
+
     You're being prompted because the user account from which you initiated the SSH connection has never tried connecting to this SSH server before. As far as SSH is concerned, you're talking to a stranger. By defintion, SSH has no prior knowledge of this server, and therefore wants you to personally approve communication with this particular endpoint. The fingerprint that `ssh` shows you here is a unique identity (like a literal fingerprint) of the specific endpoint that responded to your connection request. How do we know if this is the right SSH server or not? Well, since we already have a command line on this server, we can check its public key fingerprint ourselves.
+
     > :beginner: :bulb: If you are trying to connect to an SSH server for the first time for which you don't already have some way of reading the public host key, you need to find some other way of checking the server's fingerprint before you continue connecting. Typically, this is done by simply asking the server's administrator for the SSH server's public key fingerprint over some other secure channel, such as an authenticated (signed) email, a Signal private message with a verified contact, or an equivalent. You could also simply trust that this first connection is not being intercepted, a paradigm cleverly termed TOFU (Trust On First Use), but this is obviously suboptimal for the appropriately paranoid among us.
 1. Type `no` at the SSH prompt and hit the `Return` or `Enter` key to abort your connection.
 1. Compute the SSH server's public ECDSA fingerprint using one of the SSH suite's programs, `ssh-keygen(1)`:
@@ -895,9 +898,9 @@ In this case, the server is telling the client that it prefers to use the `ssh-r
 debug1: kex: host key algorithm: ecdsa-sha2-nistp256
 ```
 
-This specific algorithm, "ECDSA using the SHA2 hash family with the NIST P-256 curve," is generally considered very strong at the time of this writing, with one extremely notable problem: it's designed to be vulnerable to the NSA's code-breaking efforts. Exactly why that's true is part of "the long story" that you can read more about in the "[What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)" discussion section, below. For now, suffice it to say that the academic community widely believes nation state actors such as the United States's National Security Agency (NSA), the United Kingdom's Government Communications Headquarters (GCHQ), and other similar agencies have the ability to decrypt (break, or "crack") certain algorithms, including this one.
+This specific algorithm, "ECDSA using the NIST P-256 curve and the SHA2 hash family," is generally considered very strong at the time of this writing, with one extremely notable problem: it's designed to be vulnerable to the NSA's code-breaking efforts. Exactly why that's true is part of "the long story" that you can read more about in the "[What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)" discussion section, below. For now, suffice it to say that the academic community widely believes nation state actors such as the United States's National Security Agency (NSA), the United Kingdom's Government Communications Headquarters (GCHQ), and other similar agencies have the ability to decrypt (break, or "crack") certain algorithms, including this one.
 
-> :beginner: :bulb: Specifically, leaked documents provided by Edward Snowden in 2013 revealed, among other disturbing but hardly surprising things, that the NSA advocated for the National Institute of Standards and Technology (NIST) to publish recommendations that are now understood to be intentionally vulnerable to their supercomputers. This isn't a theory. It's a [well](https://blog.cr.yp.to/20140323-ecdsa.html)-[researched](https://projectbullrun.org/dual-ec/vulnerability.html), [widely published](https://www.wired.com/2013/09/nsa-backdoor/), proven series of events whose bottom line amounts to the NSA intentionally undermining the efficacy of certain cryptographic protocols, and then [bribing prominent security companies to use those weakened algorithms by default](https://www.reuters.com/article/us-usa-security-rsa/exclusive-secret-contract-tied-nsa-and-security-industry-pioneer-idUSBRE9BJ1C220131220). In practice, it means that NIST's recommendations to use certain encryption schemes cannot be trusted. In SSH, those encryption schemes are the ones with `nistp` in their name. Even if you can't be convinced that these facts are facts (we get it, it's emotionally difficult for people who are not psychopaths—like you!—to believe that psychopaths in positions of power are intentionally working to ensure their domination at the scale they are doing so today), why take the risk? There are stronger and even faster algorithms available.
+> :beginner: :bulb: :black_flag: Specifically, leaked documents provided by Edward Snowden in 2013 revealed, among other disturbing but hardly surprising things, that the NSA advocated for the National Institute of Standards and Technology (NIST) to publish recommendations that are now understood to be intentionally vulnerable to their supercomputers. This isn't a theory. It's a [well](https://blog.cr.yp.to/20140323-ecdsa.html)-[researched](https://projectbullrun.org/dual-ec/vulnerability.html), [widely published](https://www.wired.com/2013/09/nsa-backdoor/), proven series of events whose bottom line amounts to the NSA intentionally undermining the efficacy of certain cryptographic protocols, and then [bribing prominent security companies to use those weakened algorithms by default](https://www.reuters.com/article/us-usa-security-rsa/exclusive-secret-contract-tied-nsa-and-security-industry-pioneer-idUSBRE9BJ1C220131220). In practice, it means that NIST's recommendations to use certain encryption schemes cannot be trusted. In SSH, those encryption schemes are the ones with `nistp` in their name. Even if you can't be convinced that these facts are facts (we get it, it's emotionally difficult for people who are not psychopaths—like you!—to believe that psychopaths in positions of power are intentionally working to ensure their domination at the scale they are doing so today), why take the risk? There are stronger and even faster algorithms available.
 
 Instructing `ssh` to use a different host key algorithm when connecting to an SSH server is easy. Choosing a better algorithm, however, can be trickier if you aren't a cryptographer yourself. The best most of us can do is think critically about the situation we find ourselves in, review the academic literature in as much detail as we are able, or find a more knowledgable person whom we find trustworthy. For the purpose of this guide, the author assumes you find them trustworthy enough to make decent recommendations. That being said, you are once again encouraged to peruse the "[What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)" discussion section for additional details.
 
@@ -910,7 +913,7 @@ The author's favorite cryptosystem is [the Ed25519 public-key signature system](
 
 > :beginner: :bulb: Ed25519 is so named because it is a variant on the [Edwards-curve Digital Signature Algorithm (EdDSA)](https://en.wikipedia.org/wiki/EdDSA), which uses [Curve25519](https://en.wikipedia.org/wiki/Curve25519). What matters for our purposes is that you can recognize these names in SSH's output. You don't need to be a cryptographer to use these cryptographic systems, much like you don't need to be a computer scientist in order to use a computer. That said, it certainly helps to gain a little bit of familiarity with the terminology of the technology you're using, just as it would help to know English in order to read road signs written in that language.
 
-Let's try using the Ed25519 algorithm for exchanging host keys with out SSH server. To do this, we'll configure our SSH client to propose only this one host key algorithm to the server. SSH configuration directives can be passed directly to the `ssh` client using the `-o` option in the invocation of `ssh` itself, making custom configurations very easy to experiment with. The configuration directive we need to use to change the list of preferred host key algorithms is called `HostKeyAlgorithms`.
+Let's try using the Ed25519 algorithm for exchanging host keys with our SSH server. To do this, we'll configure our SSH client to propose only this one host key algorithm to the server. SSH configuration directives can be passed directly to the `ssh` client using the `-o` option in the invocation of `ssh` itself, making custom configurations very easy to experiment with. The configuration directive we need to use to change the list of preferred host key algorithms is called `HostKeyAlgorithms`.
 
 > :beginner: Remember that the available configuration directives you can use to change the behavior of the `ssh` client program are listed in the `ssh_config(5)` manual page. This is typically available to you using the `man ssh_config` command. Once again, don't confuse this with the `sshd_config` file or its corresponding manual page, `sshd_config(5)`! Even though many of the same configuration directives are available to both the `sshd` (server) and `ssh` (client) programs, you'll save yourself quite a bit of trouble by reading the correct manual page. :)
 
@@ -946,11 +949,52 @@ Let's try using the Ed25519 algorithm for exchanging host keys with out SSH serv
 
 By specifying a different host key algorithm (using the `HostKeyAlgorithms` configuration directive), we have changed the behavior of our `ssh` client. We have thus hardened this specific SSH connection by choosing a better host key algorithm than the default, and rejecting all other (and weaker) options proposed by the server. This illustrates the basic principle of SSH connection hardening, and we'll be doing a lot more of this throughout the remainder of this lab.
 
-Before we continue to improve our SSH configurations, let's have a close look at some operational security ("OpSec") considerations of host key changes or mismatches, along with a very important implication that such an event might mean: SSH Machine-in-the-Middle (MITM) attacks.
+Before we continue to harden our SSH configurations, let's have a close look at some operational security ("OpSec") considerations of host key changes or mismatches, along with a very important implication that such an event might mean: SSH Machine-in-the-Middle (MITM) attacks.
 
 ## Host key verification failures
 
-> :construction: TK-TODO
+Checking the public host key fingerprint belonging to an SSH server against a fingerprint for an SSH server at the same address that we previously connected to is called *host key verification*. Whenever a new connection is established, the `ssh` client program verifies that the public key it received from the server is the one it expected to receive, based on its past experience. (If no host key for the address is listed in its `known_hosts` file, the `ssh` client program will prompt you to approve the connection, as we've seen numerous times, now.)
+
+But what happens when the public key doesn't match the expected fingerprint? This situation is called a *host key verification failure*. Let's intentionally trigger such an event to see how it might happen and how it should affect our use of SSH.
+
+**Do this:**
+
+1. Remove any prior host key fingerprints saved in your `known_hosts` file for the SSH server:
+    ```sh
+    ssh-keygen -R 172.16.1.11
+    ```
+1. Make a connection to the SSH server as normal, and approve the connection to save the server's ECDSA fingerprint in your `known_hosts` file:
+    ```sh
+    ssh 172.16.1.11
+    ```
+    Answer `yes` at the SSH connection prompt.
+1. Make a second connection to the SSH server, but this time use the `ssh-ed25519` host key algorithm to induce the SSH server to provide a different key than it did the last time you connected:
+    ```sh
+    ssh -o "HostKeyAlgorithms=ssh-ed25519" 172.16.1.11
+    ```
+    > :beginner: This is going to produce a scary-looking warning message. Don't panic! We did this intentionally, and the warning is designed to sound alarms.
+
+What we've just done is save the fingerprint for the SSH server's ECDSA host key, but then asked the server to send us its Ed25519 host key instead. Since these are different keys, their fingerprints will be different, too. Since their fingerprints are different, when `ssh` performs its host key verification procedure, the verification will fail, and `ssh` will issue a very loud warning about it:
+
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ED25519 key sent by the remote host is
+SHA256:Z37eirjlSE7EdRi5NFCDp5aPMvpY9d6wRA5J0GnMpmk.
+Please contact your system administrator.
+Add correct host key in /home/vagrant/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/vagrant/.ssh/known_hosts:1
+  remove with:
+  ssh-keygen -f "/home/vagrant/.ssh/known_hosts" -R 172.16.1.11
+ED25519 host key for 172.16.1.11 has changed and you have requested strict checking.
+Host key verification failed.
+```
+
+SSH's warning message here is definitely not subtle. With the knowledge you now have about host keys, most of this should be self-explanatory: the server's identity is different than what we expected (it has changed), 
 
 ## Basic SSH authentication methods
 
