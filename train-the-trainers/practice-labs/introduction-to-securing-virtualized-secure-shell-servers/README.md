@@ -43,6 +43,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
     1. [DHCP options](#dhcp-options)
     1. [What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)
     1. [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys)
+    1. [Additional host key verification options](#additional-host-key-verification-options)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -491,7 +492,7 @@ Of course, if you can access a machine's command line over SSH, so too can anyon
 
 Of course, whether or not someone can actually log in to your computer via its SSH server depends on a number of factors. Most obviously, they must possess the appropriate *access credentials*. For example, they need to know the username and password combination for a user account that has SSH access, or they must have a copy of that user's private SSH key, which is literally a key to the front door. In this lab, we'll explore both of these *authentication methods*, and we'll see why password-based authentication is much less secure than SSH key-based authentication. We'll also reconfigure the SSH server so that only the more secure options are available for use, a process often known as *hardening*.
 
-Moreover, the name "Secure Shell" has, over time, become something of a misnomer. Although originally invented as a mechanism to provide secure command line access to a shell over an unsecured network (hence the name, "secure shell"), SSH is actually a suite of several applications, none of which is a shell and only one of which is actually called `ssh`. The name also refers to a [specific communications protocol that was eventually standardized as RFC 4253](https://tools.ietf.org/html/rfc4253). Thanks to this generic communications protocol, SSH can be used to secure any kind of communication between two endpoints, a process often referred to as *SSH tunneling*. For example, you can route your Web browser through an "SSH tunnel," thus making it appear to the Web site you're browsing as though your computer is the SSH server itself, and not your laptop.
+Moreover, the name "Secure Shell" has, over time, become something of a misnomer. Although originally invented as a mechanism to provide secure command line access to a shell over an unsecured network (hence the name, "secure shell"), SSH is actually a suite of several applications, none of which is a shell and only one of which is actually called `ssh`. The name also refers to a [specific transport protocol, called `SSH-TRANS`, that was eventually standardized as RFC 4253](https://tools.ietf.org/html/rfc4253). Thanks to this generic communications protocol, SSH can be used to secure any kind of communication between two endpoints, a process often referred to as *SSH tunneling*. For example, you can route your Web browser through an "SSH tunnel," thus making it appear to the Web site you're browsing as though your computer is the SSH server itself, and not your laptop.
 
 > :beginner: [SSH tunneling](https://en.wikipedia.org/wiki/Tunneling_protocol#Secure_Shell_tunneling) is so termed because the protection SSH provides is on-the-fly encryption by the sender and on-the-fly decryption by the receiver. While a message is travelling from the sender to the receiver, it is impenetrable to any eavesdroppers who happen to be somewhere along the same path the message takes to get to its destination. Metaphorically, the message has entered "an encrypted tunnel." In network engineering parlance, when you route one application's network traffic inside a tunnel provided by a second, we say that you have "encapsulated" the first application's traffic inside the second's; to use the Web browsing example from earlier, we might say you have "encapsulated HTTP within SSH." This same form of impenetrable tunnel is also how vanilla SSH connections work, although in that case we typically say that the connection is simply "using SSH" rather than "being tunnelled."
 
@@ -823,7 +824,7 @@ debug1: SSH2_MSG_KEXINIT sent
 debug1: SSH2_MSG_KEXINIT received
 ```
 
-Immediately following this is the beginning of what we are looking for: the client's key exchange initialization proposal ("`local client KEXINIT proposal`"). This is the portion of the SSH connection start up process where the client program, after loading its configurations, tells the server what it's able and willing to use for various aspects of the remainder of the conversation. The first aspect described is the key exchange algorithm ("`KEX algorithms`"), and the next one of these aspects is which host key algorithms are acceptable ("`host key algorithms`"):
+Immediately following this is the beginning of what we are looking for: the client's *key exchange initialization proposal* ("`local client KEXINIT proposal`"). This is the portion of the SSH connection start up process where the client program, after loading its configurations, tells the server what it's able and willing to use for various aspects of the remainder of the conversation, called *session parameters*. The first session parameter described is the key exchange algorithm ("`KEX algorithms`"), and the next one is which host key algorithms are acceptable ("`host key algorithms`"):
 
 ```
 debug2: local client KEXINIT proposal
@@ -831,7 +832,7 @@ debug2: KEX algorithms: curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha
 debug2: host key algorithms: ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,ssh-ed25519,rsa-sha2-512,rsa-sha2-256,ssh-rsa
 ```
 
-The possible values for each of the connection's aspects are listed here in a comma-separated list. The list is sorted by order of preference: the first value listed is the one the client preferrs most. This output tells us that the `ssh` client program prefers to use the `ecdsa-sha2-nistp256-cert-v01@openssh.com` host key algorithm. If the server is willing and able to use this as well, then that is the host key algorithm that will be agreed upon and ultimately used. If the server does not support this specific host key type, then the client will accept any of the other ones listed here.
+The possible values for each of the connection's session parameters are listed here in a comma-separated list. The list is sorted by order of preference: the first value listed is the one the client preferrs most. This output tells us that the `ssh` client program prefers to use the `ecdsa-sha2-nistp256-cert-v01@openssh.com` host key algorithm. If the server is willing and able to use this as well, then that is the host key algorithm that will be agreed upon and ultimately used. If the server does not support this specific host key type, then the client will accept any of the other ones listed here.
 
 As you can see, this isn't a small list. There are 12 items in the acceptable host key algorithm list that the client sends to the server. They are, in order of preference:
 
@@ -868,7 +869,7 @@ Put simply, some of these are better than others. What we'd like to do is have `
 > ecdsa-sha2-nistp521-cert-v01@openssh.com
 > ```
 >
-> You can use `-Q` to ask `ssh` for a list of the supported values for any of the various aspects of your SSH connection. For example, to see a list of the key exchange algorithms (which we'll talk about later) available for your use with this specific `ssh` client, use `-Q kex`:
+> You can use `-Q` to ask `ssh` for a list of the supported values for any of the various session parameters of your SSH connection. For example, to see a list of the key exchange algorithms (which we'll talk about later) available for your use with this specific `ssh` client, use `-Q kex`:
 >
 > ```sh
 > vagrant@ubuntu-xenial:~$ ssh -Q kex
@@ -929,15 +930,16 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
     ```
     Several of the available options should now be at least cursorily familiar. We see the `ecdsa-sha2-nistp256` algorithm that we'd like to avoid from now on, along with the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` algorithms that use the Ed25519 cryptosystem, which we like.
     > :beginner: The differences between the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` values relate to the use of SSH certificates instead of plain SSH keys. In this introductory lab, we won't be using SSH certificates at all, but you can learn more about the distinction in the [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys) discussion.
-1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o HostKeyAlgorithms=ssh-ed25519` as part of the `ssh` client invocation:
+1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o HostKeyAlgorithms ssh-ed25519` as part of the `ssh` client invocation:
     ```sh
-    ssh -o "HostKeyAlgorithms=ssh-ed25519" 172.16.1.11
+    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.11
     ```
+    > :beginner: SSH configuration options can include an equals sign (`=`) between the configuration directive's name and its value. For example, `-o HostKeyAlgorithms=ssh-ed25519` is equivalent to `-o "HostKeyAlgorithms ssh-ed25519"`. In this guide, the latter (space-separated) style is used as it matches exactly the syntax used in the SSH configuration files themselves.
     Having erased any existing host keys for this servers, you will once again be prompted to continue connecting to the server or not. This time, however, notice that the server's Ed25519 public host key fingerprint is presented to you, not its ECDSA public host key fingerprint.
 1. Abort the connection by typing `no` and pressing the `Return` or `Enter` key.
 1. Connect to the SSH server again, but this time ask for level 2 debugging output:
     ```sh
-    ssh -o "HostKeyAlgorithms=ssh-ed25519" -vv 172.16.1.11 
+    ssh -o "HostKeyAlgorithms ssh-ed25519" -vv 172.16.1.11 
     ```
 1. Find the client's `KEXINIT proposal` again, and notice that this time the `host key algorithms` line contains one and only one option. The output will include a snippet like this:
     ```
@@ -970,7 +972,7 @@ But what happens when the public key doesn't match the expected fingerprint? Thi
     Answer `yes` at the SSH connection prompt.
 1. Make a second connection to the SSH server, but this time use the `ssh-ed25519` host key algorithm to induce the SSH server to provide a different key than it did the last time you connected:
     ```sh
-    ssh -o "HostKeyAlgorithms=ssh-ed25519" 172.16.1.11
+    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.11
     ```
     > :beginner: This is going to produce a scary-looking warning message. Don't panic! We did this intentionally, and the warning is designed to sound alarms.
 
@@ -994,7 +996,46 @@ ED25519 host key for 172.16.1.11 has changed and you have requested strict check
 Host key verification failed.
 ```
 
-SSH's warning message here is definitely not subtle. With the knowledge you now have about host keys, most of this should be self-explanatory: the server's identity is different than what we expected (it has changed), 
+This warning message is clearly designed to make you stop what you're doing and take notice. SSH is outright telling you that "it is possible that someone is doing something nasty" and that "someone could be eavesdropping on you right now." This can happen because, again, addreses (like `172.16.1.11`) are not identities: when you connect to an SSH server at a given address, the address itself provides no guarantee that you're actually connecting to the same machine you connected to when trying to reach that address before.
+
+One thing that could be happening is that a machine you expect to be politely delivering your messages to their ultimate destination is actually opening those messages itself. This "machine-in-the-middle" situation is how all networks function. However, when one of these machines in between you and your ultimate destination starts snooping on your messages, a *machine-in-the-middle (MitM) attack*, there isn't anything inherent in the way most networks are built that can alert you to this. Only the fact that this machine in the middle does not have access to your specific SSH server's private host key file offers any meaningful abaility to detect that this interception is happening.
+
+> :beginner: :black_flag: Historically, and in SSH's output today, this kind of active interception is termed a "man-in-the-middle attack." While the author concedes it is undisputably true at the time of this writing that most such malicious behavior is conducted by men, this term carries sexist implications and is also technically inaccurate. We therefore use the gender-neutral and more accurate term "machine-in-the-middle" instead.
+
+More worrisome is the fact that machine-in-the-middle attacks are easy to mount. What's more difficult for an attacker to do is copy the private host key file on a well-secured server. This means that even if a MitM is intercepting your SSH connections, the attacker's SSH server will not look like yours; it will have its own fingerprint, will present that fingerprint to your `ssh` client (as it's the only fingerprint the attacker's server has), and thus cause `ssh`'s host key verification procedure to fail.
+
+Such a failure in this situation is a good thing. It means `ssh` has successfully alerted you to the attack in progress. However, it is still up to you to resolve the situation. Usually, this means a careful audit of your surroundings, choosing an alternative route to your destination (such as via the Tor network, a personal VPN, or simply moving to a different Wi-Fi hotspot if you happen to be using a public network), or escalating the issue to one of your trusted comrades or, in SSH's own words, "`Please contact your system administrator.`" The one thing you should not do is ignore the warning and connect anyway.
+
+By default, most SSH distributions today will not even permit you the luxury of ignoring the warning until you take some action. That is, `ssh` will simply refuse to continue with the connection. You can, of course, remove `ssh`'s prior knowledge of the SSH server's fingerprint by removing the appropriate line from the `known_hosts` file, and `ssh`'s warning even includes the exact command line you need to invoke to do this. Again, only do this if you know why you're being warned: it is possible that the administrator of your SSH server has told you ahead of time that they will be changing the server's host keys. In such a situation, a competent administrator should also have informed you of the new host key's fingerprint, so that you can verify it yourself. But in any situation wherein you don't understand the reason you are being warned, ask for help from those you trust.
+
+In this lab, of course, we do know why we're being warned: we deliberately asked for a different key the second time than the key we asked for the first time. Different keys have different fingerprints (because they are different keys!) and so the fingerprints won't match. Given that we triggered this situation ourselves, it's safe for us to move forward with the connection.
+
+Rather than delete the server's ECDSA host key fingerprint from our `known_hosts` file, though, let's use the opportunity to learn about the `StrictHostKeyChecking` SSH client configuration directive. The value of this directive determines `ssh`'s behavior after it is has performed its host key verification procedure. Possible values you can set for this configuration directive are `yes`, `accept-new`, `no` (or its synonym, `off`), and `ask`. You're already familiar with the behavior of `ask` because that's the default we've been using all along: it tells `ssh` to ask you whether or not you want to add newly encountered host key fingerprints to your `known_hosts` list, and won't allow connections to SSH servers that fail its host key verification procedure to proceed.
+
+Let's take a look at how `ssh`'s behavior changes if we turn `StrictHostKeyChecking` off.
+
+> :beginner: :warning: Turning `StrictHostKeyChecking` off is something you should probably never actually do in a real-world ("production") environment. We're doing it here as an educational exercise, but turning this off can seriously undermine your security and the security of your systems. Friends don't let friends SSH insecurely.
+
+**Do this:**
+
+1. Make a connection to your SSH server asking for its Ed25519 key while also telling `ssh` not to perform "strict" host key checking. We need to set two configuration directives to do this, so we'll include the `-o` option two times, once for each configuration directive:
+    ```sh
+    ssh -o "HostKeyAlgorithms ssh-ed25519" -o "StrictHostKeyChecking no" 172.16.1.11
+    ```
+
+We'll see similar output as before, with a few differences at the end of the warning that read as follows:
+
+```
+Password authentication is disabled to avoid man-in-the-middle attacks.
+Keyboard-interactive authentication is disabled to avoid man-in-the-middle attacks.
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+```
+
+With `StrictHostKeyChecking` set to `no`, `ssh` flat-out refuses to allow you to use a password to log in to the SSH server. It just isn't safe to send your password to an SSH server that may be impersonating the one you intended to reach. This is why `ssh` reports that "`Password authentication is disabled`[…]." Likewise, a similar authentication method, `keyboard-interactive`, which allows the server to challenge the user with arbitrary questions beyond simply asking for a single password (e.g., two-factor authentication with a smartphone), is disabled for the same reason.
+
+The last line of output is the same as our earlier failed log in attempt: "`Permission denied (publickkey,gssapi-keyex,gssapi-with-mic).`" Even though the log in failed, it was nevertheless attempted, despite failing to verify the server's host key fingerprint. If this had been a real scenario rather than a practice lab, unknowingly attempting to log in to an attacker's machine could pose a serious security risk.
+
+Finally, the comma-separated list shown in parentheses on this last line are the remaining SSH authentication methods that are still enabled. Now that we understand how to positively identify remote SSH servers using their public host key fingerprints, that is to say we know how the server authenticates itself to the client, let's see how clients (like us) authenticate to an SSH server.
 
 ## Basic SSH authentication methods
 
@@ -1078,6 +1119,17 @@ See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetwo
 ## SSH certificates versus SSH keys
 
 > :construction: TK-TODO: See the `CERTIFICATES` section of the `ssh-keygen` manual page.
+
+## Additional host key verification options
+
+> :construction: TK-TODO
+
+* Other values for `StrictHostKeyChecking`:
+    * `yes`
+    * `accept-new`
+* `CheckHostIP`
+* `VerifyHostKeyDNS`
+* `VisualHostKey`
 
 ## Using `ssh-audit.py`
 
