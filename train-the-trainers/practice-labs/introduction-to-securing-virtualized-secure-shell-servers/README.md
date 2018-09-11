@@ -932,7 +932,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
     ```
     Several of the available options should now be at least cursorily familiar. We see the `ecdsa-sha2-nistp256` algorithm that we'd like to avoid from now on, along with the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` algorithms that use the Ed25519 cryptosystem, which we like.
     > :beginner: The differences between the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` values relate to the use of SSH certificates instead of plain SSH keys. In this introductory lab, we won't be using SSH certificates at all, but you can learn more about the distinction in the [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys) discussion.
-1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o HostKeyAlgorithms ssh-ed25519` as part of the `ssh` client invocation:
+1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o "HostKeyAlgorithms ssh-ed25519"` as part of the `ssh` client invocation:
     ```sh
     ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.11
     ```
