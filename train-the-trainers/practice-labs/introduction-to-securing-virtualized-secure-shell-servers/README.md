@@ -936,7 +936,9 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
     ```sh
     ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.11
     ```
+
     > :beginner: SSH configuration options can include an equals sign (`=`) between the configuration directive's name and its value. For example, `-o HostKeyAlgorithms=ssh-ed25519` is equivalent to `-o "HostKeyAlgorithms ssh-ed25519"`. In this guide, the latter (space-separated) style is used as it matches exactly the syntax used in the SSH configuration files themselves.
+
     Having erased any existing host keys for this servers, you will once again be prompted to continue connecting to the server or not. This time, however, notice that the server's Ed25519 public host key fingerprint is presented to you, not its ECDSA public host key fingerprint.
 1. Abort the connection by typing `no` and pressing the `Return` or `Enter` key.
 1. Connect to the SSH server again, but this time ask for level 2 debugging output:
@@ -1043,7 +1045,42 @@ Finally, the comma-separated list shown in parentheses on this last line are the
 
 ## Basic SSH authentication methods
 
+As we've just mentioned, there are numerous ways for clients to authenticate to SSH servers. Some authentication methods are provided by the SSH software itself, and you can also add new ones to a particular SSH server by way of various interfaces, such as the [pluggable authentication module (PAM)](https://en.wikipedia.org/wiki/Pluggable_authentication_module) system or the [Generic Security Services Application Program Interface (GSSAPI)](https://en.wikipedia.org/wiki/Generic_Security_Services_Application_Program_Interface). In this lab, we'll only be concerning ourselves with the two most common authentication methods, `password` and `publickey`, but see the [PAM and GSSAPI SSH authentication methods](#pam-and-gssapi-ssh-authentication-methods) discussion section if you're curious about using additional or creating custom authentication methods yourself. Moreover, the "[Additional SSH authentication methods](#additional-ssh-authentication-methods)" discussion provides details about other ways to authenticate to an SSH server.
+
+The `password` authentication method is probably already familiar to you. It is basically equivalent to most login screens you've encountered when, for example, signing in to your webmail provider (like GMail) or using Facebook. With `password` authentication, you tell the `ssh` client program what user account on the remote system (the SSH server) you'd like to log in to. When the connection to the remote system is established, the SSH server asks you to supply that user account's password, and the `ssh` client presents you with a prompt asking you to type the correct password. The password you type is then sent from the client to the server and, if you supplied the correct password, the server proceeds to log you in. Otherwise, you're asked to try again, and eventually you get disconnected if you cannot supply the correct passwords within a time limit or number of attempts. This is the same way that traditional website login systems work.
+
+What's nice about password-based authentication is that it's so simple. On the other hand, it has some serious drawbacks. The most obvious of these is that the correct password is a secret that the server must protect. If the server fails to do this, the security of the account and, possibly, of the server itself is immediately compromised.
+
+Another issue with passwords is that you can typically only have one per user account. In many situations where user some accounts may be shared amongst multiple system operators (such as with the superuser or `root` account), this means each human must know and use the same password. This not only represents an increase in operational security risk, it also implies a communication and coordination overhead whenever passwords need to be changed. Moreover, if multiple humans are each using the same username and password combination, they become indistinguishable to the server (since computers cannot know who is typing at a keyboard, at least not yet), making auditing and access control that much harder if not impossible to implement.
+
+Despite these drawbacks, the `password` authentication method is still widely used in many situations, so let's have a look at how we might configure it. We'll also take a look at how we can limit the various risks password use implies. Then, we'll learn how to completely disable password-based authentication and replace it with the far more secure `publickey` authentication method.
+
+### SSH `password` authentication
+
+> :construction: TK-TODO
+>
+> Basic outline is:
+>
+> 1. Create a user account on the server. Talk about choosing a password, show the `passwd` and `shadow` files, etc. Mention that password auth can be done through other systems like PAM or Kerberos but don't stress about it. That can be a discussion section.
+> 1. Re-enable password authentication in the SSH server. Explain the `sshd_config` file, precedence of configuration directives, etc.
+> 1. Re-HUP the server gracefully using `systemctl kill`. Explain WTF that means.
+> 1. Log in from the client. Note: you can log in to the server to a different account than the one you're logged in with on the client (`ssh user@server.com` or `ssh -l user server.com`, otherwise `$USER` is assumed)
+> 1. Re-configure password auth to be "more secure," insofar as that's possible:
+>     * Password restrictions with `PermitEmptyPassword`
+>     * User restrictions with `PermitRootLogin`, `AllowUsers` or, better, `AllowGroups` (and its blacklist inverse, `DenyUsers` and `DenyGroups`, but talk about why whitelists are more secure than blacklists)
+>     * Limit login grace time with `LoginGraceTime`; this is also a resource depletion mitigation
+>     * Limit retry attempts with `MaxAuthTries`
+
+### SSH `publickey` authentication
+
 > :beginner: :construction: TK-TODO: Super-brief primer on keypairs and public key cryptography.
+
+> :construction: TK-TODO: Some things to talk about will be:
+>
+> 1. `StrictModes`
+> 1. `PubkeyAcceptedKeyTypes`
+> 1. Using more than one public key, i.e., `AuthenticationMethods publickey,publickey`
+> 1. `RevokedKeys`
 
 # Discussion
 
@@ -1134,6 +1171,16 @@ See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetwo
 * `CheckHostIP`
 * `VerifyHostKeyDNS`
 * `VisualHostKey`
+
+## PAM and GSSAPI SSH authentication methods
+
+> :construction: TK-TODO
+
+## Additional SSH authentication methods
+
+> :construction: TK-TODO
+>
+> Talk about `hostbased`, Kerberos, `keyboard-interactive`, etc.
 
 ## Using `ssh-audit.py`
 
