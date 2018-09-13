@@ -35,6 +35,8 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
     1. [Choosing safer host keys and host key algorithms](#choosing-safer-host-keys-and-host-key-algorithms)
     1. [Host key verification failures](#host-key-verification-failures)
     1. [Basic SSH authentication methods](#basic-ssh-authentication-methods)
+        1. [SSH `password` authentication](#ssh-password-authentication)
+        1. [SSH `publickey` authentication](#ssh-publickey-authentication)
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
     1. [VirtualBox networking modes](#virtualbox-networking-modes)
@@ -212,7 +214,7 @@ Each time we call the `config.vm.network` method, Vagrant tries adding another N
 config.vm.network "private_network", type: "dhcp", virtualbox__intnet: "sshtestnet"
 ```
 
-> :beginner: While the `sshtestnet` (part of the `virtualbox__intnet` keyword argument) is arbitrary—it merely needs to be the same for both `Vagrantfile`s—the `type: "dhcp"` keyword argument is not. It refers to the [Dynamic Host Configuration Protocol](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol). DHCP is a way that network administrators can automatically inform machines joining their network what networking parameters they should use in order to have access to network services, not least of which is acess to the Internet. You may not have heard about it before, but you probably use DHCP every time you connect to a Wi-Fi network. We describe the use and purpose of DHCP in the [VirtualBox DHCP server configuration](#virtualbox-dhcp-server-configuration) section, a little further on in this lab set up guide.
+> :beginner: While the `sshtestnet` (part of the `virtualbox__intnet` keyword argument) is arbitrary—it merely needs to be the same for both `Vagrantfile`s—the `type: "dhcp"` keyword argument is not. It refers to the [Dynamic Host Configuration Protocol](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol). DHCP is a way that network administrators can automatically inform machines joining their network what networking parameters they should use in order to have access to network services, not least of which is access to the Internet. You may not have heard about it before, but you probably use DHCP every time you connect to a Wi-Fi network. We describe the use and purpose of DHCP in the [VirtualBox DHCP server configuration](#virtualbox-dhcp-server-configuration) section, a little further on in this lab set up guide.
 
 Both of our `Vagrantfile`s will need this same line, and by including this same line in both projects, both virtual machines will be attached to the same virtual network.
 
@@ -259,7 +261,7 @@ Another way to check that your virtual machines are, in fact, powered on is simp
 
 > :beginner: A quick note on terminology: when discussing the relationship between a physical machine and a virtual machine, we say that the physical machine is the *host* machine and the virtualized machine is its *guest*. This is because the virtual machine (guest) is, ultimately, sharing resources with the underlying physical machine; it is at the mercy of its host. In this lab, we take care to make this distinction as clear as possible, though you will often hear the terms *host* and *guest* without much additional context.
 
-In order to complete this lab, we must first be able to operate within the context of virtual machine itself. Put another way, we need to leave our physical machine and enter the virtual machine. We can do this in one of two ways.
+In order to complete this lab, we must first be able to operate within the context of the virtual machine itself. Put another way, we need to leave our physical machine and enter the virtual machine. We can do this in one of two ways.
 
 * Use VirtualBox to bring up a simulated video display and keyboard plugged directly into the VM's virtualized hardware.
 * Use the SSH facility provided by Vagrant to access a command shell running in the VM's operating system.
