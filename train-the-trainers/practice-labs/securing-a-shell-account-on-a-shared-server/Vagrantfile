@@ -1,0 +1,23 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+
+  # TODO: Provision a bunch of example user accounts.
+  #
+  #       Fill those user accounts with some interesting data.
+  #       For example, run a server with a directory traversal
+  #       vulnerability as a given user. Make sure that user
+  #       has some "private" files that can be read.
+  #
+  #       Make another user account whose `umask` is set insecurely
+  #       and give that user a fictious password set in one of
+  #       their home folder's dotfiles, etc.
+
+  config.vm.provision "Create accounts", type: "shell", inline: <<-SHELL
+    apt update && apt upgrade -y # Always update installed packages.
+    # TODO:
+    # addgroup some-group-for-users (like `users` in a non-Debian traditional group system)
+    # adduser user1
+    # adduser user2
+    # adduser userN
+  SHELL
+end
