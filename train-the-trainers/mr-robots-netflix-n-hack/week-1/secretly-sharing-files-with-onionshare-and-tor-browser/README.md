@@ -65,7 +65,7 @@ As the sender, you must prepare an Onion site able to transmit the files to the 
    ![Screenshot of the Tor Network Settings screen on Windows.](https://web.archive.org/web/20170303022410/http://core0.staticworld.net/images/article/2014/09/firsttimetor-100449209-orig.png)  
    This will connect your computer to the Tor anonymity network. It also provides the service your computer will use to set up the Onion site in the following steps.
 1. After Tor has successfully connected, you will see a Web browser window open and display (something that looks similar to) the following page:  
-   ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20170303022638/http://core0.staticworld.net/images/article/2014/09/torbrowserhero-100449223-orig.png)
+   ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20180920182006if_/https://i.imgur.com/OZHDh7S.png)
 1. Launch OnionShare. (Usually, this is as simple as double-clicking its icon.) You will be presented with the main OnionShare window:  
    ![Screenshot of main OnionShare window on Windows.](https://web.archive.org/web/20180427184305/http://temp.run/images/onionshare/onionshare_home_screen.png)
 1. Drag-and-drop the Death Star plans into the main OnionShare window, or click either the *Add Files* or *Add Folder* button and browse to the location of the Death Star plans on your computer to add them to your soon-to-be Onion site:  
@@ -98,7 +98,7 @@ As the receiver, you must acquire knowledge of the secret Onion site where the D
    ![Screenshot of the Tor Network Settings screen on Windows.](https://web.archive.org/web/20170303022410/http://core0.staticworld.net/images/article/2014/09/firsttimetor-100449209-orig.png)  
    This will connect your computer to the Tor anonymity network.
 1. After Tor has successfully connected, you will see a Web browser window open and display (something that looks similar to) the following page:  
-   ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20170303022638/http://core0.staticworld.net/images/article/2014/09/torbrowserhero-100449223-orig.png)
+   ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20180920182006if_/https://i.imgur.com/OZHDh7S.png)
 
 Now comes the tricky part! You must find a way to securely, secretly communicate with your friend to learn the Web address of their Onion site. Remember, if you are caught requesting this secret information from your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
 
