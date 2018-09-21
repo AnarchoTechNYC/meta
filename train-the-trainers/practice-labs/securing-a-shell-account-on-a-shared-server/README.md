@@ -33,6 +33,8 @@ When you complete this lab, you will have acquired the following capabilities:
 This folder contains the following files and folders:
 
 * `README.md` - This file.
+* `provision/` - Folder containing files that are used when automatically setting up the lab environment.
+* `Vagrantfile` - Configuration file describing the shared server environment used in the lab.
 
 # Prerequisites
 
@@ -53,6 +55,13 @@ To perform this lab, you must have:
 > :construction: TK-TODO
 >
 > Refer to [Introduction to Securing (Virtualized) Secure Shell Servers § Set up](../introduction-to-securing-virtualized-secure-shell-servers/README.md#set-up) section for "VirtualBox installation" and "Vagrant installation", as we'll need those. Alternatively, you can use a shell account that you have on any other service, such as your ISP's or a freebie from a provider such as Tilde.club, Tilde.town, and so on.
+
+## Creating your account
+
+> :construction: TK-TODO
+>
+> * GECOS information.
+> * `.plan` files, for `finger(1)`, see http://www.catb.org/jargon/html/P/plan-file.html
 
 # Practice
 
