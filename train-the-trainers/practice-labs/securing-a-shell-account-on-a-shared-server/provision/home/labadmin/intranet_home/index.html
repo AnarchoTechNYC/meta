@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AnarchoTech Educational Services Department Intranet</title>
+</head>
+<body>
+    <h1>Welcome to the AnarchoTech Educational Services Department Intranet</h1>
+    <p>This Web service is provided by your Lab Administrator for your convenience.</p>
+    <p>:construction: TK-TODO: More stuff here. Blah blah blah.</p>
+    <p>Some stuff you can do:</p>
+    <ul>
+        <li><a href="#add-your-own-pages-to-our-intranet">Add your own pages to our intranet</a></li>
+        <li>Get help (not yet implemented)</li>
+    </ul>
+    <h1 id="add-your-own-pages-to-our-intranet">Add your own pages to our intranet</h1>
+    <p>To add your own pages to the intranet, create an <code>intranet_html</code> directory in your home folder. Any files you place there will be served to the intranet. A file named <code>index.html</code> will be your user's intranet home folder.</p>
+    <p>Once there, visit <code>http://localhost:12345/~<var>your_user_name</var>/</code> in your Web browser (such as <code>links(1)</code>) to visit your homepage.</p>
+    <p>A list of all users who have created intranet home pages for themselves can be obtained as follows:</p>
+    <p><code class="sh">find /home/* -maxdepth 1 -type d -name intranet_html -print 2&gt;/dev/null | cut -d '/' -f 3</code></p>
+</body>
+</html>

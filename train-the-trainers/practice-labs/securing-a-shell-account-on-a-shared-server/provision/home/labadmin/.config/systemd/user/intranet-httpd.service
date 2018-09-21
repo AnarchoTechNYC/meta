@@ -1,0 +1,14 @@
+# FILE: ~/.config/systemd/user/intranet-httpd.service
+#
+# This is a systemd service unit file for the `labadmin`'s own
+# systemd user instance. It is responsible for starting the intranet
+# HTTP daemon, a Python script located at `~/bin/intranet-httpd.py`.
+
+[Unit]
+Description=Lab server's intranet HTTP daemon
+
+[Service]
+ExecStart=/usr/bin/env python3 %h/bin/intranet-httpd.py 2>&1 >/dev/null 
+
+[Install]
+WantedBy=default.target
