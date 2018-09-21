@@ -60,8 +60,8 @@ To perform this lab, you must have:
 
 > :construction: TK-TODO
 >
-> * GECOS information.
-> * `.plan` files, for `finger(1)`, see http://www.catb.org/jargon/html/P/plan-file.html
+> * GECOS information using `chfn(1)`.
+> * `.pgpkey`, `.project`, and `.plan`, files, for `finger(1)`, see http://www.catb.org/jargon/html/P/plan-file.html
 
 # Practice
 
