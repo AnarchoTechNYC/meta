@@ -54,7 +54,7 @@ To perform this lab, you must have:
 
 In addition, you will need a user account on a remote system. This practice lab includes a virtual machine that you can use to simulate a remote system. (Creating the virtual machine is explained in the [Virtual server startup](#virtual-server-startup) section, below.) Alternatively, you can sign up for an account from a service provider, which can often be obtained free of charge.
 
-> :beginner: :warning: While, depending on certain aspects of the provider's service,  most of the practice lab's sections can be accomplished on an account obtained from such a service provider, some exercises in this lab are deliberately designed to showcase creating problems for the server or other users and should only be attempted in the lab environment provided with this guide. If this is either your first time interacting with a command line or the first time you are sharing a server with other users, we strongly recommend sticking to the lab's own virtualized server to avoid the possibility of causing trouble for real people really trying to get real work done. You can think of it a bit like learning to drive; the chances of causing a crash and potentially hurting someone are much higher if you choose to get on the highway the very first time you get behind the wheel of a car. Maybe don't?
+> :beginner: :warning: Depending on certain aspects of the provider's service, most of the practice lab's sections can be accomplished on an account obtained from such a service provider. However, some exercises in this lab are deliberately designed to showcase creating problems for the server or other users and should only be attempted in the lab environment provided with this guide. If this is either your first time interacting with a command line or the first time you are sharing a server with other users, we strongly recommend sticking to the lab's own virtualized server to avoid the possibility of causing trouble for real people really trying to get real work done. You can think of it a bit like learning to drive; the chances of causing a crash and potentially hurting someone are much higher if you choose to get on the highway the very first time you get behind the wheel of a car. Maybe don't?
 
 With that understood, if you choose to proceed with the practice lab's own virtualized server, you will also need:
 
@@ -71,27 +71,35 @@ Alternatively, if you choose to use an account on a publicly accessible shared s
 
 # Set up
 
-It seems obvious but is perhaps worth noting anyway that before you can explore a shell account on a shared server, you must have access to (or create) a server and a user account. This section walks you through the process of starting up the virtual server that comes with this guide, as well as the process of how user accounts on shared servers are created from the perspectives of both the server administrator and a regular user. Finally, this section also provides instructions on how to access the virtual server using the newly created user account, as well as a number of accounts that have already been created for the purpose of simulating the experience of a "multi-user system" in the safe and isolated environment of the practice lab.
+It seems obvious but is perhaps worth noting anyway that before you can explore a shell account on a shared server, you must have access to (or create) a server and a user account. This section walks you through the process of starting up the virtual server that comes with this guide, as well as the process of how user accounts on shared servers are created from the perspectives of both the server administrator and a regular user. Finally, this section also provides instructions on how to access the virtual server using the newly created user account, as well as a number of accounts that have already been created for the purpose of simulating the experience of a multi-user system in the safe and isolated environment of the practice lab.
 
 ## Virtual server startup
 
-In this lab's folder, you should see a file whose name is `Vagrantfile`. This file describes the exact configuration of the hardware and software needed by the virtual server that we'll pretend is a publicly accessible, shared server. (If you're actually using a publicly accessible server, you can skip to the TK-TODO section.) You will be able to log in to this shared server as both an administrator and as numerous regular users.
+In this practice lab's folder, find a file whose name is `Vagrantfile`. This file describes the exact configuration of the hardware and software needed by the virtual server that we'll be pretending is a publicly accessible shared server. (If you're actually using a publicly accessible shared server, you can skip to the [Practice](#practice) section.) You will be able to log in to this shared server as both an administrator and as numerous regular users.
 
 First, though, you must create the server itself. In keeping with the objectives of this lab, the server's creation has been automated ("scripted") using a tool called `vagrant`.
 
-> :beginner: We are about to create the server, which requires that you have the software listed in the [Prerequisites](#prerequisites) section correctly installed. If you didn't install the VirtualBox and Vagrant software packages on your computer yet, do that now. Go back to the Prerequisites section and follow the instructions behind the installation links.
+> :beginner: We are about to create the virtual server, which requires that you have the software listed in the [Prerequisites](#prerequisites) section correctly installed. If you didn't install the VirtualBox and Vagrant software packages on your computer yet go back to the Prerequisites section and follow the instructions behind the installation links to do that now.
 
 **Do this:**
 
-1. Open a terminal application on your computer, such as `cmd.exe` (if you're using a Windows computer) or `Terminal.app` (if you're using a macOS computer).
-1. Navigate to this lab's folder with the `cd` command.
-1. Create and turn on the shared server in one fell swoop by invoking the `vagrant up` command.
+1. Make a new folder with a meaningful name (such as `shell-account-practice-lab`) somewhere on your computer. This folder will contain the virtualized server. Your Desktop or your Documents folder is probably fine.
+1. Download the [`Vagrantfile`](Vagrantfile) that comes with this lab and save it in the same folder you just created. The `Vagrantfile` is a sort of code, so make sure you copy-and-paste it exactly as shown or save it without any file extension. That is, `Vagrantfile.txt` will not work. The full name of the file should be exactly `Vagrantfile`, no more and no less.
+1. Open a terminal on your computer, such as `cmd.exe` (if you're using a Windows computer) or `Terminal.app` (if you're using a macOS computer).
+1. Navigate to this lab's folder with the `cd` command. For example:
+    ```sh
+    cd Documents/shell-account-practice-lab
+    ```
+1. Create and turn on the shared server in one fell swoop by invoking the `vagrant up` command:
+    ```sh
+    vagrant up
+    ```
 
-> :beginner: You will see a lot of output from the above command. If this is your first time spinning up a virtual machine with Vagrant and want to know more about what just happened (because, yeah, it was a lot), consider reading [Introduction to Securing (Virtualized) Secure Shell Servers § Set up](../introduction-to-securing-virtualized-secure-shell-servers/README.md#set-up). That other practice lab includes a huge amount of detail about both virtual machines and their automation using the Vagrant utility. A lot of detail about virtual machines and Vagrant has been omitted in the interests of brevity and to focus on the objectives of this lab: using a regular ("unprivileged") user account on a shared server. That being said, do read the other practice lab; the detail omitted here was included there.
+> :beginner: You will see a lot of output from the above command. If this is your first time spinning up a virtual machine with Vagrant and want to know more about what just happened (because, yeah, it was a lot), consider reading [Introduction to Securing (Virtualized) Secure Shell Servers § Set up](../introduction-to-securing-virtualized-secure-shell-servers/README.md#set-up). That other practice lab includes a huge amount of detail about both virtual machines and their automation using the Vagrant utility. A lot of detail about virtual machines and Vagrant has been here omitted in the interests of brevity and to focus on the objectives of this lab: using a regular ("unprivileged") user account on a shared server. That being said, do read the other practice lab eventually, as the detail omitted here was included there.
 
 Depending on the speed of your computer and your Internet connection, the above command could take a while to complete. Once your command prompt returns, make sure the server is online by invoking `vagrant status`. Vagrant's output is often very helpful. For example, the `vagrant status` command provides a natural-language description of its output, along with descriptions of how to stop the virtual machine when you're done with it, and how to bring it back up:
 
-```sh
+```
 Current machine states:
 
 default                   running (virtualbox)
@@ -109,6 +117,24 @@ With the virtualized server successfully started, let's create your practice acc
 > :construction: TK-TODO
 >
 > * `adduser`, etc. from the admin's perspective, then…
+
+Having a server is only part of the equation. To use the server for our purposes, you must also have a user account, sometimes referred to as a *shell account*. A user account is needed so that you can login to the system, which means identifying yourself as a user who has permission to use the computer's resources.
+
+> :beginner: A *shell* is simply another term for a user interface. The term is a metaphor that refers to the outer-most layer of an Operating System, the software that makes a computer interactive, that brings it to life. If the operating system is the guts of the computer, the shell is its skin or, well, its shell. That is, it's the part you actually touch when interacting with it. Shells are usually either textual, in which case they are often called *command-line interfaces* or CLIs, or graphical, which are the windows, menus, and icons you may be most familiar with. Graphical shells are also called *graphical user interfaces*, or GUIs (pronounced "goo-ees").
+
+Only people who have administrative access to the computer system may create new accounts. Regular users cannot do this. For the moment, let's pretend that you are not a regular user, but rather the administrator of the shared server.
+
+As the administrator, you would be responsible for maintaining the operation of the system. This is why administrators are also sometimes called *system operators* or *sysops* for short. This responsibility encompasses monitoring the system to ensure it is functioning within accepted parameters, reviewing and processing requests that require human interaction from the system's users, and performing any maintenance that requires special privileges, such as updating software or installing security fixes (called *patches*).
+
+Creating new user accounts is often, but not always, something that most systems require a human to approve. This is because user accounts are rather powerful things. An active account grants its user the ability to, well, use the computer system's resources, and a computer can be made to do some serious damage on other computers (and the world!) if used improperly or maliciously.
+
+> :beginner: This practice lab isn't really intended to introduce you to system administration, so this section is intentionally terse. :construction: TK-TODO: Do we have good resources for intros to sysadmin stuff?
+
+You might receive a request for a new user account via email, or in a meeting where your boss says "We just hired so-and-so and they need accounts on such-and-such machine," or by way of some Web-based tool like a project management or help desk or ticketing system. Regardless, you will have collected some basic information about the new user account. At a minimum, such requests include a username, which is the name of the account the person requesting the user account would like to use when logging in. Typically, they will also include some additional details, such as the full legal name of the person to whom the account will belong, or maybe a pseudonym, a phone number or two, and maybe some free-form text. All of this except the need for a username varies from one system to another.
+
+For our virtual server, there is also one other piece of information that we'll need from the person requesting a new account: an SSH public key.
+
+> :beginner: SSH is an abbreviation for Secure Shell. It's complex enough that we could write a whole lab about it. In fact, we did: [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md). While we'll offer a terse explanation of setting up a new user account with an SSH public key here, we omit a lot of detail in the interests of brevity. See the SSH practice lab for more information about administering and using SSH.
 
 # Practice
 
