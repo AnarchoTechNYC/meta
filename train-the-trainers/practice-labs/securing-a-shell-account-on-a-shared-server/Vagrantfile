@@ -2,17 +2,6 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
   config.vm.hostname = "secacct-practice-lab"
 
-  # TODO: Provision a bunch of example user accounts.
-  #
-  #       Fill those user accounts with some interesting data.
-  #       For example, run a server with a directory traversal
-  #       vulnerability as a given user. Make sure that user
-  #       has some "private" files that can be read.
-  #
-  #       Make another user account whose `umask` is set insecurely
-  #       and give that user a fictious password set in one of
-  #       their home folder's dotfiles, etc.
-
   config.vm.provision "shell", inline: <<-SHELL
     # Set up the base system.
     apt update
@@ -33,16 +22,16 @@ Vagrant.configure("2") do |config|
         # These SSH keys were generated ahead of time and placed into
         # the host specifically so that they can be used to login via
         # a proper `login(1)` session over SSH with Vagrant. The keys
-        # were generated with a loop of the form:
+        # were generated in a loop using an invocation of the form:
         #
         # ```sh
         # ssh-keygen -t rsa -b 2048 -N '' \
-        #     -C "$user"@securing-shell-accounts.lab.anarchotech.invalid" \
+        #     -C "$user@securing-shell-accounts.lab.anarchotech.invalid" \
         #     -f "provision/home/$user/.ssh/id_rsa"
         # ```
         #
         # Once generated and provisioned, you can log in to one of the
-        # given user account with `vagrant`'s SSH facility as follows:
+        # given user accounts with `vagrant`'s SSH feature as follows:
         #
         # ```sh
         # vagrant ssh -- -l $user -i provision/home/$user/.ssh/id_rsa
