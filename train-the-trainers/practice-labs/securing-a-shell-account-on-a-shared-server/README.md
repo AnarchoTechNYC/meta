@@ -109,8 +109,6 @@ With the virtualized server successfully started, let's create your practice acc
 > :construction: TK-TODO
 >
 > * `adduser`, etc. from the admin's perspective, then…
-> * GECOS information using `chfn(1)`.
-> * `.pgpkey`, `.project`, and `.plan`, files, for `finger(1)`, see http://www.catb.org/jargon/html/P/plan-file.html
 
 # Practice
 
@@ -118,9 +116,9 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 ## Introduction
 
-Computers used to be extremely expensive. Back in the 1970's and 80's, computers were housed on entire floors of huge institutions, such as the campus of University of California, Berkeley or the branch offices of Industrial Businesss Machine, Inc. (IBM). These computers were the size of whole rooms and, often, you only had access to them while you were physically in the building they were housed. You might be on another floor of the building, but your keyboard and monitor had a very long cable that snaked through crawlspaces, making its way to the main chassis of the big computer room. The main frame of those large computers could be thought of something like the body of an octopus whose tentacles reached to the cubicles in other parts of the building.
+Computers used to be extremely expensive. Back in the 1970's and 80's, computers were housed on entire floors of huge institutions, such as the campus of the University of California at Berkeley (UC Berkeley) or the branch offices of Industrial Business Machine, Inc. (IBM). These computers were the size of whole rooms and, often, you only had access to them while you were physically in the building they were housed. You might be on another floor of the building, but your keyboard and monitor had a very long cable that snaked through crawlspaces, making its way to the main chassis of the big computer in its own room. The main frame of those large computers could be thought of something like the body of an octopus whose tentacles reached to the cubicles in other parts of the building.
 
-Since they were so large, these mainframe computers needed to service the workloads of many different users who were all connected to it at the same time. These users might be employees of the same company working in the same office, students located on the same campus, or researchers conducting their work from the same facility. To support this requirement, the mainframes ran software that managed access to the computer's physical resources, such as hard disk space and its central processing unit (CPU) that associated each request for such a resource with a user account. The user accounts, in turn, were associated with specific humans, typically by employee or student number. These systems are called [*multi-user operating systems* (or *multi-user software*, or even more technically accurate, *multi-tasking operating system*)](https://en.wikipedia.org/wiki/Multi-user_software), and they had names like AT&T UNIX®, an operating system designed and developed at Bell Labs, or the Berkeley Standard Distribution (BSD), which was based on the commercial UNIX® systems.
+Since they were so expensive, in order to justify their cost and use in the first place, these mainframe computers needed to service the workloads of many different users at the same time. These users might be employees of the same company working in the same office, students located on the same campus, or researchers conducting their work from the same facility. To support this requirement, the mainframes ran software that managed access to the computer's equally expensive physical resources, such as hard disk space and its central processing unit (CPU), that associated each request for such a resource with a user account. The user accounts, in turn, were associated with specific humans, typically by employee or student ID number. These systems are called [*multi-user operating systems* (or *multi-user software*, or even more technically accurate, *multi-tasking operating system*)](https://en.wikipedia.org/wiki/Multi-user_software). The Operating System software had names like AT&T UNIX®, an operating system designed and developed at Bell Labs, or the Berkeley Standard Distribution (BSD), which was based on the commercial UNIX® systems.
 
 Imagine, for a moment, that you are an employee at a company with a mainframe system, or a student at a prestigious university that had a computer department. You come in to work or school and sit down at your desk. On your desk is a machine with a monitor and a keyboard. There is no mouse. There is no tower with a blinking light. There are no hard disk drives, no compact discs (CD's), and no thumbdrives anywhere in your office. There is only a keyboard with a long cable coming out the back, and a monitor with a similar but thicker cable.
 
@@ -147,6 +145,11 @@ In this lab, we turn back the cultural clock to the 1970's and 1980's to experie
 ## Taking your first look around
 
 > :construction: TK-TODO
+
+## Creating your user profile
+
+> * GECOS information using `chfn(1)`.
+> * `.pgpkey`, `.project`, and `.plan`, files, for `finger(1)`, see http://www.catb.org/jargon/html/P/plan-file.html
 
 # Discussion
 
