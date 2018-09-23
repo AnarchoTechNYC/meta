@@ -132,9 +132,73 @@ Creating new user accounts is often, but not always, something that most systems
 
 You might receive a request for a new user account via email, or in a meeting where your boss says "We just hired so-and-so and they need accounts on such-and-such machine," or by way of some Web-based tool like a project management or help desk or ticketing system. Regardless, you will have collected some basic information about the new user account. At a minimum, such requests include a username, which is the name of the account the person requesting the user account would like to use when logging in. Typically, they will also include some additional details, such as the full legal name of the person to whom the account will belong, or maybe a pseudonym, a phone number or two, and maybe some free-form text. All of this except the need for a username varies from one system to another.
 
-For our virtual server, there is also one other piece of information that we'll need from the person requesting a new account: an SSH public key.
+For our virtual server, there is also one other piece of information that we'll need from the person requesting a new account: an SSH public key. In our case, since you're going to play the role of both the administrator and the regular user, we'll just generate the information we need. If this were an actual publicly accessible shared server, you might be expected to provide the SSH public key along with your requested username as part of whatever application process you need to go through to acquire the shell account.
 
 > :beginner: SSH is an abbreviation for Secure Shell. It's complex enough that we could write a whole lab about it. In fact, we did: [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md). While we'll offer a terse explanation of setting up a new user account with an SSH public key here, we omit a lot of detail in the interests of brevity. See the SSH practice lab for more information about administering and using SSH.
+
+Let's quickly run through an example procedure that is similar to one an administrator might use to create your shell account on a shared server:
+
+**Do this:**
+
+1. Open a new command prompt (terminal) window.
+1. Navigate to the folder containing the virtual server.
+1. Log in to the shared server under an account with adminsitrative access. In our case, since the virtualized server was configured by the Vagrant automation utility touched on earlier, we can simply invoke the `vagrant ssh` command to do this:
+    ```sh
+    vagrant ssh
+    ```
+    This command uses the `vagrant` utility to automatically configure the various login parameters used to access the server, and perform the login. After a login greeting, you will be presented with a command prompt on the virtual machine. The command prompt will look like this:
+    ```
+    vagrant@secacct-practice-lab:~$
+    ```
+1. Choose a new user account name. This can be a pseudonym, or it can be a lowercased version of your first and last name. For example, if your name is Jane Doe, you might choose `janedoe` as your username. The username you pick must not contain spaces.
+1. Create a new user account with your chosen username. In the commands below, substitute your chosen user name anywhere the string `$user` appears:
+    ```sh
+    sudo adduser --disabled-password --add_extra_groups --gecos '' $user
+    ```
+    If you chose to use `janedoe` as your user account name, you should see output that looks like the following:
+    ```
+    Adding user `janedoe' ...
+    Adding new group `janedoe' (1007) ...
+    Adding new user `janedoe' (1007) with group `janedoe' ...
+    Creating home directory `/home/janedoe' ...
+    Copying files from `/etc/skel' ...
+    Adding new user `janedoe' to extra groups ...
+    Adding user `janedoe' to group `dialout' ...
+    Adding user `janedoe' to group `cdrom' ...
+    Adding user `janedoe' to group `floppy' ...
+    Adding user `janedoe' to group `audio' ...
+    Adding user `janedoe' to group `video' ...
+    Adding user `janedoe' to group `plugdev' ...
+    Adding user `janedoe' to group `users' ...
+    ```
+1. Create the new user's `.ssh` directory, which will store the user's SSH login credentials:
+    ```
+    sudo mkdir ~janedoe/.ssh
+    ```
+1. Move to the special `/vagrant` directory, which is shared between your physical ("host") machine and the virtualized server running inside the ("guest") virtual machine:
+    ```sh
+    cd /vagrant
+    ```
+    > :beginner: :bulb: Virtual machines configured with Vagrant often come equipped with a [*synced folder*](https://www.vagrantup.com/docs/synced-folders/), which is accessible as `/vagrant` inside the guest (virtual machine). The contents of this folder are the same as the contents of the folder containing the `Vagrantfile` on the host (your physical machine), known as your *Vagrant project directory*. This makes use of a VirtualBox featured called [Shared folders](https://www.virtualbox.org/manual/ch04.html#sharedfolders). Whatever you put into this special `/vagrant` folder on the virtualized server will appear as a file on your physical laptop, and vice versa.
+1. Generate an SSH keypair, which is a private key and its public key counterpart, for use with the new account:
+    ```sh
+    ssh-keygen -t rsa -b 2048 -N '' -C "Securing a Shell Account Practice Lab" -f shell-account_rsa
+    ```
+    > :beginner: :warning: Among other security issues, this command creates an unprotected private key. An unprotected private key file is an identity file that is not secured with a password. As long as you only ever use this identity file for this practice lab, this isn't a problem. In a real-world situation, however, this is considered extremely dangerous. For more information about the security of SSH keypairs, please consult the [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md) practice lab.
+
+    This command created two files: `shell-account_rsa` and `shell-account_rsa.pub`. The first (`shell-account_rsa`) is your account's *SSH private key* file (also called your *identity file*). The second, (`shell-account_rsa.pub`) is your account's *SSH public key* file. Again, refer to the [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md) for more information about these files.
+1. Inform the newly created user account that SSH login attempts using the private key we just generated should be allowed to log in to the user account we just created by copying the newly generated public key file to the new user's `~janedoe/.ssh/authorized_keys` file:
+    ```sh
+    sudo cp shell-account_rsa.pub ~janedoe/.ssh/authorized_keys
+    ```
+1. Secure the user's `.ssh` directory by making sure the directory is only readable by that user:
+    ```sh
+    sudo chown -R janedoe:janedoe ~janedoe/.ssh
+    sudo chmod 700 ~janedoe/.ssh
+    ```
+1. Log out of the virtualized server by invoking the `exit` command.
+
+You have just created a new user account and gave the user access to this account by use of SSH public key authentication. As the administrator, you can now inform the user who requested the new user account that their account is ready for their use. Let's switch gears now and return to our regular user account persona.
 
 # Practice
 
