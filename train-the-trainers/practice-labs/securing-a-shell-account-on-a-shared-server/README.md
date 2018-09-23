@@ -238,7 +238,7 @@ If you're ready, let's take our first steps down the rabbit hole.
 
 ## Logging in for the first time
 
-You arrive at your desk one September morning a little drowsy due to a restless evening the night before. It is your first real day at university. The mandatory orientations of the previous week were not welcome, but they proved less than exciting. You think paperwork has always been a chore. You plop yourself into your seat. Several manilla folders, a couple of hiliters, and several half-bent sheets of hand-written notes are strewn on your desktop, evidence of your tendency for taking copious notes. You take a sip from the mug in your hand. You taste the bitterness of office coffee.
+You arrive at your desk one September morning a little drowsy due to a restless evening the night before. It is your first real day at university. The mandatory orientations of the previous week were not unwelcome, but they proved less than exciting. You think paperwork has always been a chore. You plop yourself into your seat. Several manilla folders, a couple of hiliters, and several half-bent sheets of hand-written notes are strewn on your desktop, evidence of your tendency for taking copious notes. You take a sip from the mug in your hand. You taste the bitterness of office coffee.
 
 Then your eyes settle on the video monitor and keyboard in the far corner of your desk. Just as you've done every day this week, you turn it on. It glows green and greets you with a familiar message:
 
