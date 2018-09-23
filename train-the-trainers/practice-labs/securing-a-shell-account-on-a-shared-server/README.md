@@ -21,6 +21,7 @@ While some of this is still true today—many people still don't understand how 
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Logging in for the first time](#logging-in-for-the-first-time)
+    1. [Looking around in digital space](#looking-around-in-digital-space)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -271,9 +272,67 @@ As you grumble something about overworked and underpaid system operators, you re
 
 Welcome to Wonderland. :)
 
-## Taking your first look around
+## Looking around in digital space
 
-> :construction: TK-TODO
+It takes you by surprise. For a moment, you're not sure what you're looking at. A bunch of text has just scrolled by your screen, way too fast for you to read it all. This is not at all like earlier attempts. At first blush, all you can recognize is your command prompt:
+
+```
+janedoe@secacct-practice-lab:~$
+```
+
+You're in! Your account has been created and you are now logged in to the system. You scroll up a bunch to read some of what you missed. Several things stand out to you. The first chunk of output is the system's welcome message. It begins with a literal "Welcome!"
+
+```
+Welcome to Ubuntu 16.04.5 LTS (GNU/Linux 4.4.0-133-generic x86_64)
+```
+
+There is a huge amount of information packed into this one line.
+
+[Ubuntu](https://www.ubuntu.com/) is the name of a free operating system distribution. This server purports to be [version 16.04.5](http://releases.ubuntu.com/16.04/) of that operating system. ["LTS" is Ubuntu's abbreviation for "long term support."](https://wiki.ubuntu.com/LTS) An LTS release of Ubuntu is a version of the operating system that the vendor promises to maintain for a longer period of time than other versions. System administrators tend to prefer LTS releases (or whatever equivalent terminology is used by their operating system of choice) because it makes their jobs easier as fewer incompatibilities are introduced between software version releases.
+
+Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating system in the same family. In this case, the system is using the GNU/Linux kernel, specifically version `4.4.0-133-generic`. Furthermore, the kernal is built to run on the `x86_64` hardware architecture.
+
+> :beginner: A *kernel* is the most foundational piece of an operating system. It is ultimately responsible for everything else that happens in the operating system, or the installed applications. The kernel is so named because it is conceptually at the core of the computer. It intializes hardware components such as disk drives, manages volatile random-access memory segments (RAM), and controls the central processing unit (CPU) of the computer.
+>
+> If the shell is the outermost layer in an computer system (the part you interact with as an end user), the kernel is the innermost layer.
+>
+> :beginner: :bulb: An operating system and a kernel are often discussed as though they are one and the same, but this is not technically accurate. Different operating systems, such as Ubuntu or Debian, can sometimes use different kernels. For example, while the Debian operating system currently only officially supports the GNU/Linux kernel, it [can be built to run on the GNU/Hurd kernel instead, and even officially supported the FreeBSD kernel in the past](https://en.wikipedia.org/wiki/Debian#Kernels).
+>
+> :beginner: :bulb: Most of the time, regular users don't have to worry about GNU/Linux kernels, or their versions. That task is delegated to the system administrator. However, in the age of personal computers, owning a computer system at all means you are both a regular user and that computer's system administrator. If you're also running a GNU/Linux-based operating system, such as Ubuntu, it certainly helps to know a little bit about kernels!
+>
+> In the example output above, the Ubuntu kernel version string `4.4.0-133-generic` has a specific meaning, described by [the Ubuntu Kernel Team](https://wiki.ubuntu.com/KernelTeam) in [their documentation](https://wiki.ubuntu.com/KernelTeam/BuildSystem/ABI). For the curious, this version is specifically GNU/Linux kernel version 4, major revision 4, minor revision 0, [application binary interface (ABI)](https://en.wikipedia.org/wiki/Application_binary_interface) version 133, of the `generic` [flavor](https://wiki.ubuntu.com/Kernel/Dev/Flavours). This doesn't typically mean very much to an ordinary user, except for the fact that it's a number you'll want to include when reporting issues, should issues arise, or when asked to collect more information to help a developer debug any issues you might encounter.
+>
+> :beginner: :bulb: Just as there are different operating systems, there are different hardware architectures, too. The most ubiquitous hardware for servers and most of the personal computer industry is [Intel's x86 microprocessor](https://simple.wikipedia.org/wiki/X86). Contemporary Apple macOS devices (not the iPhone, but the line of desktop and laptop Macintosh computers), Windows-based computers, and a huge range of BSD and GNU/Linux operating systems are all often built to be hardware-compatible with Intel's x86 chips.
+>
+> The `x86_64` variant is Intel's 64-bit computing hardware. The hardware is "64-bit" because the CPU can ingest 64 bits of data in one instruction. You might also see the term `amd64`, which is for all intents and purposes equivalent to `x86_64`. The `amd` stands for [Advanced Micro Devices (AMD), Inc.](https://simple.wikipedia.org/wiki/Advanced_Micro_Devices), a competitor to Intel producing microprocessors that are compatible with Intel's x86 instruction set.
+>
+> As an end user, you need to know which hardware your computer (or shared server) is using so that you know which pre-compiled software packages will run on your system. If you try to run software compiled for, say, an [Advanced RISC Machine (ARM)](https://simple.wikipedia.org/wiki/ARM_architecture) architecture on a machine that uses an Intel x86-based CPU, it certainly won't work.
+
+
+```
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+0 packages can be updated.
+0 updates are security updates.
+
+New release '18.04.1 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+*** System restart required ***
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+```
 
 ## Creating your user profile
 
