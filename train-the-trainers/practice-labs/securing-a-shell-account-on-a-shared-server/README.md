@@ -210,7 +210,7 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 Computers used to be extremely expensive. Back in the 1970's and 80's, computers were housed on entire floors of huge institutions, such as the campus of the University of California at Berkeley (UC Berkeley) or the branch offices of Industrial Business Machine, Inc. (IBM). These computers were the size of whole rooms and, often, you only had access to them while you were physically in the building they were housed. You might be on another floor of the building, but your keyboard and monitor had a very long cable that snaked through crawlspaces, making its way to the main chassis of the big computer in its own room. The main frame of those large computers could be thought of something like the body of an octopus whose tentacles reached to the cubicles in other parts of the building.
 
-Since they were so expensive, in order to justify their cost and use in the first place, these mainframe computers needed to service the workloads of many different users at the same time. These users might be employees of the same company working in the same office, students located on the same campus, or researchers conducting their work from the same facility. To support this requirement, the mainframes ran software that managed access to the computer's equally expensive physical resources, such as hard disk space and its central processing unit (CPU), that associated each request for such a resource with a user account. The user accounts, in turn, were associated with specific humans, typically by employee or student ID number. These systems are called [*multi-user operating systems* (or *multi-user software*, or even more technically accurate, *multi-tasking operating system*)](https://en.wikipedia.org/wiki/Multi-user_software). The Operating System software had names like AT&T UNIX®, an operating system designed and developed at Bell Labs, or the Berkeley Standard Distribution (BSD), which was based on the commercial UNIX® systems.
+Since they were so expensive, in order to justify their cost and use in the first place, these mainframe computers needed to service the workloads of many different users at the same time. These users might be employees of the same company working in the same office, students located on the same campus, or researchers conducting their work from the same facility. To support this requirement, the mainframes ran software that managed access to the computer's equally expensive physical resources, such as hard disk space and its central processing unit (CPU), that associated each request for such a resource with a user account. The user accounts, in turn, were associated with specific humans, typically by employee or student ID number. These systems are called [*multi-user operating systems* (or *multi-user software*, or even more technically accurate, *multi-tasking operating systems*)](https://en.wikipedia.org/wiki/Multi-user_software). The Operating System software had names like AT&T UNIX®, an operating system designed and developed at Bell Labs, or the Berkeley Standard Distribution (BSD), which was based on the commercial UNIX® systems.
 
 Imagine, for a moment, that you are an employee at a company with a mainframe system, or a student at a prestigious university that had a computer department. You come in to work or school and sit down at your desk. On your desk is a machine with a monitor and a keyboard. There is no mouse. There is no tower with a blinking light. There are no hard disk drives, no compact discs (CD's), and no thumbdrives anywhere in your office. There is only a keyboard with a long cable coming out the back, and a monitor with a similar but thicker cable.
 
@@ -224,7 +224,7 @@ This moment is arguably one of the early geneses from which all modern computing
 
 What you are seeing is the result of electrical charges sent from the mainframe, located somewhere else on campus, over the cabling and ultimately into a cathode ray tube that fired electrons onto the glass of the video monitor. The glass is coated with phosphorescent dust, which shines when charged. The result is your invitation into Wonderland: `Login:`.
 
-In the mid-1980's, the *personal computer* emerged as a much smaller version of this same technology. People with means could buy and put a fully functional computer on a table in their living room or garage. These personal computers had names like the [Commodore 64](https://simple.wikipedia.org/wiki/Commodore_64), [Altair 8800](https://en.wikipedia.org/wiki/Altair_8800), [Apple Lisa](https://en.wikipedia.org/wiki/Apple_lisa) and, of course, the [IBM PC](https://en.wikipedia.org/wiki/IBM_Personal_Computer), literally an initialism for the Industrial Business Machine, Inc. Personal Computer. Unlike a mainframe, whose input and output peripherals (the keyboard, for input, and video monitor, for some of its output) extended outside of the main frame of the device, personal computers had all the mainframe's components condensed into a single chassis. They were, in essence, one tiny main frame.
+In the mid-1980's, the *personal computer* emerged as a much smaller version of this same technology. People with means could buy and put a fully functional computer on a table in their living room or garage. These personal computers had names like the [Commodore 64](https://simple.wikipedia.org/wiki/Commodore_64), [Altair 8800](https://en.wikipedia.org/wiki/Altair_8800), [Apple Lisa](https://en.wikipedia.org/wiki/Apple_lisa) and, of course, the [IBM PC](https://en.wikipedia.org/wiki/IBM_Personal_Computer), literally an initialism for the Industrial Business Machine, Inc. Personal Computer. Unlike a mainframe, whose input and output peripherals (the keyboard for input, and video monitor for some of its output) extended outside of the main frame of the device, personal computers had all the mainframe's components condensed into a single chassis. They were, in essence, one tiny main frame.
 
 Also unlike the mainframes of the previous generation, which were by design intended to be used by multiple *end users* at once, the personal computer was, well, designed for personal use. Put another way, personal computers didn't need `Login:` prompts because they were only ever designed to be used by one person: their owner. Instead of a `Login` prompt, you were immediately presented with a *command line* or *command prompt*, the digital equivalent of an assistant who asks, "What would you like to do, today?"
 
@@ -232,7 +232,7 @@ The famous Disk Operating System (DOS), on which the earliest versions of Window
 
 I'm going to say that again, because it's really important: to this very day, all computing—including all graphical interaction—is just a variant on this command-and-process model. Before Web sites existed, there were [bulletin board systems (BBSs)](https://en.wikipedia.org/wiki/Bulletin_board_system). Like today's websites, BBSs were places to socialize and chat. Before there were BBSs, there were mainframes. Like yesteryear's BBSs, mainframes were places to collaborate on getting work done or just to chat with your cohort.
 
-In this lab, we turn back the cultural clock to the 1970's and 1980's to experience what the world of computing was like before the Internet as it exists today. Our virtual server uses a modern-day operating system inspired by the prevailing UNIX-like operating systems, [GNU/Linux](https://simple.wikipedia.org/wiki/Linux), and it comes equipped with all the contemporary amenities and security features that operating system provides. But we will be exploring this machine, and meet the others using it, through the tactile and sensory experience of a 1970's mainframe system.
+In this lab, we turn back the cultural clock to the 1970's and 1980's to experience what the world of computing was like before the Internet as it exists today. Our virtual server uses a modern-day operating system inspired by the prevailing UNIX-like operating systems, [GNU/Linux](https://simple.wikipedia.org/wiki/Linux), and it comes equipped with all the contemporary amenities and security features that operating system provides. But we will be exploring this machine, and meeting the others using it, through the tactile and sensory experience of a 1970's mainframe system.
 
 If you're ready, let's take our first steps down the rabbit hole.
 
@@ -305,7 +305,7 @@ Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating s
 >
 > As an end user, you need to know which hardware your computer (or shared server) is using so that you know which pre-compiled software packages will run on your system. If you try to run software compiled for, say, an [Advanced RISC Machine (ARM)](https://simple.wikipedia.org/wiki/ARM_architecture) architecture on a machine that uses an Intel x86-based CPU, it certainly won't work.
 
-Following the operating system's "Welcome" line are some pointers in the form of Web addresses. There are pointers to [the official Ubuntu documentation](https://help.ubuntu.com), the [homepage for a management service called Landscape](https://landscape.canonical.com), a [link to where you can find paid support](https://ubuntu.com/advantage) or [business consulting](http://www.ubuntu.com/business/services/cloud). These are here because the maker of Ubuntu, a for-profit corporation by the name of [Canonical, Ltd.](https://www.canonical.com/), bases its paid offerings on their free offerings. All of these services are optional, but some organizations who use the Ubuntu operating system subscribe to these services, as well.
+Following the operating system's "Welcome" line are some pointers in the form of Web addresses. There are pointers to [the official Ubuntu documentation](https://help.ubuntu.com), the [homepage for a management service called Landscape](https://landscape.canonical.com), and links to where you can find [paid support](https://ubuntu.com/advantage) or [business consulting](http://www.ubuntu.com/business/services/cloud). These are here because the maker of Ubuntu, a for-profit corporation by the name of [Canonical, Ltd.](https://www.canonical.com/), bases its paid offerings on their free offerings. All of these services are optional, but some organizations who use the Ubuntu operating system subscribe to these services, as well.
 
 You have no need of any of these, so you scroll right past this block of text:
 
@@ -318,18 +318,18 @@ You have no need of any of these, so you scroll right past this block of text:
     http://www.ubuntu.com/business/services/cloud
 ```
 
-Next, the system shows you a brief summary of the state of the currently installed software on the shared server. The server reports that everything is up to date: no packages can be updated, and of these, none are security updates.
+Next, the system shows you a brief summary of the state of the currently installed software on the shared server. The server reports that everything is up to date: no packages can be updated and, of these, none are security updates.
 
 ```
 0 packages can be updated.
 0 updates are security updates.
 ```
 
-That sounds like good news to you. You pause for a moment to wonder if perhaps this is because the university's sysop took the opportunity to perform some basic system maintenance while they were creating your user account.
+That sounds like good news to you. You pause for a moment to wonder if perhaps everything is up to date because the university's sysop took the opportunity to perform some basic system maintenance while they were creating your user account.
 
 > :beginner: A *package* is exactly what it sounds like: a pre-packaged piece of software. "Pre-packaged" usually means that it has been *compiled* for you. Compilation is the process of turning files containing *source code*, which are a bit like the words of a magic spell in a spellbook, into *machine code*, which are the actual program instructions fed into the computer's CPU when it runs the software program.
 >
-> Whether you realize it or not, you're already very familiar with software packages. For example, you use packages every time you install an app from the Google Play Store or the Apple App Store on your phone. Android apps that you install from the Google Play Store are simply "Android package files," literally a file that ends in `.apk`, which stands for "Android package." The Google Play Store, and all app stores, are simply graphical *package managers*, programs that manage the installation, uninstallation, updating, and reporting on packages.
+> Whether you realize it or not, you're already very familiar with software packages. For example, you use packages every time you install an app from the Google Play Store or the Apple App Store on your phone. Android apps that you install from the Google Play Store are simply "Android package files," literally a file that ends in `.apk`, which stands for "Android package." The Google Play Store, and all app stores, are simply graphical *package managers*, programs that manage the installation, removal, updating, and reporting on packages.
 
 Immediately following the package summary is an update announcement:
 
@@ -343,9 +343,9 @@ Run 'do-release-upgrade' to upgrade to it.
 
 This is a message from the Ubuntu operating system informing you that a newer LTS release of Ubuntu is available. You smile inwardly as you realize this message is certainly not intended for you. It's intended for the system administrator. Only an administrator has the privileges required to restart (or "reboot") the computer system, because doing so would interrupt all the other users connected to it. Moreover, only an administrator can make changes to the operating system, which a major upgrade would certainly be.
 
-Your eyes linger on this message for longer than they need to. If this message was not intended for you, how is it that you're seeing it? What else can you find here that may not be intended for you? How much else is here, anyway? You push your mug of coffee further across your desk, realizing that you are now energized despite your relatively decaffeinated state. You read on, eyes widened in anticipation of what you might encounter next.
+Your eyes linger on this message for longer than they need to. If this message was not intended for you, how is it that you're seeing it? What else can you find here that may not be intended for you? How much more is already in here, anyway? You push your mug of coffee further across your desk, realizing that you are now energized despite your relatively decaffeinated state. You read on, eyes widened in anticipation of what you might encounter next.
 
-The system's welcome message ends with a bit of legalese, rather abruptly:
+The system's welcome message ends rather abruptly with a bit of legalese:
 
 ```
 The programs included with the Ubuntu system are free software;
@@ -362,15 +362,22 @@ After that, the sysop's own welcome message is printed. You can tell it's the sy
 janedoe@secacct-practice-lab:~$
 ```
 
-The square cursor sits there, blinking at the end of the line, waiting. It shines green into your eyes, reminding you momentarily of all the turn signals toggling on and off at each turn of your commute. How many turns did you take to get here? How many choices did you make that brought you to this moment?
+The square cursor sits there, blinking at the end of the line, waiting for you. Its green light shines into your eyes, reminding you of all the turn signals toggling on and off at each leg of your commute. How many turns did you take to get here? How many choices did you make that brought you to this moment?
 
 And where will you turn to go next?
 
 ## Looking around in digital space
 
-> :construciton: TK-TODO
->
-> Let's do a few simple things: `ls -la`, `ss --listening`, `ps -ef`, `loginctl`, etc.
+Are you really here? Is this really happening? You think you should pinch yourself, just to make sure you're not still sleeping. Instead, you simply press the `Return` or `Enter` key on your keyboard. Dutifully, the mainframe processes your empty command and returns another prompt:
+
+```
+janedoe@secacct-practice-lab:~$
+janedoe@secacct-practice-lab:~$
+```
+
+The appearance of the second prompt confirms it: you really are logged on, and you really are interacting with the mainframe. Pressing the `Return` key sent a newline character to the computer. The newline character was dutifully processed, moving the terminal's output up by one line, and moving the cursor down by that same amount. Since the only character on the command line was a newline, the computer dutifully processed your entire command: "do nothing."
+
+> :beginner: :bulb: :construction: TK-TODO: Briefly touch on the difference between a `newline` (`\n`), a carriage return (`\r`) a line feed, and a form feed. These are mostly obsolete now that we have digital systems, but are good to know for the sake of file formats and network protocols. Might as well introduce them now.
 
 ## Creating your user profile
 
