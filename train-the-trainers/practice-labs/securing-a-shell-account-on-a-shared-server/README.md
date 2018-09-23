@@ -88,8 +88,6 @@ First, though, you must create the server itself. In keeping with the objectives
 
 **Do this:**
 
-1. Make a new folder with a meaningful name (such as `shell-account-practice-lab`) somewhere on your computer. This folder will contain the virtualized server. Your Desktop or your Documents folder is probably fine.
-1. Download the [`Vagrantfile`](Vagrantfile) that comes with this lab and save it in the same folder you just created. The `Vagrantfile` is a sort of code, so make sure you copy-and-paste it exactly as shown or save it without any file extension. That is, `Vagrantfile.txt` will not work. The full name of the file should be exactly `Vagrantfile`, no more and no less.
 1. Open a terminal on your computer, such as `cmd.exe` (if you're using a Windows computer) or `Terminal.app` (if you're using a macOS computer).
 1. Navigate to this lab's folder with the `cd` command. For example:
     ```sh

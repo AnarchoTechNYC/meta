@@ -1,8 +1,8 @@
 # Anarcho-Tech NYC Collective / Tech Antifa
 
-Shared assets for various Anarcho-Tech NYC projects live here. :)
+Shared assets for various Anarcho-Tech NYC projects live here. This is also the container for numerous projects intended to support the collective's longer-term goals. For example, our [Train the Trainers](train-the-trainers/) project is a collection of workshops and practice labs intended to support the educational efforts of digital security trainers and their students.
 
-> :construction: This is a work in progress, and while that's generally *always* true, it's currently in a particularly embryonic state.
+The easiest way to obtain the materials herein is to [download the latest copy of our work as a ZIP archive](https://github.com/AnarchoTechNYC/meta/archive/master.zip). Once downloaded, unzip the file, which can usually be accomplished simply by double-clicking on it. Once you have the files saved on your computer, you can navigate through the folders to find the project or workshop that interests you.
 
 # Repository structure
 
@@ -13,7 +13,7 @@ This repository is (generally) organized in the following way:
     * *`<subproject name>/`* folder housing files related to a particular subproject.
         * `README.md` file describing the subproject itself.
 
-Some projects are included as [Git submodules](https://git-scm.com/book/en/Git-Tools-Submodules), so use [`git clone --recursive`](http://explainshell.com/explain?cmd=git+clone+--recursive) when cloning.
+Some projects are included as [Git submodules](https://git-scm.com/book/en/Git-Tools-Submodules), so use [`git clone --recursive`](http://explainshell.com/explain?cmd=git+clone+--recursive) when cloning if you'd like to obtain the entire collection.
 
 # Nomenclature
 
