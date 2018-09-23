@@ -21,6 +21,7 @@ While some of this is still true today—many people still don't understand how 
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Logging in for the first time](#logging-in-for-the-first-time)
+    1. [Welcome to Wonderland](#welcome-to-wonderland)
     1. [Looking around in digital space](#looking-around-in-digital-space)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
@@ -270,9 +271,7 @@ As you grumble something about overworked and underpaid system operators, you re
     janedoe@secacct-practice-lab:~$
     ```
 
-Welcome to Wonderland. :)
-
-## Looking around in digital space
+## Welcome to Wonderland
 
 It takes you by surprise. For a moment, you're not sure what you're looking at. A bunch of text has just scrolled by your screen, way too fast for you to read it all. This is not at all like earlier attempts. At first blush, all you can recognize is your command prompt:
 
@@ -280,7 +279,7 @@ It takes you by surprise. For a moment, you're not sure what you're looking at. 
 janedoe@secacct-practice-lab:~$
 ```
 
-You're in! Your account has been created and you are now logged in to the system. You scroll up a bunch to read some of what you missed. Several things stand out to you. The first chunk of output is the system's welcome message. It begins with a literal "Welcome!"
+You're in! Your account has been created and you are now logged in to the system. You scroll up a bunch to read some of what you missed. Several things stand out to you. The first chunk of output is the system's log-on message. It begins with a literal "Welcome" message:
 
 ```
 Welcome to Ubuntu 16.04.5 LTS (GNU/Linux 4.4.0-133-generic x86_64)
@@ -294,7 +293,7 @@ Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating s
 
 > :beginner: A *kernel* is the most foundational piece of an operating system. It is ultimately responsible for everything else that happens in the operating system, or the installed applications. The kernel is so named because it is conceptually at the core of the computer. It intializes hardware components such as disk drives, manages volatile random-access memory segments (RAM), and controls the central processing unit (CPU) of the computer.
 >
-> If the shell is the outermost layer in an computer system (the part you interact with as an end user), the kernel is the innermost layer.
+> If the shell is the outermost layer in a computer system (the part you interact with as an end user), the kernel is the innermost layer.
 >
 > :beginner: :bulb: An operating system and a kernel are often discussed as though they are one and the same, but this is not technically accurate. Different operating systems, such as Ubuntu or Debian, can sometimes use different kernels. For example, while the Debian operating system currently only officially supports the GNU/Linux kernel, it [can be built to run on the GNU/Hurd kernel instead, and even officially supported the FreeBSD kernel in the past](https://en.wikipedia.org/wiki/Debian#Kernels).
 >
@@ -308,6 +307,9 @@ Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating s
 >
 > As an end user, you need to know which hardware your computer (or shared server) is using so that you know which pre-compiled software packages will run on your system. If you try to run software compiled for, say, an [Advanced RISC Machine (ARM)](https://simple.wikipedia.org/wiki/ARM_architecture) architecture on a machine that uses an Intel x86-based CPU, it certainly won't work.
 
+Following the operating system's "Welcome" line are some pointers in the form of Web addresses. There are pointers to [the official Ubuntu documentation](https://help.ubuntu.com), the [homepage for a management service called Landscape](https://landscape.canonical.com), a [link to where you can find paid support](https://ubuntu.com/advantage) or [business consulting](http://www.ubuntu.com/business/services/cloud). These are here because the maker of Ubuntu, a for-profit corporation by the name of [Canonical, Ltd.](https://www.canonical.com/), bases its paid offerings on their free offerings. All of these services are optional, but some organizations who use the Ubuntu operating system subscribe to these services, as well.
+
+You have no need of any of these, so you scroll right past this block of text:
 
 ```
  * Documentation:  https://help.ubuntu.com
@@ -316,16 +318,38 @@ Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating s
 
   Get cloud support with Ubuntu Advantage Cloud Guest:
     http://www.ubuntu.com/business/services/cloud
+```
 
+Next, the system shows you a brief summary of the state of the currently installed software on the shared server. The server reports that everything is up to date: no packages can be updated, and of these, none are security updates.
+
+```
 0 packages can be updated.
 0 updates are security updates.
+```
 
+That sounds like good news to you. You pause for a moment to wonder if perhaps this is because the university's sysop took the opportunity to perform some basic system maintenance while they were creating your user account.
+
+> :beginner: A *package* is exactly what it sounds like: a pre-packaged piece of software. "Pre-packaged" usually means that it has been *compiled* for you. Compilation is the process of turning files containing *source code*, which are a bit like the words of a magic spell in a spellbook, into *machine code*, which are the actual program instructions fed into the computer's CPU when it runs the software program.
+>
+> Whether you realize it or not, you're already very familiar with software packages. For example, you use packages every time you install an app from the Google Play Store or the Apple App Store on your phone. Android apps that you install from the Google Play Store are simply "Android package files," literally a file that ends in `.apk`, which stands for "Android package." The Google Play Store, and all app stores, are simply graphical *package managers*, programs that manage the installation, uninstallation, updating, and reporting on packages.
+
+Immediately following the package summary is an update announcement:
+
+```
 New release '18.04.1 LTS' available.
 Run 'do-release-upgrade' to upgrade to it.
 
 
 *** System restart required ***
+```
 
+This is a message from the Ubuntu operating system informing you that a newer LTS release of Ubuntu is available. You smile inwardly as you realize this message is certainly not intended for you. It's intended for the system administrator. Only an administrator has the privileges required to restart (or "reboot") the computer system, because doing so would interrupt all the other users connected to it. Moreover, only an administrator can make changes to the operating system, which a major upgrade would certainly be.
+
+Your eyes linger on this message for longer than they need to. If this message was not intended for you, how is it that you're seeing it? What else can you find here that may not be intended for you? How much else is here, anyway? You push your mug of coffee further across your desk, realizing that you are now energized despite your relatively decaffeinated state. You read on, eyes widened in anticipation of what you might encounter next.
+
+The system's welcome message ends with a bit of legalese, rather abruptly:
+
+```
 The programs included with the Ubuntu system are free software;
 the exact distribution terms for each program are described in the
 individual files in /usr/share/doc/*/copyright.
@@ -333,6 +357,22 @@ individual files in /usr/share/doc/*/copyright.
 Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
 applicable law.
 ```
+
+After that, the sysop's own welcome message is printed. You can tell it's the sysop's message and not the Operating System vendor because the tone and the subject suddenly shifts to the specifics of the system you've just logged in to. And then, once again, the expectant prompt:
+
+```
+janedoe@secacct-practice-lab:~$
+```
+
+The square cursor sits there, blinking at the end of the line, waiting. It shines green into your eyes, reminding you momentarily of all the turn signals toggling on and off at each turn of your commute. How many turns did you take to get here? How many choices did you make that brought you to this moment?
+
+And where will you turn to go next?
+
+## Looking around in digital space
+
+> :construciton: TK-TODO
+>
+> Let's do a few simple things: `ls -la`, `ss --listening`, `ps -ef`, `loginctl`, etc.
 
 ## Creating your user profile
 
