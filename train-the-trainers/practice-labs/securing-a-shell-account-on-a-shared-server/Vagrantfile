@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
     apt install finger links
 
     # Add some example user accounts.
-    users=(labadmin alice bob mallory rapinbill)
+    users=(labadmin alice bob mallory rappinbill)
     adduser --disabled-password --add_extra_groups --gecos 'Lab Administrator,401,555-523-2366,555-000-0001,Educational Services Dept.' ${users[0]}
     adduser --disabled-password --add_extra_groups --gecos 'Adventurous Alice,101,555-002-5423,555-000-0002,Student Center' ${users[1]}
     adduser --disabled-password --add_extra_groups --gecos 'Boring Bob,201,555-020-1262,555-000-0003,Student Center' ${users[2]}

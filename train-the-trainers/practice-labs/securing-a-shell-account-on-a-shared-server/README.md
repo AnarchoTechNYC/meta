@@ -16,8 +16,11 @@ While some of this is still true today—many people still don't understand how 
 1. [Bill of materials](#bill-of-materials)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
+    1. [Virtual server startup](#virtual-server-startup)
+    1. [Creating your shell account](#creating-your-shell-account)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
+    1. [Logging in for the first time](#logging-in-for-the-first-time)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -112,11 +115,7 @@ simply run `vagrant up`.
 
 With the virtualized server successfully started, let's create your practice account.
 
-## Creating your account
-
-> :construction: TK-TODO
->
-> * `adduser`, etc. from the admin's perspective, then…
+## Creating your shell account
 
 Having a server is only part of the equation. To use the server for our purposes, you must also have a user account, sometimes referred to as a *shell account*. A user account is needed so that you can login to the system, which means identifying yourself as a user who has permission to use the computer's resources.
 
@@ -186,7 +185,7 @@ Let's quickly run through an example procedure that is similar to one an adminis
     ```
     > :beginner: :warning: Among other security issues, this command creates an unprotected private key. An unprotected private key file is an identity file that is not secured with a password. As long as you only ever use this identity file for this practice lab, this isn't a problem. In a real-world situation, however, this is considered extremely dangerous. For more information about the security of SSH keypairs, please consult the [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md) practice lab.
 
-    This command created two files: `shell-account_rsa` and `shell-account_rsa.pub`. The first (`shell-account_rsa`) is your account's *SSH private key* file (also called your *identity file*). The second, (`shell-account_rsa.pub`) is your account's *SSH public key* file. Again, refer to the [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md) for more information about these files.
+    This command created two files: `shell-account_rsa` and `shell-account_rsa.pub`. The first (`shell-account_rsa`) is your account's *SSH private key* file (also called your *identity file*). The second, (`shell-account_rsa.pub`) is your account's *SSH public key* file. Again, refer to the [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md) for more information about these files. Soon, we'll use the identity file to log in as the user you just created.
 1. Inform the newly created user account that SSH login attempts using the private key we just generated should be allowed to log in to the user account we just created by copying the newly generated public key file to the new user's `~janedoe/.ssh/authorized_keys` file:
     ```sh
     sudo cp shell-account_rsa.pub ~janedoe/.ssh/authorized_keys
@@ -196,9 +195,12 @@ Let's quickly run through an example procedure that is similar to one an adminis
     sudo chown -R janedoe:janedoe ~janedoe/.ssh
     sudo chmod 700 ~janedoe/.ssh
     ```
-1. Log out of the virtualized server by invoking the `exit` command.
+1. Log out of the virtualized server by invoking the `exit` command:
+    ```sh
+    exit
+    ```
 
-You have just created a new user account and gave the user access to this account by use of SSH public key authentication. As the administrator, you can now inform the user who requested the new user account that their account is ready for their use. Let's switch gears now and return to our regular user account persona.
+You have just created a new user account and gave the user access to this account by use of SSH public key authentication. As the administrator, you can now inform the user who requested the new user account that their account is ready for their use. Meanwhile, as the regular user, you now have access to your shell account on the shared server.
 
 # Practice
 
@@ -218,19 +220,56 @@ On the monitor is a power button. When you press it, the screen flickers. Slowly
 Login:
 ```
 
-This moment is arguably one of the early geneses from which all modern computing was born. This simple experience of digital access is both the promise and the power that we will be exploring during this lab. If you can understand, at a deep and philosophical level, exactly what happened when your imaginary alter-ego from the 1970's turned on that monitor, there is nothing that happens on a computer today that will remain unknown to you.
+This moment is arguably one of the early geneses from which all modern computing was born. This simple experience of digital access is both the promise and the power that we will be exploring during this lab. If you can understand at a deep and philosophical level exactly what happened when your imaginary alter-ego from the 1970's turned on that monitor, then there is nothing that happens on a computer today that will be a mystery to you.
 
-What you are seeing is the result of electrical charges sent from the mainframe, somewhere else on campus, over the cabling, and ultimately into a cathode ray tube that fired electrons onto the glass of the monitor. The glass is coated with phosphorescent dust, which shines when charged. The result is the invitation into Wonderland: `Login:`.
+What you are seeing is the result of electrical charges sent from the mainframe, located somewhere else on campus, over the cabling and ultimately into a cathode ray tube that fired electrons onto the glass of the video monitor. The glass is coated with phosphorescent dust, which shines when charged. The result is your invitation into Wonderland: `Login:`.
 
-In the mid-1980's, the *personal computer* emerged as a much smaller computer that people with means could buy and put on a table in their living room or garage. These personal computers had names like the [Commodore 64](https://simple.wikipedia.org/wiki/Commodore_64), [Altair 8800](https://en.wikipedia.org/wiki/Altair_8800), [Apple Lisa](https://en.wikipedia.org/wiki/Apple_lisa), and of course, the [IBM PC](https://en.wikipedia.org/wiki/IBM_Personal_Computer), literally an initialism of the Industrial Business Machine, Inc. Personal Computer. Unlike a mainframe, whose input and output peripherals (the keyboard, for input, and video monitor, for some of its output) extended outside of the main frame of the device, personal computers had all the mainframe's components condensed into a single chassis. They were, in essence, one tiny main frame.
+In the mid-1980's, the *personal computer* emerged as a much smaller version of this same technology. People with means could buy and put a fully functional computer on a table in their living room or garage. These personal computers had names like the [Commodore 64](https://simple.wikipedia.org/wiki/Commodore_64), [Altair 8800](https://en.wikipedia.org/wiki/Altair_8800), [Apple Lisa](https://en.wikipedia.org/wiki/Apple_lisa) and, of course, the [IBM PC](https://en.wikipedia.org/wiki/IBM_Personal_Computer), literally an initialism for the Industrial Business Machine, Inc. Personal Computer. Unlike a mainframe, whose input and output peripherals (the keyboard, for input, and video monitor, for some of its output) extended outside of the main frame of the device, personal computers had all the mainframe's components condensed into a single chassis. They were, in essence, one tiny main frame.
 
 Also unlike the mainframes of the previous generation, which were by design intended to be used by multiple *end users* at once, the personal computer was, well, designed for personal use. Put another way, personal computers didn't need `Login:` prompts because they were only ever designed to be used by one person: their owner. Instead of a `Login` prompt, you were immediately presented with a *command line* or *command prompt*, the digital equivalent of an assistant who asks, "What would you like to do, today?"
 
-The famous Disk Operating System (DOS), on which the earliest versions of Windows ran, presented a command line that looked like `C:\> `. You could then type commands, which are instructions for what you would like the computer to do, and view the results of the computer's work. To this day, all computing, including all graphical interaction such as browsing Web sites, sharing files on Dropbox, or interacting on social media such as sending tweets, is simply a variant on this command-and-process model.
+The famous Disk Operating System (DOS), on which the earliest versions of Windows ran, presented a command line that looked like `C:\> `. You could then type commands, which are instructions for what you would like the computer to do, and view the results of the computer's work. To this day, all computing, including all graphical interaction such as browsing Web sites, sharing files on Dropbox, or interacting on social media by sending tweets on Twitter, is simply a variant on this command-and-process model.
 
-I'm going to say that again, because it's really important: to this day, all computing, including all graphical interaction, is just a variant on this command-and-process model. Before Web sites existed, there were [bulletin board systems (BBSs)](https://en.wikipedia.org/wiki/Bulletin_board_system). Like today's websites, BBSs were places to socialize and chat. Before there were BBSs, there were mainframes. Like yesteryear's BBSs, mainframes were places to collaborate on getting work done or just to chat with your cohort.
+I'm going to say that again, because it's really important: to this very day, all computing—including all graphical interaction—is just a variant on this command-and-process model. Before Web sites existed, there were [bulletin board systems (BBSs)](https://en.wikipedia.org/wiki/Bulletin_board_system). Like today's websites, BBSs were places to socialize and chat. Before there were BBSs, there were mainframes. Like yesteryear's BBSs, mainframes were places to collaborate on getting work done or just to chat with your cohort.
 
-In this lab, we turn back the cultural clock to the 1970's and 1980's to experience what the world of computing was like before the Internet as it exists today. Our virtual server will use a modern-day operating system inspired by the UNIX-like operating systems, [GNU/Linux](https://simple.wikipedia.org/wiki/Linux), with all the contemporary amenities and security features it provides, but we will explore this machine and meet the others using it through the tactile and sensory experience of a 1970's mainframe system.
+In this lab, we turn back the cultural clock to the 1970's and 1980's to experience what the world of computing was like before the Internet as it exists today. Our virtual server uses a modern-day operating system inspired by the prevailing UNIX-like operating systems, [GNU/Linux](https://simple.wikipedia.org/wiki/Linux), and it comes equipped with all the contemporary amenities and security features that operating system provides. But we will be exploring this machine, and meet the others using it, through the tactile and sensory experience of a 1970's mainframe system.
+
+If you're ready, let's take our first steps down the rabbit hole.
+
+## Logging in for the first time
+
+You arrive at your desk one September morning a little drowsy due to a restless evening the night before. It is your first real day at university. The mandatory orientations of the previous week were not welcome, but they proved less than exciting. You think paperwork has always been a chore. You plop yourself into your seat. Several manilla folders, a couple of hiliters, and several half-bent sheets of hand-written notes are strewn on your desktop, evidence of your tendency for taking copious notes. You take a sip from the mug in your hand. You taste the bitterness of office coffee.
+
+Then your eyes settle on the video monitor and keyboard in the far corner of your desk. Just as you've done every day this week, you turn it on. It glows green and greets you with a familiar message:
+
+```
+Login:
+```
+
+You sigh, remembering yesterday. You had entered your name last morning as well, but were unceremoniously rebuffed:
+
+```
+No passwd entry for user 'janedoe'
+```
+
+As you grumble something about overworked and underpaid system operators, you resolve to try again this morning. Placing your coffee carefully to one side of your desk, you pull the keyboard towards your seat and swivel your chair towards the monitor. Let's see if the sysop has finally created your shell account.
+
+**Do this:**
+
+1. Open a new command prompt (terminal) window.
+1. Navigate to the folder containing the virtual server.
+1. Log in to the shared server using the account you requested. For our virtual server, the command to do this is `vagrant ssh -- -l $user -i $identity_file`, where `$user` is the user account name you chose earlier and `$identity_file` is the name of the file containing your SSH private key. If you are using an actual publicly accessible shared server, your system administrator should have supplied you with the syntax of an example command that will log you in. For example, if the user account you created on the virtual server is `janedoe` and the SSH private keys were created as described in the [Creating your shell account](#creating-your-shell-account) section, above, you should be able to log in by invoking the following command:
+    ```sh
+    vagrant ssh -- -l janedoe -i shell-account_rsa
+    ```
+
+    If successful, your command prompt will change to the following:
+
+    ```
+    janedoe@secacct-practice-lab:~$
+    ```
+
+Welcome to Wonderland. :)
 
 ## Taking your first look around
 
