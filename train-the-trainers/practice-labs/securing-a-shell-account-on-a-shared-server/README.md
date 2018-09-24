@@ -387,11 +387,97 @@ The appearance of the second prompt confirms it: you really are logged on, and y
 >
 > These days, since there is no longer a physical carriage holding paper to return anywhere, different systems interpret carriage return control characters in different ways. On UNIX-like systems, such as our GNU/Linux virtualized server, a carriage return is often meaningless. To move the cursor down a line and move it to the left of the screen, a single new line character (`\n`) suffices, which is the input you're sending when you press the `Return` key on your keyboard at a command prompt.
 
-You have read about people who can talk to machines. You imagined secret chambers, hidden away behind locked doors, dark rooms lit only by the magic of electric fires. The books and TV shows you watched as a child showed you tantalizing visions of far-future utopias and dystopias full of wondrous and terrifying automatons. Some were friendly, some were deadly, but all of them were powerful. But not until now have you ever had the chance to talk to a machine yourself.
+You have read about people who can talk to machines. You imagined secret chambers, hidden away behind locked doors, with dark rooms basking in blue from electric fires. The books and TV shows you watched as a child showed you tantalizing visions of far-future utopias and dystopias full of wondrous and terrifying automatons. Some were friendly, some were deadly, but all of them were powerful. But not until now have you ever had the chance to talk to a machine yourself.
 
-After all this time, now that you were finally here, you feel a small twinge of disappointment in yourself because you don't actually know what to say, or even what you want to say. The computer answers so quickly, and yet here you sit, keeping it waiting…and waiting. Worse, you realize that even if you did know what you wanted to say or do here, you wouldn't really know *how* to say or do anything here in the first place. How is it that the people you read about, the ones who can talk to computers, actually learned to do that in the first place? They must have had help.
+Now that you were finally here, you feel a small twinge of disappointment as you realize you don't actually know what to say. The computer answers so quickly, and yet here you sit, keeping it waiting…and waiting. Worse, you realize that even if you did know what you wanted to say or do here, you wouldn't really know *how* to say or do anything here in the first place. How is it that the people you read about, the ones who can talk to computers, actually learned to communicate with machines? They must have had help.
 
-You look up from the video monitor at the clock above your desk. It's still early. Glancing about the office, you can see that almost no one has arrived.
+You look up from the video monitor at the clock above your desk. It's still early. You straighten, pulling your shoulders back. Glancing about the office, you can see that almost no one else has arrived yet. It is just you and the machine. The two of you are going to have to figure out how to communicate with one another by yourselves.
+
+Your fingers find your keyboard once again. They float above the keys for a moment, and then find purchase on the following keys: `h`, `e`, `l`, `l`, `o`, `?`. The sound of loud clacks ring your ears, as though echoing through a dark chamber like the ones you used to imagine. Each letter you type appears on your screen as you type it. Your console now looks like this:
+
+```sh
+janedoe@secacct-practice-lab:~$ hello?
+```
+
+The cursor at the end of the line blinks a couple more time. Then you press the `Return` key, sending a newline control character to the mainframe. The computer replies in an instant:
+
+```sh
+No command 'hello?' found, did you mean:
+ Command 'hello' from package 'hello-traditional' (universe)
+ Command 'hello' from package 'hello' (main)
+hello?: command not found
+```
+
+Your eyes scan the textual reply. This feels different than you expected. You are not really speaking, but rather issuing instructions. Whatever you say here is interepreted as a command to be performed. Apparently, the mainframe does not know what to do when you ask it `hello?`. You're not entirely sure what `hello-traditional (universe)` or `hello (main)` mean, either, but what is very clear is that `hello?` is confusing the computer. After all, it told you this twice. Reading "`No command 'hello?' found`" and "`hello?: command not found`" almost feels like the computer is trying to be understood as hard you as are trying to understand it.
+
+This is all starting to remind you of something eerily familiar. The bar you drank at last night was one of the your first times going out for drinks on campus. You've never been a heavy drinker and didn't know exactly what to order. Cocktails have fancy names that don't always make sense to you. Why is it even called a "martini," anyway? The name seemed to make perfect sense to everyone around you, and after you asked for help from your friend, the bartender knew exactly how to prepare what you ordered. But the name is still a mystery to you, despite being uncomfortably familiar with its physical effects. If only you could've asked the bartender for help, without feeling like a square.
+
+Perhaps the computer isn't impatiently waiting for your input. Maybe, just maybe, it is just waiting, neither patiently nor impatiently. Perhaps it will not embarass you to ask it for help.
+
+Your fingers return to the keyboard. This time, you type a little faster: `h`, `e`, `l`, `p`, followed by the newline character, using the `Return` key. Suddenly, pages of text flash across your screen:
+
+```sh
+GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
+These shell commands are defined internally.  Type `help' to see this list.
+Type `help name' to find out more about the function `name'.
+Use `info bash' to find out more about the shell in general.
+Use `man -k' or `info' to find out more about commands not in this list.
+
+A star (*) next to a name means that the command is disabled.
+
+ job_spec [&]                                                                                                                    history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]
+ (( expression ))                                                                                                                if COMMANDS; then COMMANDS; [ elif COMMANDS; then COMMANDS; ]... [ else COMMANDS; ] fi
+ . filename [arguments]                                                                                                          jobs [-lnprs] [jobspec ...] or jobs -x command [args]
+ :                                                                                                                               kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]
+ [ arg... ]                                                                                                                      let arg [arg ...]
+ [[ expression ]]                                                                                                                local [option] name[=value] ...
+ alias [-p] [name[=value] ... ]                                                                                                  logout [n]
+ bg [job_spec ...]                                                                                                               mapfile [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array]
+ bind [-lpsvPSVX] [-m keymap] [-f filename] [-q name] [-u name] [-r keyseq] [-x keyseq:shell-command] [keyseq:readline-functio>  popd [-n] [+N | -N]
+ break [n]                                                                                                                       printf [-v var] format [arguments]
+ builtin [shell-builtin [arg ...]]                                                                                               pushd [-n] [+N | -N | dir]
+ caller [expr]                                                                                                                   pwd [-LP]
+ case WORD in [PATTERN [| PATTERN]...) COMMANDS ;;]... esac                                                                      read [-ers] [-a array] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] [-t timeout] [-u fd] [name ...]
+ cd [-L|[-P [-e]] [-@]] [dir]                                                                                                    readarray [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array]
+ command [-pVv] command [arg ...]                                                                                                readonly [-aAf] [name[=value] ...] or readonly -p
+ compgen [-abcdefgjksuv] [-o option]  [-A action] [-G globpat] [-W wordlist]  [-F function] [-C command] [-X filterpat] [-P pr>  return [n]
+ complete [-abcdefgjksuv] [-pr] [-DE] [-o option] [-A action] [-G globpat] [-W wordlist]  [-F function] [-C command] [-X filte>  select NAME [in WORDS ... ;] do COMMANDS; done
+ compopt [-o|+o option] [-DE] [name ...]                                                                                         set [-abefhkmnptuvxBCHP] [-o option-name] [--] [arg ...]
+ continue [n]                                                                                                                    shift [n]
+ coproc [NAME] command [redirections]                                                                                            shopt [-pqsu] [-o] [optname ...]
+ declare [-aAfFgilnrtux] [-p] [name[=value] ...]                                                                                 source filename [arguments]
+ dirs [-clpv] [+N] [-N]                                                                                                          suspend [-f]
+ disown [-h] [-ar] [jobspec ...]                                                                                                 test [expr]
+ echo [-neE] [arg ...]                                                                                                           time [-p] pipeline
+ enable [-a] [-dnps] [-f filename] [name ...]                                                                                    times
+ eval [arg ...]                                                                                                                  trap [-lp] [[arg] signal_spec ...]
+ exec [-cl] [-a name] [command [arguments ...]] [redirection ...]                                                                true
+ exit [n]                                                                                                                        type [-afptP] name [name ...]
+ export [-fn] [name[=value] ...] or export -p                                                                                    typeset [-aAfFgilrtux] [-p] name[=value] ...
+ false                                                                                                                           ulimit [-SHabcdefilmnpqrstuvxT] [limit]
+ fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]                                                                umask [-p] [-S] [mode]
+ fg [job_spec]                                                                                                                   unalias [-a] name [name ...]
+ for NAME [in WORDS ... ] ; do COMMANDS; done                                                                                    unset [-f] [-v] [-n] [name ...]
+ for (( exp1; exp2; exp3 )); do COMMANDS; done                                                                                   until COMMANDS; do COMMANDS; done
+ function name { COMMANDS ; } or name () { COMMANDS ; }                                                                          variables - Names and meanings of some shell variables
+ getopts optstring name [arg]                                                                                                    wait [-n] [id ...]
+ hash [-lr] [-p pathname] [-dt] [name ...]                                                                                       while COMMANDS; do COMMANDS; done
+ help [-dms] [pattern ...]                                                                                                       { COMMANDS ; }
+```
+
+> :beginner: :construction: Not all shells are `bash`. :)
+
+**Do this:**
+
+1. Return to a command prompt of your new shell account, if you are not already there. Remember:
+    1. To check if the virtual server is running, invoke the `vagrant status` command from within the Vagrant project root, which is the folder containing the `Vagrantfile` for this lab.
+    1. Invoke the `vagrant up` command to turn on the virtual server. If the server is already running, this command will do nothing, so it is safe to use regardless.
+    1. Log in to your shell account with the `vagrant ssh` command and the appropriate options. For example:
+        ```sh
+        vagrant ssh -- -l janedoe -i shell-account_rsa
+        ```
+
+
 
 ## Creating your user profile
 
