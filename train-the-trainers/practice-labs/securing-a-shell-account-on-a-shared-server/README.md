@@ -401,7 +401,7 @@ janedoe@secacct-practice-lab:~$ hello?
 
 The cursor at the end of the line blinks a couple more time. Then you press the `Return` key, sending a newline control character to the mainframe. The computer replies in an instant:
 
-```sh
+```
 No command 'hello?' found, did you mean:
  Command 'hello' from package 'hello-traditional' (universe)
  Command 'hello' from package 'hello' (main)
@@ -414,9 +414,23 @@ This is all starting to remind you of something eerily familiar. The bar you dra
 
 Perhaps the computer isn't impatiently waiting for your input. Maybe, just maybe, it is just waiting, neither patiently nor impatiently. Perhaps it will not embarass you to ask it for help.
 
-Your fingers return to the keyboard. This time, you type a little faster: `h`, `e`, `l`, `p`, followed by the newline character, using the `Return` key. Suddenly, pages of text flash across your screen:
+**Do this:**
 
-```sh
+1. Return to a command prompt of your shell account on your shared server, if you are not already there. Remember, for the virtualized server prepared with this lab:
+    1. Invoke the `vagrant status` command from within the Vagrant project root, which is the folder containing the `Vagrantfile` for this lab to check if the virtual server is running.
+    1. Invoke the `vagrant up` command to turn on the virtual server. If the server is already running, this command will do nothing, so it is safe to use regardless of whether the server is currently on or off.
+    1. Log in to your shell account with the `vagrant ssh` command, your shell account's user name, and your SSH identity file. For example:
+        ```sh
+        vagrant ssh -- -l janedoe -i shell-account_rsa
+        ```
+1. Ask your shell for help by entering the `help` command:
+    ```sh
+    help
+    ```
+
+Your fingers return to the keyboard. This time, you type a little faster: `h`, `e`, `l`, `p`, followed by the newline character, using the `Return` key. Suddenly, pages of text flash across your screen. Much like when you logged in, you have to scroll back to read it all. You do, so that you can begain reading the computer's reply, well, from its beginning:
+
+```
 GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
 These shell commands are defined internally.  Type `help' to see this list.
 Type `help name' to find out more about the function `name'.
@@ -466,18 +480,6 @@ A star (*) next to a name means that the command is disabled.
 ```
 
 > :beginner: :construction: Not all shells are `bash`. :)
-
-**Do this:**
-
-1. Return to a command prompt of your new shell account, if you are not already there. Remember:
-    1. To check if the virtual server is running, invoke the `vagrant status` command from within the Vagrant project root, which is the folder containing the `Vagrantfile` for this lab.
-    1. Invoke the `vagrant up` command to turn on the virtual server. If the server is already running, this command will do nothing, so it is safe to use regardless.
-    1. Log in to your shell account with the `vagrant ssh` command and the appropriate options. For example:
-        ```sh
-        vagrant ssh -- -l janedoe -i shell-account_rsa
-        ```
-
-
 
 ## Creating your user profile
 
