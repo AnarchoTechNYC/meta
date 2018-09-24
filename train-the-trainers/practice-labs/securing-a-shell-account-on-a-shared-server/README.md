@@ -22,6 +22,7 @@ While some of this is still true today—many people still don't understand how 
     1. [Introduction](#introduction)
     1. [Logging in for the first time](#logging-in-for-the-first-time)
     1. [Welcome to Wonderland](#welcome-to-wonderland)
+    1. [Hello, world](#hello-world)
     1. [Looking around in digital space](#looking-around-in-digital-space)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
@@ -366,7 +367,7 @@ The square cursor sits there, blinking at the end of the line, waiting for you. 
 
 And where will you turn to go next?
 
-## Looking around in digital space
+## Hello, world
 
 When you first encounter it, you sense an undeniable starkness to the digital space you've just entered. You lean forward in your chair, leaning towards the screen, as if moving your eyes closer to text it displays will help you see past them, into the space beyond. The edges of each glyph of text blur slightly, producing an almost invisible halo around each printed character. A soft hum enters your peripheral awareness, with an occasional barely-audible crackle. Suddenly, you realize the sound is the electricity powering the monitor. It sounds almost as if it's preparing to leap from the monitor out onto your desk, escaping the confines of cable and metal. Or, maybe, that it's pulling you in.
 
@@ -428,7 +429,7 @@ Perhaps the computer isn't impatiently waiting for your input. Maybe, just maybe
     help
     ```
 
-Your fingers return to the keyboard. This time, you type a little faster: `h`, `e`, `l`, `p`, followed by the newline character, using the `Return` key. Suddenly, pages of text flash across your screen. Much like when you logged in, you have to scroll back to read it all. You do, so that you can begain reading the computer's reply, well, from its beginning:
+Your fingers return to the keyboard. This time, you type a little faster: `h`, `e`, `l`, `p`, followed by the newline character, using the `Return` key. Suddenly, pages of text flash across your screen. Much like when you logged in, you have to scroll back to read it all. You do, so that you can begin reading the computer's reply, well, from its beginning:
 
 ```
 GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
@@ -479,7 +480,85 @@ A star (*) next to a name means that the command is disabled.
  help [-dms] [pattern ...]                                                                                                       { COMMANDS ; }
 ```
 
-> :beginner: :construction: Not all shells are `bash`. :)
+The first few lines of the computer's reply to your request for help are similar to the system's log on message. It tells you a name, something called `GNU bash`, then the version of whatever `GNU bash` is (`version 4.3.48(1)-release`), followed by information regarding the hardware for which this `GNU bash` thing was built (`(x86_64-pc-linux-gnu)`). All this information was on the first line of the reply:
+
+```
+GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
+```
+
+Next came the most comprehensible part of the reply. It sounds just like someone in a chat room replying to you:
+
+```
+These shell commands are defined internally.  Type `help' to see this list.
+Type `help name' to find out more about the function `name'.
+Use `info bash' to find out more about the shell in general.
+Use `man -k' or `info' to find out more about commands not in this list.
+```
+
+It dawns on you that you are not merely connected to a computer. Indeed, you are already running a program on the mainframe. The program you are running is a [shell](https://github.com/AnarchoTechNYC/meta/wiki/Shell) called `GNU bash`, or just `bash` for short. When you typed `help`, you asked the app you are currently using (`bash`) to show you the help information for itself. The remainder of the help page lists the various words that the `bash` program understands when you speak them to it. Curious, you try asking for more specific help. You type `help name` and then press `Enter`:
+
+```
+janedoe@secacct-practice-lab:~$ help name
+-bash: help: no help topics match `name'.  Try `help help' or `man -k name' or `info name'.
+```
+
+A smile creeps along your lips. When `bash` told you to "`Type 'help name' to find out more about the function 'name'.`, it did not mean you should literally type `h`, `e`, `l`, `p`, then a space, then `n`, `a`, `m`, and `e`, but rather to substitute `name` for the name of one of the commands in the list of commands bash` understands. Sure enough, `name` is not included. Helpfully, `bash` offers further information about how to use the `help` command itself. You give that a go, typing `help help` and pressing the `Return` key to send your words off to the computer for a reply. As before, the response is returned to you with astonishing speed:
+
+```
+janedoe@secacct-practice-lab:~$ help help
+help: help [-dms] [pattern ...]
+    Display information about builtin commands.
+
+    Displays brief summaries of builtin commands.  If PATTERN is
+    specified, gives detailed help on all commands matching PATTERN,
+    otherwise the list of help topics is printed.
+
+    Options:
+      -d        output short description for each topic
+      -m        display usage in pseudo-manpage format
+      -s        output only a short usage synopsis for each topic matching
+        PATTERN
+
+    Arguments:
+      PATTERN   Pattern specifiying a help topic
+
+    Exit Status:
+    Returns success unless PATTERN is not found or an invalid option is given.
+```
+
+Some of this is clear to you, but much of it isn't. What's an "exit status" and what is the difference between an "option" and an "argument?" You remember grade school and how frustrating your French classes were. This feels like that. It feels like learning a new language. You skim the long list of available commands from the output of the `help` command again, looking for something you can say to the computer that you might already more-or-less be able to understand without too much more reading and fumbling. The commands are words like "`alias`", "`shift`", "`break`", "`declare`", "`bind`", "`echo`", "`read`", "`logout`", "`set`", and "`unset`". All of these and, in fact, most of the commands in the list are verbs. So this feels like learning a new language because it *is* a language.
+
+You are learning to speak before you know what you might like to say. For a moment, this feels hopeless. What is the point of learning to speak if you do not know why you would bother? Then again, you have done this before. It is how you learned to speak with other humans. This is no different. It is simply a return to an earlier, younger part of your life. As with your speech, you learned to take your first step before you knew where you might want to go. The more words you learned, and the better you learned to control your limbs, the more you could do in the world. You became wise and powerful, and now, today, you will learn to speak and walk all over again. This time, you will learn to speak and walk and become powerful inside of a computer, inside Wonderland.
+
+Over and over again for the next half hour, you type `help` followed by another command in the list. Over and over again, you read pages of text that you don't fully understand. You don't even hear your name being called from the cubicle next to yours.
+
+"Jane! JANE!"
+
+You feel torn out of cyberspace and back into the physical world. You look up to see your coworker and friend, Alice, looking at you with a slightly worried expression on her face.
+
+"Jane, are you all right?"
+
+"What? Yeah, fine. I'm fine. Sorry, I was just…." You turn to the video monitor, still humming quietly.
+
+"Oh," Alice smiles. "You got your shell account."
+
+"Yeah. I was just…reading the help pages. I've never used a GNU/Linux system before." You try to swallow the tone of embarassment from your voice, half unsure why you even feel that way. Nevertheless, you don't want it known that this is all new to you. Maybe it was something in the way the sysops talked to each other, like they were part of some club that would never have you as a member. Maybe it was a reaction to experiences you had in school when you got more excited than was apparently permitted about the lesson plan. Whatever it was, you didn't want to start your first week here on the wrong foot. But Alice had been welcoming since the moment you met her, and this was no different.
+
+"That's awesome!" she exclaimed. "Want to show me what you've done so far?"
+
+"I…well, I haven't done very much, yet. I'm not exactly sure what to do."
+
+"Anything you want!" came Alice's excited reply. "What do you want to do?"
+
+"I don't know. Just look around, I guess."
+
+"Well, how would you feel about looking around with me?"
+
+"I think I'd like that very much."
+
+## Looking around in digital space
+
+> :construction: TK-TODO
 
 ## Creating your user profile
 
