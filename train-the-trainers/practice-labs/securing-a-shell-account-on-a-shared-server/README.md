@@ -502,7 +502,7 @@ janedoe@secacct-practice-lab:~$ help name
 -bash: help: no help topics match `name'.  Try `help help' or `man -k name' or `info name'.
 ```
 
-A smile creeps along your lips. When `bash` told you to "`Type 'help name' to find out more about the function 'name'.`, it did not mean you should literally type `h`, `e`, `l`, `p`, then a space, then `n`, `a`, `m`, and `e`, but rather to substitute `name` for the name of one of the commands in the list of commands bash` understands. Sure enough, `name` is not included. Helpfully, `bash` offers further information about how to use the `help` command itself. You give that a go, typing `help help` and pressing the `Return` key to send your words off to the computer for a reply. As before, the response is returned to you with astonishing speed:
+A smile creeps along your lips. When `bash` told you to "`Type 'help name' to find out more about the function 'name'.`, it did not mean you should literally type `h`, `e`, `l`, `p`, then a space, then `n`, `a`, `m`, and `e`, but rather to substitute `name` for the name of one of the commands in the list of commands `bash` understands. Sure enough, `name` is not included. Helpfully, `bash` offers further information about how to use the `help` command itself. You give that a go, typing `help help` and pressing the `Return` key to send your words off to the computer for a reply. As before, the response is returned to you with astonishing speed:
 
 ```
 janedoe@secacct-practice-lab:~$ help help
@@ -559,6 +559,12 @@ You feel torn out of cyberspace and back into the physical world. You look up to
 ## Looking around in digital space
 
 > :construction: TK-TODO
+>
+> Go over the very basics of files and directories, that directories are files which simply contain a list of their contents, etc. This means we need to cover `pwd`, `ls`, `mkdir`, `cd`, `touch`, and other basics.
+>
+> Then get into communicating with another user. The first tool for this should be `write(1)`, as it is the simplest. This is also the very first security issue: use `mesg n` to disable messages from other users. Put this in a startup script (such as `.profile` or `.bash_login`) in order to disable write access to your STDERR file descriptor upon login.
+>
+> After that, we can do `talk`/`talkd`, as well as `ntalk`, `utalk`, or probably best of all for now, `ytalk`.
 
 ## Creating your user profile
 

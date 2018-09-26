@@ -12,7 +12,14 @@ Vagrant.configure("2") do |config|
     # Set up the base system.
     apt update
     apt upgrade --yes
-    apt install finger links
+    apt install --yes finger links talk talkd
+
+    # Restrict the `talk` and `ntalk` services in `inetd.conf` so that
+    # the `talkd` process can only respond to requests from localhost.
+    # Use `sed` and not `update-inetd` here to ensure the inetd entry
+    # always uses the package's own field values. We just prepend.
+    sed --in-place='' -e 's/^\\(n\\?talk\\)/127.0.0.1:\\1/' /etc/inetd.conf
+    systemctl restart inetd.service # Restart, don't HUP, to avoid Linux bug.
 
     # Add some example user accounts.
     users=(labadmin alice bob mallory rappinbill)
