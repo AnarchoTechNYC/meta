@@ -558,6 +558,52 @@ You feel torn out of cyberspace and back into the physical world. You look up to
 
 ## Looking around in digital space
 
+Alice pulls up a chair next to yours. She falls into it with a twirl of excitement. "All right," she starts. "Let's look around!" Instinctively, you begin to roll your chair away from the keyboard. "No, no," Alice stops you. "You drive," she smiles. You pull yourself back to the keyboard.
+
+"Okay," you say. "What do I do first?"
+
+"Well, before we can know where to go, we have to know where we are," Alice says. "Have you learned about the filesystem?"
+
+You shake your head.
+
+"Let's start there, then."
+
+"Okay."
+
+Alice leans forward in her chair to point at the screen at the back of desk. "See the last line there, on the bottom of your window? That's your prompt. It's not just asking you what command to run next. It's also full of information that tells you about where you are and what's currently going on."
+
+You review the prompt on the screen:
+
+```
+janedoe@secacct-practice-lab:~$
+```
+
+Alice continues, "The symbols on the command prompt are meaningful. On the far left, of course, is your username or login name. Some of us also call this your *handle*. That's just slang for 'nickname.' After your username comes an at-sign (`@`), which separates your name from the name of the computer to which you have just logged in. There cannot be another `janedoe` on this computer, but there might be another user named `janedoe` on some *other* computer. If you log in to another computer, even if your username is `janedoe` on that other computer, your prompt will be different because the hostname portion will be different. That's how you can know which computer you're actually talking to when you see a command prompt. We call the computer's name a *hostname* because it 'hosts' you while you're logged in. I think that's kind of sweet."
+
+Alice's pause causes you to look back at her and away from the screen. "I like the metaphor," you say.
+
+"There are a *lot* of metaphors," Alice says. "In fact, the very next part of the command prompt is this colon (`:`), which separates the hostname from the *pathname*. In this case, the pathname is the special symbol tilde (`~`). That symbol is shorthand for 'your home folder.' It's basically like your own office inside the computer. You can put your digital files here, organized in whatever way you like. By keeping your personal stuff inside your 'home' folder, it will always be easy to find."
+
+"Do you have a home folder?" you ask Alice.
+
+"I sure do! I'll show it to you in a minute," Alice says. "But first, there's one last part of the command prompt that's super important."
+
+"The dollar sign (`$`) at the end?" you ask.
+
+"Yup," Alice answers. "That dollar sign is the conventional way of telling you that you are speaking to a command shell and have regular user privileges, and not any special powers or elevated privileges like the sysops and administrators have."
+
+"Right." You nod, but think it best not to ask too much about how to elevate your privileges just yet.
+
+"So, you're speaking to a command shell, and you're in your home folder. Enter the `pwd` command, then press the `return` key to run that command."
+
+"Okay," you say as you type. An instant later, your prompt looks like this:
+
+```sh
+janedoe@secacct-practice-lab:~$ pwd
+/home/janedoe
+janedoe@secacct-practice-lab:~$
+```
+
 > :construction: TK-TODO
 >
 > Go over the very basics of files and directories, that directories are files which simply contain a list of their contents, etc. This means we need to cover `pwd`, `ls`, `mkdir`, `cd`, `touch`, and other basics.
