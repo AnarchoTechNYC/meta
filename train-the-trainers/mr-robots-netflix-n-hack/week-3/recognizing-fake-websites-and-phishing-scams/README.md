@@ -38,6 +38,19 @@ To participate in this exercise, you must have:
 
 > :construction: TK-TODO
 
+Site cloning is a form of credential harvesting:
+
+1. Launch the Social Engineer's Toolkit:
+    ```sh
+    setoolkit
+    ```
+1. Choose the "Social-Engineering Attacks" item from the main menu, option number `1`.
+1. Choose the "Website Attack Vectors" item from the submenu, option number `2`.
+1. Choose the "Credential Harvester Attack Method" item from the submenu, option number `3`.
+1. Choose the "Site Cloner" method, option number `2`.
+1. Enter the IP address of the cloned Web form's HTTP POST location (the form's `action` attribute value). This should be the public IP address of your server. Choose the automatically detected IP address by pressing `Enter`.
+1. Enter the URL of the site to clone. For example, `https://www.facebook.com/`
+
 # Discussion
 
 > :construction: TK-TODO
