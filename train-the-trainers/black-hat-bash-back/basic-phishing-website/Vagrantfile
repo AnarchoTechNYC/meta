@@ -8,8 +8,8 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
-  config.vm.provision "shell", path: "provision.sh"
   config.vm.network "public_network"
+  config.vm.provision "shell", path: "provision.sh"
   config.vm.post_up_message = <<~HEREDOC
 
 
@@ -29,9 +29,16 @@ Vagrant.configure("2") do |config|
   ~~~~~~~ Anarcho-Tech NYC - Basic Phishing Website ~~~~~~
 
     You now have a virtual machine with SET installed.
-    SET is the Social Engineer's Toolkit; an open-source
+    SET is the Social Engineer's Toolkit, an open-source
     utility that provides numerous social engineering
     attack modules.
+
+    To begin, log in to the virtual machine, and then run
+    SET from the command line with superuser privileges:
+
+        vagrant ssh      # Log in to the VM.
+        cd set           # Enter the SET folder.
+        sudo ./setoolkit # Run the SET utility.
 
     Please use what you learn here for the betterment of humanity. Only share what
     you know with the people who you believe will do the same. Remember, intention
