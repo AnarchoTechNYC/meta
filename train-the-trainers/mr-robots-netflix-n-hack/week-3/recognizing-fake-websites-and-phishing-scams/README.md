@@ -1,6 +1,6 @@
 # Recognizing fake websites and phishing scams
 
-In this exercise we will create a fake version of a popular email website's login page (a *[phishing](https://simple.wikipedia.org/wiki/Phishing) site*) in order to trick an unsuspecting user into giving us their username and password combination for that website. We will then be able to impersonate that user to the website, gaining access to their account. Our goal is to more quickly recognize the signs of a malicious website so that we sensitize ourselves to any red flags or warnings we experience while browsing the Web.
+In this exercise we will create a fake version of a popular website's login page (a *[phishing](https://simple.wikipedia.org/wiki/Phishing) site*) in order to trick an unsuspecting user into giving us their username and password combination for that website. We will then be able to impersonate that user to the website, gaining access to their account. Our goal is to more quickly recognize the signs of a malicious website so that we sensitize ourselves to any red flags or warnings we experience while browsing the Web.
 
 1. [Objectives](#objectives)
 1. [Scenario](#scenario)
@@ -19,9 +19,9 @@ In this exercise we will create a fake version of a popular email website's logi
 When you complete this exercise, you will have acquired the following capabilities:
 
 * The ability to preview where clicking a link will take you before you visit the link.
-* The ability to verify the identity of the owner of a Web site via its TLS certificate.
-* The ability to recognize the difference between a technical difficulty and a cyberattack.
-* The ability to utilize the [Social Engineer's Toolkit](https://www.trustedsec.com/social-engineer-toolkit-set/) to launch a rudimentary phishing website.
+* The ability to verify the identity of the owner of a Web site by examining its security certificate in your Web browser.
+* The ability to more reliably recognize differences between legitimate communications and scams.
+* The ability to utilize the [Social Engineer's Toolkit](https://www.trustedsec.com/social-engineer-toolkit-set/) to launch a rudimentary phishing attack.
 
 # Scenario
 
@@ -117,7 +117,7 @@ Site cloning is a form of credential harvesting:
 1. Choose the "Website Attack Vectors" item from the submenu, option number `2`.
 1. Choose the "Credential Harvester Attack Method" item from the submenu, option number `3`.
 1. Choose the "Site Cloner" method, option number `2`.
-1. Enter the IP address of the cloned Web form's HTTP POST location (the form's `action` attribute value). This should be the public IP address of your server. Choose the automatically detected IP address by pressing `Enter`.
+1. Enter the IP address of the cloned Web form's HTTP POST location (the form's `action` attribute value). This should be the public IP address of your server. (Choose the automatically detected IP address by pressing `Enter`.)
 1. Enter the URL of the site to clone. For example, `https://www.facebook.com/`
 
 # Discussion
