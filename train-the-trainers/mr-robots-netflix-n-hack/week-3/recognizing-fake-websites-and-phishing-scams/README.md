@@ -6,6 +6,9 @@ In this exercise we will create a fake version of a popular email website's logi
 1. [Scenario](#scenario)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
+    * [Exercise installation on Windows](#exercise-installation-on-windows)
+    * [Exercise installation on macOS](#exercise-installation-on-macos)
+    * [Exercise installation on GNU/Linux](#exercise-installation-on-gnulinux)
 1. [Practice](#practice)
     1. :construction: TK-TODO
 1. [Discussion](#discussion)
@@ -15,7 +18,10 @@ In this exercise we will create a fake version of a popular email website's logi
 
 When you complete this exercise, you will have acquired the following capabilities:
 
-* :construction: TK-TODO
+* The ability to preview where clicking a link will take you before you visit the link.
+* The ability to verify the identity of the owner of a Web site via its TLS certificate.
+* The ability to recognize the difference between a technical difficulty and a cyberattack.
+* The ability to utilize the [Social Engineer's Toolkit](https://www.trustedsec.com/social-engineer-toolkit-set/) to launch a rudimentary phishing website.
 
 # Scenario
 
@@ -27,14 +33,77 @@ When you complete this exercise, you will have acquired the following capabiliti
 
 To participate in this exercise, you must have:
 
-* :construction: TK-TODO
+* A computer running any modern version of:
+    * Windows,
+    * macOS,
+    * FreeBSD,
+    * Solaris,
+    * any flavor of the GNU/Linux operating system.
 * An active Internet connection.
+
+> :beginner: :computer: This exercise requires the use of a command line, or "terminal." If you don't know what that means, or if you do but you feel intimidated by that, consider spending an hour at [Codecademy's interactive tutorial, "Learn the Command Line"](https://www.codecademy.com/learn/learn-the-command-line) (for macOS or GNU/Linux users) or reviewing [Computer Hope's article, "How to use the Windows command line (DOS)"](http://www.computerhope.com/issues/chusedos.htm) (for Windows users) if you want to get started quickly. You don't need to complete the whole tutorial or article to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics. If you want a more thorough but equally gentle introduction to the same material, consider reading (and listening to) [Taming the Terminal](https://www.bartbusschots.ie/s/blog/taming-the-terminal/).
 
 # Set up
 
-> :construction: TK-TODO
+In addition to your laptop or desktop computer, you will need to acquire the following tools:
+
+* For creating your phishing website: [Social Engineer's Toolkit (SET)](https://www.trustedsec.com/social-engineer-toolkit-set/), version 8 or newer.
+    * While you can install SET on any computer, it is officially supported only on GNU/Linux systems, while macOS and Windows support is experimental. In order to provide a more reliable and consistent experience through this exercise, we will be installing SET into a GNU/Linux virtual machine.
+* For managing the virtual machines: [VirtualBox](https://www.virtualbox.org/) version 5.0 or newer, sometimes written as *VBox*.
+* For automatically configuring virtual machine settings: [Vagrant](https://vagrantup.com/) version 2.1 or newer.
+
+There are pre-built versions of the VirtualBox hypervisor software for Windows, macOS, GNU/Linux, and Solaris available for download from the [VirtualBox downloads page](https://www.virtualbox.org/wiki/Downloads). Your operating system's package repositories may also include a copy of VirtualBox, but be certain to double-check the version available there before installing it to ensure you are using a new-enough version of the software. For [FreeBSD users, VirtualBox is provided as a package or a source port and can be installed by following the instructions in the FreeBSD Handbook, §21.6](https://www.freebsd.org/doc/handbook/virtualization-host-virtualbox.html).
+
+Similarly, there are pre-built versions of Vagrant for Windows, macOS, and numerous different GNU/Linux flavors available from the [Vagrant downloads page](https://www.vagrantup.com/downloads.html). [Vagrant is also provided as a FreeBSD port](https://svnweb.freebsd.org/ports/head/sysutils/vagrant/). Solaris users can [install Vagrant by installing from source](https://www.vagrantup.com/docs/installation/source.html).
+
+## Exercise installation on Windows
+
+**Do this** to prepare your Windows computer for this exercise:
+
+1. Install [VirtualBox](https://virtualbox.org/). The installation process for VirtualBox on Windows is straightforward, as it is the same as any other standard application. For details, see [§2.1 of the VirtualBox User Manual](https://www.virtualbox.org/manual/UserManual.html#installation_windows).
+1. Install [Vagrant](https://vagrantup.com/). The installation process for Vagrant on Windows is straightforward, as it is the same as any other standard application. For details, see the [Vagrant installation documentation](https://www.vagrantup.com/docs/installation/).
+1. [Download the exercise files as a ZIP archive](https://github.com/AnarchoTechNYC/meta/archive/master.zip) if you have not done so already.
+1. [Extract the files from the archive](https://support.microsoft.com/en-us/help/14200/windows-compress-uncompress-zip-files).
+1. Using the File Explorer, find the `recognizing-fake-websites-and-phishing-scams` folder inside the extracted archive. You can find this folder in the following way:
+    1. Open the `train-the-trainers` folder.
+    1. Open the `mr-robots-netlix-n-hack` folder.
+    1. Open the `week-3` folder.
+    1. Open the `recognizing-fake-websites-and-phishing-scams` folder.
+1. Open a PowerShell (or Command Prompt) window in the exercise folder by right-clicking inside the File Explorer window and selecting the "`Open PowerShell window here`" or "`Open command window`" option from the contextual menu.
+1. Type `vagrant up` at the command prompt and press the `Enter` or `Return` key on your keyboard to begin the remainder of the installation process.
+1. You may be asked to select a network interface to bridge, choose the interface you want or if you are unsure, respond `1` and press the `Enter` or `Return` key to complete the remainder of the installation process.
+
+Alternatively, you may attempt a manual installation of SET directly to your Windows computer, but this is left as an exercise for the reader.
+
+## Exercise installation on macOS
+
+**Do this** to prepare your macOS computer for this exercise:
+
+1. Install [VirtualBox](https://virtualbox.org/). The installation process for VirtualBox on macOS is straightforward, as it is the same as any other standard application. For details, see [§2.2 of the VirtualBox User Manual](https://www.virtualbox.org/manual/UserManual.html#installation-mac).
+1. Install [Vagrant](https://vagrantup.com/). The installation process for Vagrant on macOS is straightforward, as it is the same as any other standard application. For details, see the [Vagrant installation documentation](https://www.vagrantup.com/docs/installation/).
+1. [Download the exercise files as a ZIP archive](https://github.com/AnarchoTechNYC/meta/archive/master.zip) if you have not done so already.
+1. [Extract (uncompress) the files from the archive](https://support.apple.com/guide/mac-help/compress-uncompress-files-folders-mac-mchlp2528/mac).
+1. Using the [Finder](https://support.apple.com/en-us/HT201732), find the `recognizing-fake-websites-and-phishing-scams` folder inside the uncompressed archive. You can find this folder in the following way:
+    1. Open the `train-the-trainers` folder.
+    1. Open the `mr-robots-netlix-n-hack` folder.
+    1. Open the `week-3` folder.
+    1. Open the `recognizing-fake-websites-and-phishing-scams` folder.
+1. Open [the Terminal application](https://support.apple.com/guide/terminal/welcome/mac). A new macOS window with a command shell will open.
+1. Navigate to the exercise folder by typing `cd ` (the letters `c`, `d`, and then a literal space) into the command shell, then dragging-and-dropping the `recognizing-fake-websites-and-phishing-scams` folder's icon onto the command shell. This will autocomplete the filesystem path to the exercise folder in the command shell window. Finally, press the `return` key on your keyboard. 
+1. Type `vagrant up` at the Terminal prompt and press the `Enter` or `Return` key on your keyboard to begin the remainder of the installation process.
+1. You may be asked to select a network interface to bridge, choose the interface you want or if you are unsure, respond `1` and press the `Enter` or `Return` key to complete the remainder of the installation process.
+
+Alternatively, you may attempt a manual installation of SET directly to your macOS computer, but this is left as an exercise for the reader.
+
+## Exercise installation on GNU/Linux
+
+> :construction: TK-TODo
 
 # Practice
+
+We'll begin by ensuring you have successfully completed the [set up](#set-up) steps. This process will also introduce the fundamentals that you need to understand to complete the rest of the exercise.
+
+## Introduction
 
 > :construction: TK-TODO
 
@@ -58,3 +127,14 @@ Site cloning is a form of credential harvesting:
 # Additional references
 
 > :construction: TK-TODO
+
+According to [Phishing.org](https://phishing.org), the term "phishing" been in use since approximately 1996:
+
+> "According to Internet records, the first time that the term 'phishing' was used and recorded was on January 2, 1996. The mention occurred in a Usenet newsgroup called AOHell. It is fitting that it was made there too; America Online is where the first rumblings of what would become a major criminal issue would take place."
+
+Since then, it has quickly become one of, if not the single most popular kind of cyber attack. In part, this is because it has become so easy to do over the last two decades. Plus, phishing works primarily on a security vulnerability that is notoriously difficult to patch: human fallibility.
+
+In 2019, according to [Software-As-A-Service provider Retrust](https://retruster.com/blog/2019-phishing-and-email-fraud-statistics.html), phishing attempts have grown 65% in the last year, and account for a whopping 90% of all reported data breaches, while 76% of businesses reported being a victim of a phishing attack in the last year.
+
+Business Email Compromise (BEC) scams cost over $12 billion dollars in business losses [according to the FBI](https://www.pymnts.com/news/b2b-payments/2018/fbi-business-email-scam-fraud-phishing/). As for phishing websites, Webroot reports that [nearly 1.5m new phishing sites are created each month](https://www.webroot.com/us/en/about/press-room/releases/nearly-15-million-new-phishing-sites).
+
