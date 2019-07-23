@@ -10,7 +10,7 @@ In this exercise we will create a fake version of a popular website's login page
     * [Exercise installation on macOS](#exercise-installation-on-macos)
     * [Exercise installation on GNU/Linux](#exercise-installation-on-gnulinux)
 1. [Practice](#practice)
-    1. :construction: TK-TODO
+    1. [Introduction](#introduction)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -63,7 +63,7 @@ Similarly, there are pre-built versions of Vagrant for Windows, macOS, and numer
 1. Install [VirtualBox](https://virtualbox.org/). The installation process for VirtualBox on Windows is straightforward, as it is the same as any other standard application. For details, see [§2.1 of the VirtualBox User Manual](https://www.virtualbox.org/manual/UserManual.html#installation_windows).
 1. Install [Vagrant](https://vagrantup.com/). The installation process for Vagrant on Windows is straightforward, as it is the same as any other standard application. For details, see the [Vagrant installation documentation](https://www.vagrantup.com/docs/installation/).
 1. [Download the exercise files as a ZIP archive](https://github.com/AnarchoTechNYC/meta/archive/master.zip) if you have not done so already.
-1. [Extract the files from the archive](https://support.microsoft.com/en-us/help/14200/windows-compress-uncompress-zip-files).
+1. [Extract (uncompress) the files from the archive](https://support.microsoft.com/en-us/help/14200/windows-compress-uncompress-zip-files).
 1. Using the File Explorer, find the `recognizing-fake-websites-and-phishing-scams` folder inside the extracted archive. You can find this folder in the following way:
     1. Open the `train-the-trainers` folder.
     1. Open the `mr-robots-netlix-n-hack` folder.
