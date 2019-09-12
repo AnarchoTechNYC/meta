@@ -77,13 +77,13 @@ Now comes the tricky part! You must find a way to securely, secretly communicate
 1. Pay close attention to the OnionShare status bar (the very bottom of the OnionShare window).
     * When your friend successfully arrives at your Onion site, you will receive a "Page Loaded" notification.  
       ![Screenshot of OnionShare "Page Loaded" notification on macOS.](screenshots/onionshare-macos-page-loaded-notification.png)
-    * When your friend successfully begins receiving the files, you can view their download progress by clicking on the upload icon in the top-right of the OnionShare window to reveal OnionShare's upload progress.  
-      ![Screenshot of OnionShare's upload progress sidebar on macOS.](screenshots/onionshare-macos-upload-progress.png)
+    * When your friend successfully begins receiving the files, you can view their download progress by clicking on the upload icon in the top-right of the OnionShare window to reveal OnionShare's upload progress.
 1. You must ensure that this download completes!
     * Do not close OnionShare during this process.
     * Do not interrupt your Internet connection during this process.
     * Do not put your computer to sleep, hibernate, or let it be shut down until the download has completed.
-1. Once the download has completed, OnionShare's indicator light will turn back to gray and report that sharing is "*Stopped because transfer is complete*" in its status bar. This ensures that no one else will be able to download the sensitive file. (See [§ Enabling or disabling multiple downloads](#enabling-or-disabling-multiple-downloads) to learn more about this fact.)
+1. Once the download has completed, OnionShare's indicator light will turn back to gray and report that sharing is "*Stopped because transfer is complete*" in its status bar. This ensures that no one else will be able to download the sensitive file. (See [§ Enabling or disabling multiple downloads](#enabling-or-disabling-multiple-downloads) to learn more about this fact.)  
+    ![Screenshot of OnionShare's upload progress sidebar on macOS.](screenshots/onionshare-macos-upload-progress.png)
 
 ## Receiver steps
 
@@ -131,7 +131,7 @@ To allow multiple downloads, you must instruct OnionShare not to shut down your 
 **Do this** to allow multiple downloads:
 
 1. Click the gear icon next to the OnionShare mode toggle to open the OnionShare Settings screen. The gear icon looks like this:  
-   ![Screenshot of OnionShare Settings screen access button.](screenshots/onionshare-gear-icon.png)
+   ![Screenshot of OnionShare Settings screen access button.](screenshots/onionshare-gear-icon.png)  
    The *OnionShare Settings* window will appear.
 1. Deselect (uncheck) the "*Stop sharing after files have been sent*" option:
    ![Annotated screenshot of OnionShare Settings screen pointing to the "Stop sharing after files have been sent" option.](screenshots/onionshare-macos-settings-stop-sharing-after-files-have-been-sent.png)
