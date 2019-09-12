@@ -1,8 +1,10 @@
 # Introduction to Anonymous Communications Using Tor
 
-[Tor](https://torproject.org/) is…
+[Tor](https://torproject.org/) is an open-source, free, state-of-the-art, privacy-enhancing Web browser, SOCKS proxy, and anonymizing overlay mixnet. (Don't worry, we'll dig in to what all of this means.) Originally sponsored by the US Naval Research Laboratory, it is now backed by the [Electronic Frontier Foundation](https://eff.org) and the [Tor Project](https://www.torproject.org/).
 
-> :construction: TK-TODo
+Tor has become famous for its capacity to route traffic through other users' computers in a way that is fundamentally anonymizing, as well as for its overlay network infrastructure commonly referred to as "the dark web." Through the following excercises, we will demystify all of the aforementioned terminology, nicknames, and concepts. We will see how Tor can maximize privacy by being applied to more than just Web browsing, extrapolate Tor from Tor Browser, understand how onion routing works, and learn that *how* one uses Tor is just as important as the technological underpinnings themselves.
+
+> :construction: TK-TODO
 
 # Contents
 
@@ -17,8 +19,8 @@
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Your first Tor connection](#your-first-tor-connection)
-        1. [Connecting to the Tor network using Tor Browser](#connecting-to-the-tor-network-using-tor-browser)
         1. [Understanding the difference between Tor and Tor Browser](#understanding-the-difference-between-tor-and-tor-browser)
+        1. [Connecting to the Tor network using Tor Browser](#connecting-to-the-tor-network-using-tor-browser)
     1. [Understanding Tor circuits and relays](#understanding-tor-circuits-and-relays)
         1. [Guard relays](#guard-relays)
         1. [Middle relays](#middle-relays)
@@ -78,6 +80,52 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 ## Introduction
 
 > :construction: TK-TODO
+
+## Your first Tor connection
+
+### Understanding the difference between Tor and Tor Browser
+
+Often, Tor is discussed as though it is a single thing. Many trainers or friends may say things like, "I only use Facebook over Tor," or, "as a journalist, I often use Tor," or, "make sure you're using Tor," or, "this site is a dark web website only accessible through Tor," and so forth.
+
+While it is half true that Tor is a single thing, this idea is slightly misleading. When talking about Tor colloquially, it behoves us to make a distinction between Tor itself and Tor *Browser*, because the truth is they are actually two distinct things.
+
+To illustrate this, let's try simply opening Tor Browser before we move on to making and examining a connection elsewhere.
+
+#### A tale of two processes
+
+It may be helpful for understanding the difference between Tor and Tor Browser by first opening a process monitor on your machine, so that you may see the difference between the Tor process and the Tor Browser process (which, again, is really just a Firefox process).
+
+1. Open your computer's process monitor, and keep an eye on it throughout the following steps.
+    1. On Linux, this is probably called "System Monitor."
+    1. On macOS, this is called "Activity Monitor."
+    1. On Windows, this is probably called "Process Manager" or possibly "Process Explorer."
+1. If you have Firefox open already, make sure Firefox is closed before continuing to avoid confusion.
+1. Open Tor Browser.
+1. Note that two new processes are created -- one for Firefox (Tor Browser), and one for Tor (system Tor). The Tor process itself will likely be called simply `tor`, if you are on a Linux-based system, or `tor.real` if you're on a MacOS system.
+
+As we can see, there are separate processes for both Tor and Tor Browser. What to make of this?
+
+Let's revisit the objective of Tor in the first place, which is to allow users to use the Internet anonymously, or else to make connections to the Internet from an otherwise censored location.
+
+#### The `tor` process
+
+The Tor process (`tor` or `tor.real`) that we see is Tor itself. This is the process that provides the [SOCKS proxy](https://en.wikipedia.org/wiki/SOCKS) capability, which allows us access to the anonymizing "[mixnet](https://en.wikipedia.org/wiki/Mix_network)." 
+
+Effectively, the Tor process is the thing that anonymizes the connection your machine is making to another machine elsewhere on the Internet or on Tor's own "[overlay network](https://en.wikipedia.org/wiki/Overlay_network)." An overlay network is just a network that is built on top of another network. In this case, the Tor network is a bunch of servers hosting [Tor relays](https://trac.torproject.org/projects/tor/wiki/TorRelayGuide) of different kinds, which are built "on top of" (meaning, hosted on) the Internet. It's this overlay network that is commonly referred to as "the Dark Web." This monicker refers to its anonymizing nature (it is intended to be a name that contrasts against "the clear web," also known as the regular Internet), and not to any instrinsically nefarious nature, as some documentaries and articles would have you believe.
+
+We should pause here to make it clear that "the" Dark Web, as appears often in the media, is just Tor's overlay network (or at least, it's almost always Tor's network being referred to). But there are in fact many other overlay networks--even similarly anonymizing ones--that are much like Tor's. One example is [The Invisible Internet Project, or I2P](https://geti2p.net/en/). This is simply to say that there is nothing inherently *special* about Tor's network on a technical level, other than its quality: Tor's network was one of the earliest, and remains one of the largest, most well-resourced overlay networks in existence. Its reliability as an anonymizing network as well as an overlay network altogether has been attested to by journalists and whistleblowers living in countries with censored access to the Internet, and even by the [NSA's own documentation](https://archive.org/details/nsa-tor).
+
+#### The Tor Browser process
+
+Tor *Browser*, on the other hand, is simply a modification of the Mozilla [Firefox](https://www.mozilla.org/en-US/firefox/new/) browser, which has been modified by the Tor Project and distributed for Tor users with users' privacy and security as the main focus. While users may run their own Tor process (this is often called a "system Tor") separately, The Tor Browser also comes bundled with Tor, which means that when users run the Tor Browser, a Tor process connected to the Browser begins as well, allowing the user to easily utilize the Tor network simply by activating Tor Browser.
+
+### Connecting to the Tor network using Tor Browser
+
+With Tor Browser open and running, and its Tor process running, you've just begun the process of making a Tor connection!
+
+Now, we need to make a connection to someplace else on the Internet. Our connection will be most comprehensible if we have a clear net (normal) Internet connection to compare it to.
+
+> TK-TODO - This part should involve Wireshark analysis.
 
 ## Connecting to an authenticated Onion service
 
