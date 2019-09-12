@@ -124,9 +124,9 @@ While useful, you should be aware that flipping these roles has several importan
 
 ## Enabling or disabling multiple downloads
 
-Immediately after the receiver finishes downloading the sensitive file, the sender's Onion site automatically shuts down. This means no one can connect to it any longer, effectively ensuring that one and only one receiver can download the shared file(s). In our example scenario, this is exactly the behavior we want because it is critical to ensure that only the intended recipient is the one who received the sensitive file, but this is not always what you want.
+Immediately after the receiver finishes downloading the sensitive file, the sender's Onion site automatically shuts down. This means no one can connect to it any longer, effectively ensuring that one and only one receiver can download the shared file(s). In our example scenario, this is exactly the behavior we want because it is critical to ensure that only the intended recipient is the one who received the sensitive file, but this may not be desirable in all situations.
 
-To allow multiple downloads, you must instruct OnionShare not to shut down your Onion site after the first download that has been initiated completes. To do this, you need to *disable* the "[*Stop sharing after files have been sent*](https://github.com/micahflee/onionshare/wiki/Configuring-OnionShare#stop-sharing-after-first-download) option in the OnionShare's *Settings* screen.
+To allow multiple downloads, you must instruct OnionShare not to shut down your Onion site after the first download that has begun is finished. To do this, you need to *disable* the "[*Stop sharing after files have been sent*](https://github.com/micahflee/onionshare/wiki/Configuring-OnionShare#stop-sharing-after-first-download) option in OnionShare's *Settings* screen.
 
 **Do this** to allow multiple downloads:
 
@@ -136,7 +136,9 @@ To allow multiple downloads, you must instruct OnionShare not to shut down your 
 1. Deselect (uncheck) the "*Stop sharing after files have been sent*" option:
    ![Annotated screenshot of OnionShare Settings screen pointing to the "Stop sharing after files have been sent" option.](screenshots/onionshare-macos-settings-stop-sharing-after-files-have-been-sent.png)
 
-As always, consider the security implications of what you are doing when you disable this option and allow multiple downloads.
+As always, consider the security implications of what you are doing when you disable this option and allow multiple downloads. In what scenarios does it make sense to allow multiple downloads, and in what scenarios are you better off using a different approach? For example:
+
+* Would it be better to start a new share for a new receiver? By default, each time you press the "Start Sharing" button, OnionShare generates a completely new Onion site (with a completely different `.onion` address) for you to use. Even if you are sharing the same material with multiple people, you may want to give each of them their own `.onion` address, so that any interception of your communication of the address itself does not inherently associate each receiver with the others.
 
 # Additional references
 
