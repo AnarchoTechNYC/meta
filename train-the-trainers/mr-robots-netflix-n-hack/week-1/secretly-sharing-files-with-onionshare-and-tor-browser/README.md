@@ -90,15 +90,15 @@ As the receiver, you must acquire knowledge of the secret Onion site where the D
 
 1. Launch the Tor Browser. (Usually, this is as simple as double-clicking its icon.)
 1. Click on the *Connect* button when presented with the *Tor Network Settings* dialogue screen:  
-   ![Screenshot of the Tor Network Settings screen on Windows.](https://web.archive.org/web/20170303022410/http://core0.staticworld.net/images/article/2014/09/firsttimetor-100449209-orig.png)  
+   ![Screenshot of the Tor Network Settings screen on Windows.](screenshots/tor-browser-windows-network-settings-wizard.png)  
    This will connect your computer to the Tor anonymity network.
 1. After Tor has successfully connected, you will see a Web browser window open and display (something that looks similar to) the following page:  
-   ![Screenshot of Tor Browser's successful connection startup screen.](https://web.archive.org/web/20180920182006if_/https://i.imgur.com/OZHDh7S.png)
+   ![Screenshot of Tor Browser's successful connection startup screen.](screenshots/tor-browser-about-tor.png)
 
 Now comes the tricky part! You must find a way to securely, secretly communicate with your friend to learn the Web address of their Onion site. Remember, if you are caught requesting this secret information from your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
 
 1. Once you have acquired the Onion site's Web address, carefully type it verbatim (or copy-and-paste it) into the location bar of your open Tor Browser, then press the "Go" button or press the Return key. If successful, you should see a page like the following:  
-   ![Screenshot of the OnionShare server providin the Death Star plans.](https://web.archive.org/web/20180427193343if_/https://user-images.githubusercontent.com/7214911/39380177-a3d363e8-4a2b-11e8-9d49-eeb1b686185d.png)
+   ![Screenshot of the OnionShare server providin the Death Star plans.](screenshots/tor-browser-windows-onionshare-page-loaded.png)
 1. Click on the "*Download Files*" button to begin the download.
     * OnionShare may package the files in a single `.zip` archive.
 1. After the download is complete, you may need to [uncompress the downloaded ZIP file](http://www.computerhope.com/issues/ch000506.htm)
