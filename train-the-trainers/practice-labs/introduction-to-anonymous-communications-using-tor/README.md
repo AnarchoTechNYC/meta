@@ -14,10 +14,9 @@ In this practice lab, you will learn how Tor can maximize your privacy while usi
 1. [Bill of materials](#bill-of-materials)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
-    1. [Tor Browser installation](#tor-browser-installation)
-        1. [Tor Browser installation on Windows](#tor-browser-installation-on-windows)
-        1. [Tor Browser installation on macOS](#tor-browser-installation-on-macos)
-        1. [Tor Browser installation on GNU/Linux](#tor-browser-installation-on-gnulinux)
+    1. [Tor Browser installation on Windows](#tor-browser-installation-on-windows)
+    1. [Tor Browser installation on macOS](#tor-browser-installation-on-macos)
+    1. [Tor Browser installation on GNU/Linux](#tor-browser-installation-on-gnulinux)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Your first Tor connection](#your-first-tor-connection)
@@ -74,7 +73,19 @@ In addition to your laptop or desktop computer, you will need to acquire the fol
 
 * [Tor Browser](https://www.torproject.org/download/)
 
-Follow the above links. Then download and install the appropriate software package for your operating system. The installation processes should be familiar, since they are performed in the same way as for any other software application that runs on your operating system.
+Follow the above link. Then download and install the appropriate software package for your operating system. The installation processes should be familiar, since they are performed in the same way as for any other software application that runs on your operating system.
+
+## Tor Browser installation on Windows
+
+> :construction: TODO
+
+## Tor Browser installation on macOS
+
+> :construction: TODO
+
+## Tor Browser installation on GNU/Linux
+
+> :construction: TODO
 
 # Practice
 
@@ -106,11 +117,38 @@ Believe it or not, you are now connected to the Tor network and, should you so d
 
 ## Understanding the difference between Tor and Tor Browser
 
-Often, Tor is discussed as though it is a single thing. Many trainers or friends may say things like, "I only use Facebook over Tor," or, "as a journalist, I often use Tor," or, "make sure you're using Tor," or, "this site is a dark web website only accessible through Tor," and so forth.
+While Tor is often discussed as a single, monolithic thing, the reality is more complex. While it's not exactly incorrect to speak of Tor as a single tool, this brevity can fog up your understanding of what Tor really is and how it really works. On the one hand, being too specific about Tor's componentry borders on unnecessary pedantry. On the other, taking a look under the metaphorical hood can help you see the major parts that need to work together to make the whole work.
 
-While it is half true that Tor is a single thing, this idea is slightly misleading. When talking about Tor colloquially, it behoves us to make a distinction between Tor itself and Tor *Browser*, because the truth is they are actually two distinct things.
+For an introduction to Tor, there are thankfully only two major pieces that you should understand are distinct components. These are:
 
-To illustrate this, let's try simply opening Tor Browser before we move on to making and examining a connection elsewhere.
+* Tor *Browser*, and
+* Tor "itself."
+
+When you download and install the Tor Browser software package, you are actually downloading *both* parts bundled together in a single app. This used to be more explicit in earlier versions of the Tor Browser software package than it is now. What we now call simply "Tor Browser" used to be called the Tor Browser *Bundle* (TBB). Numerous additional software components were included in this "bundled" package that have since been replaced by custom Web browser extensions built into the Browser part of the Tor Browser, but there will likely always still be at least these two major components in the "Tor Browser" package.
+
+As the name implies, the Tor *Browser* is a Web browser. It is the part of the Tor Web browsing experience that you spend most of your time interacting with, and it is designed to look and feel more or less like any other Web browser you may be accustomed to using. Meanwhile, the *Tor* part is the software that torifies (i.e. proxies via the Tor network) the network traffic produced and consumed by the Tor Browser. This second part has no graphical user interface, no window you can drag around your screen or resize, and no buttons or preference boxes with which you can adjust its many settings and options.
+
+These two parts are designed and built as two independent software programs in their own right. They have different development teams, independent goals, and their own project infrastructure. However, also as the name implies, Tor Browser depends on Tor. Without the Tor part, the Tor Browser is, well, not the *Tor* Browser. Due to this dependent relationship, we say that the Tor project is *upstream* of the Tor Browser project, which, as you might expect, is therefore *downstream* of the Tor project. Both projects are stewarded by the Tor Project and are, of course, closely related, but from the software's viewpoint they are distinct and independent groups.
+
+Implicit in this architecture is the fact that Tor can be used&mdash;and is quite useful&mdash;on its own, without the Tor Browser. Indeed, if you wanted to use Tor for purposes other than Web browsing, you could download a "*system Tor*" instead of downloading the Tor Browser (bundle). You could then use your browser-less system Tor to torify whatever other applications you have. You could even torify other Web browsers, such as Apple's Safari or Microsoft's Edge, and browse the Dark Web using those browsers. That being said, there are very good reasons to download and use the Tor Browser as your primary torified Web browser instead of Web browsers not designed for the purpose, and we'll soon demonstrate many reasons why this is so.
+
+In the mean time, now that you know these are two different but cooperating pieces of software, let's take a closer look at each of them starting with the more familiar of the two, the Tor Browser.
+
+### Understanding Tor Browser
+
+As the name implies, Tor Browser is a Web browser. Also as the name implies, it is a *torified* Web browser, which means that it is set up in such a way as to ensure that all of its network traffic is routed through the Tor network. But there are additional improvements to your online privacy that Tor Browser provides that are important to know about beyond merely onion routing.
+
+The Tor Browser's interface may already be very familiar to you if you have ever used a modern Web browser, such as Google Chrome or [Mozilla Firefox](https://www.mozilla.org/firefox/). In fact, if you are a Firefox user, the Tor Browser probably looks *extremely* familiar. There is a good reason for that: the Tor Browser is based on Mozilla Firefox! View the Tor Browser's "About" window (by going to, for example, the *Tor Browser* &rarr; *About Tor Browser* menu item on a macOS computer) and you'll see this fact reported plain as day:
+
+![Screenshot of the Tor Browser's "About" window on macOS.](screenshots/tor-browser-macos-about-tor-browser.png)
+
+In the screenshot, you can see that the Tor Browser reports it is "based on Mozilla Firefox," gives its Firefox version number, and then the three-letter acronym ESR, which stands for Extended Support Release. These special release versions of Mozilla Firefox are, as their name implies, supported by Mozilla for longer than other versions of their Firefox Web browser are. The Tor Browser is based on these specific versions because these versions change less quickly and thus offer the Tor Browser team a slower moving target at which they can target their special, privacy-enhancing modifications to the Firefox code, making Tor Browser development a lot easier.
+
+Basing itself on Firefox also provides the Tor Browser with a number of other dramatic benefits. Not least among these is the fact that the Tor Browser team does not need to write a whole new Web browser from scratch. Instead, as Mozilla updates and improves the underlying Web browsing technology in its Firefox product, the Tor Browser automatically and freely gets these improvements, too. So, if you like and support the Tor Project, consider supporting the [Mozilla Foundation](https://mozilla.org/), as well.
+
+Now, we need to make a connection to someplace else on the Internet. Our connection will be most comprehensible if we have a clear net (normal) Internet connection to compare it to.
+
+> TK-TODO - This part should involve Wireshark analysis.
 
 ### A tale of two processes
 
@@ -135,16 +173,6 @@ The Tor process (`tor` or `tor.real`) that we see is Tor itself. This is the pro
 Effectively, the Tor process is the thing that anonymizes the connection your machine is making to another machine elsewhere on the Internet or on Tor's own "[overlay network](https://en.wikipedia.org/wiki/Overlay_network)." An overlay network is just a network that is built on top of another network. In this case, the Tor network is a bunch of servers hosting [Tor relays](https://trac.torproject.org/projects/tor/wiki/TorRelayGuide) of different kinds, which are built "on top of" (meaning, hosted on) the Internet. It's this overlay network that is commonly referred to as "the Dark Web." This monicker refers to its anonymizing nature (it is intended to be a name that contrasts against "the clear web," also known as the regular Internet), and not to any instrinsically nefarious nature, as some documentaries and articles would have you believe.
 
 We should pause here to make it clear that "the" Dark Web, as appears often in the media, is just Tor's overlay network (or at least, it's almost always Tor's network being referred to). But there are in fact many other overlay networks--even similarly anonymizing ones--that are much like Tor's. One example is [The Invisible Internet Project, or I2P](https://geti2p.net/en/). This is simply to say that there is nothing inherently *special* about Tor's network on a technical level, other than its quality: Tor's network was one of the earliest, and remains one of the largest, most well-resourced overlay networks in existence. Its reliability as an anonymizing network as well as an overlay network altogether has been attested to by journalists and whistleblowers living in countries with censored access to the Internet, and even by the [NSA's own documentation](https://archive.org/details/nsa-tor).
-
-#### The Tor Browser process
-
-Tor *Browser*, on the other hand, is simply a modification of the Mozilla [Firefox](https://www.mozilla.org/en-US/firefox/new/) browser, which has been modified by the Tor Project and distributed for Tor users with users' privacy and security as the main focus. While users may run their own Tor process (this is often called a "system Tor") separately, The Tor Browser also comes bundled with Tor, which means that when users run the Tor Browser, a Tor process connected to the Browser begins as well, allowing the user to easily utilize the Tor network simply by activating Tor Browser.
-
-With Tor Browser open and running, and its Tor process running, you've just begun the process of making a Tor connection!
-
-Now, we need to make a connection to someplace else on the Internet. Our connection will be most comprehensible if we have a clear net (normal) Internet connection to compare it to.
-
-> TK-TODO - This part should involve Wireshark analysis.
 
 ## Connecting to an authenticated Onion service
 
