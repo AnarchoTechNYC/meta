@@ -45,7 +45,7 @@ To participate in this exercise, you must have:
 
 In addition to your laptop or desktop computer and an active Internet connection, you will need to acquire (at least) two tools:
 
-* [Tor Browser](https://www.torproject.org/download/download-easy.html)
+* [Tor Browser](https://www.torproject.org/download/)
 * [OnionShare](https://onionshare.org/)
 
 Follow the above links. Then download and install the appropriate software package for your operating system. The installation process for both tools should be familiar, since they are performed in the same way as for any other software application that runs on your operating system.
