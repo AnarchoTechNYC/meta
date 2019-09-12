@@ -1,6 +1,6 @@
 # Introduction to Anonymous Communications Using Tor
 
-*Tor* is a free, state-of-the-art, privacy-enhancing digital communications tool that evolved from work originally performed at the Unitd States's Naval Research Laboratory (NRL) in the mid 1990's. Today, its steward is the [Tor Project](https://torproject.org/), a registered US-based 501(c)3 non-profit organization that coordinates ongoing work by the Free and Open Source Software (FOSS) community on Tor itself along with its related software components, such as the *Tor Browser*. Tor's core privacy-enhancing feature is its implementation of an encrypted [*onion routing*](https://en.wikipedia.org/wiki/Onion_routing) protocol that makes it possible to obscure the destination of a message from the message's intermediary handlers as well as simultaneously obscuring the source of the message from the recipient at the destination.
+*Tor* is a free, state-of-the-art, privacy-enhancing digital communications tool that evolved from work originally performed at the United States's Naval Research Laboratory (NRL) in the mid 1990's. Today, its steward is the [Tor Project](https://torproject.org/), a registered US-based 501(c)3 non-profit organization that coordinates ongoing work by the Free and Open Source Software (FOSS) community on Tor itself along with its related software components, such as the *Tor Browser*. Tor's core privacy-enhancing feature is its implementation of an encrypted [*onion routing*](https://en.wikipedia.org/wiki/Onion_routing) protocol that makes it possible to obscure the destination of a message from the message's intermediary handlers as well as simultaneously obscuring the source of the message from the recipient at the destination.
 
 This ability to hide both the source and destination of messages makes Tor an invaluable tool in any privacy advocate's toolkit, since it enables both more anonymous online speech and far improved censorship circumvention efforts. After all, anonymity and censorship circumvention go hand-in-hand. If a censor does not know what information is being requested (because the destination is obscured), how can it know whether or not to perform any censorship? Similarly, if a server cannot determine who sent it a message (because the source is obscured), how can it make any discriminatory decisions based on that sender's identity?
 
@@ -21,8 +21,7 @@ In this practice lab, you will learn how Tor can maximize your privacy while usi
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Your first Tor connection](#your-first-tor-connection)
-        1. [Understanding the difference between Tor and Tor Browser](#understanding-the-difference-between-tor-and-tor-browser)
-        1. [Connecting to the Tor network using Tor Browser](#connecting-to-the-tor-network-using-tor-browser)
+    1. [Understanding the difference between Tor and Tor Browser](#understanding-the-difference-between-tor-and-tor-browser)
     1. [Understanding Tor circuits and relays](#understanding-tor-circuits-and-relays)
         1. [Guard relays](#guard-relays)
         1. [Middle relays](#middle-relays)
@@ -87,13 +86,25 @@ Although not officially an acronym, *Tor* is a state-of-the-art implementation o
 
 Each message transmitted by your copy of the Tor software is (by default) *encapsulated* inside three layers of Tor's encrypted onion routing scheme, so that by the time your computer delivers your message to the Tor network itself, the content of your communication is already well-protected. The Tor network itself is made up of other computers very much like your own that are also running copies of the same Tor software in various configurations. This means that anyone who has a copy of the Tor software can use Tor both to provide privacy for their own communications&mdash;we call this *Tor client* behavior&mdash;as well as opt-in to donating a portion of their computer's own resources (its processing speed, network bandwidth, etcetera) to protect the privacy of other Tor users's communications&mdash;this is called *Tor relay* behavior.
 
-By itself, Tor may seem to do very little because it merely provides an onion-routed transport channel for other applications. For example, the Tor Browser application uses the core Tor software to provide the ability to browse the Web through the Tor network. That is, Tor is proxying the Tor Browser's messages. We say that the Tor Browser is a "*torified* Web browser," meaning simply that it is a Web browser whose connections are going through the Tor network, i.e., they are "torified". Many applications beyond Web browsers can make use of Tor, of course, including instant message (IM) chat apps, digital calendaring services, contact books, e-mail, and much more. In each case, the application providing the specific functionality (such as IM chat) must be torified in order to gain the protections offered by Tor.
+By itself, Tor may seem to do very little because it merely provides an onion-routed transport channel for other applications. For example, the Tor Browser application uses the core Tor software to provide the ability to browse the Web through the Tor network. That is, Tor is proxying the Tor Browser's messages. We say that the Tor Browser is a "*torified* Web browser," meaning simply that it is a Web browser whose connections are going through the Tor network, i.e., they are "torified." Many applications beyond Web browsers can make use of Tor, of course, including instant message (IM) chat apps, digital calendaring services, contact books, e-mail, and much more. In each case, the application providing the specific functionality (such as IM chat) must be torified in order to gain the protections offered by Tor.
 
 We'll soon see some examples of how to torify various applications but, first, let's go ahead and make our very first connection to Tor's onion routing network.
 
 ## Your first Tor connection
 
-### Understanding the difference between Tor and Tor Browser
+Connecting to the Tor network is deceptively simple, even anti-climactic. After hearing so much about the "Dark Web," you may be under the impression that accessing it takes superhero-like feats of technical acuity. In reality, accessing the Tor network in the simplest situation means launching the Tor Browser application and clicking the "Connect" button.
+
+**Do this** to make your first connection to the Tor network via the Tor Browser:
+
+1. Double-click on the Tor Browser icon that you downoaded earlier by following the [Set up](#set-up) steps. The Tor Network Settings wizard will open:  
+   ![Screenshot of the Tor Browser's "Tor Network Settings" wizard interface on Windows.](screenshots/tor-browser-windows-network-settings-wizard.png)
+1. Click the *Connect* button.
+1. If all goes well, you will be connected to the Tor network. The Tor Browser will present you with a new window that may look very familiar, because it is based on a popular Web browser's interface. In the Web browser's viewport, you will see (something that looks similar to) the following screenshot:  
+   ![Screenshot of Tor Browser's successful connection startup screen.](screenshots/tor-browser-about-tor.png) 
+
+Believe it or not, you are now connected to the Tor network and, should you so desire, you can browse both regular Internet Web sites or *clearnet* sites as well as more anonymized *darknet* or *onionland* sites. All you need to know is what Web address (URL) to type into the Tor Browser's location bar, just as you would need to know for any other Web site using any other Web browser. But before we recklessly go gallivanting around the Dark Web, let's learn a little bit about what just happened and more about the tools we're using.
+
+## Understanding the difference between Tor and Tor Browser
 
 Often, Tor is discussed as though it is a single thing. Many trainers or friends may say things like, "I only use Facebook over Tor," or, "as a journalist, I often use Tor," or, "make sure you're using Tor," or, "this site is a dark web website only accessible through Tor," and so forth.
 
@@ -101,7 +112,7 @@ While it is half true that Tor is a single thing, this idea is slightly misleadi
 
 To illustrate this, let's try simply opening Tor Browser before we move on to making and examining a connection elsewhere.
 
-#### A tale of two processes
+### A tale of two processes
 
 It may be helpful for understanding the difference between Tor and Tor Browser by first opening a process monitor on your machine, so that you may see the difference between the Tor process and the Tor Browser process (which, again, is really just a Firefox process).
 
@@ -129,8 +140,6 @@ We should pause here to make it clear that "the" Dark Web, as appears often in t
 
 Tor *Browser*, on the other hand, is simply a modification of the Mozilla [Firefox](https://www.mozilla.org/en-US/firefox/new/) browser, which has been modified by the Tor Project and distributed for Tor users with users' privacy and security as the main focus. While users may run their own Tor process (this is often called a "system Tor") separately, The Tor Browser also comes bundled with Tor, which means that when users run the Tor Browser, a Tor process connected to the Browser begins as well, allowing the user to easily utilize the Tor network simply by activating Tor Browser.
 
-### Connecting to the Tor network using Tor Browser
-
 With Tor Browser open and running, and its Tor process running, you've just begun the process of making a Tor connection!
 
 Now, we need to make a connection to someplace else on the Internet. Our connection will be most comprehensible if we have a clear net (normal) Internet connection to compare it to.
@@ -155,6 +164,6 @@ See [Run your own Tor network](https://ritter.vg/blog-run_your_own_tor_network.h
 
 # Additional references
 
-> :construction: TK-TODo
+> :construction: TK-TODO
 
-1. [Tor Browser support: Connecting to Tor](https://support.torproject.org/#connectingtotor)
+1. [Tor Browser support: Connecting to Tor](https://support.torproject.org/connecting/)
