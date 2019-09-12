@@ -12,6 +12,7 @@ Essentially, we will be creating a kind of *digital [dead drop](https://en.wikip
     * [Sender steps](#sender-steps)
     * [Receiver steps](#receiver-steps)
 1. [Discussion](#discussion)
+    1. [OnionShare Receive Mode](#onionshare-receive-mode)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -101,12 +102,23 @@ Now comes the tricky part! You must find a way to securely, secretly communicate
    ![Screenshot of the OnionShare server providin the Death Star plans.](screenshots/tor-browser-windows-onionshare-page-loaded.png)
 1. Click on the "*Download Files*" button to begin the download.
     * OnionShare may package the files in a single `.zip` archive.
-1. After the download is complete, you may need to [uncompress the downloaded ZIP file](http://www.computerhope.com/issues/ch000506.htm)
+1. After the download is complete, you may need to [uncompress the downloaded ZIP file](http://www.computerhope.com/issues/ch000506.htm).
 1. Confirm that the Death Star plans are now in your posession.
 
 # Discussion
 
 > :construction: TK-TODO
+
+## OnionShare Receive Mode
+
+In the above exercise, the "sender" role was responsible for creating the Onion site using OnionShare, while the "receiver" role was responsible for downloading the sensitive file from the Onion site using Tor Browser. To accomplish this, the sender used the default OnionShare mode, called "*Share Files*." The OnionShare mode can be toggled to "[*Receive Mode*](https://github.com/micahflee/onionshare/wiki/Receive-Mode)," which means that the person using OnionShare will become the receiver while the person using Tor Browser will become the sender.
+
+While useful, you should be aware that flipping these roles has several important operational security (OPSEC) considerations! Take a moment to think through what these might be. Here are some starting prompts:
+
+* If the person who has the sensitive file is physically on the run, they may not be able to keep their laptop open and OnionShare running long enough to wait for their comrade to connect. In this case, it may be useful for the receiver rather than the sender to create the Onion site using OnionShare's Receive Mode.
+* The longer an Onion site is available, the more likely it is that it will be found out. Carefully consider which one of you ("receiver" or "sender") has more stability and can more safely operate the Onion site.
+* Putting OnionShare in Receive Mode means that other anonymous people will be able to upload files to your computer. These files may not be what you *expect* to receive! What are some ways you can safely examine the files you receive before they can damage your computer or your safety? (This also applies to files you download, not just files uploaded to you by others!)
+* OnionShare supports an advanced feature known as Onion service client authorization or "[*Stealth Mode*](https://github.com/micahflee/onionshare/wiki/Stealth-Onion-Services)". This makes it possible to restrict which Tor clients (e.g., Tor Browsers) can connect to your Onion site, but is more difficult to set up. See "[Connecting to an authenticated Onion service](https://github.com/micahflee/onionshare/wiki/Stealth-Onion-Services)" for details.
 
 # Additional references
 
