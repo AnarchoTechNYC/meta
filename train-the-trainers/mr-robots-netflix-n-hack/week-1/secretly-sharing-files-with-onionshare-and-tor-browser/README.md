@@ -13,6 +13,7 @@ Essentially, we will be creating a kind of *digital [dead drop](https://en.wikip
     * [Receiver steps](#receiver-steps)
 1. [Discussion](#discussion)
     1. [OnionShare Receive Mode](#onionshare-receive-mode)
+    1. [Enabling or disabling multiple downloads](#enabling-or-disabling-multiple-downloads)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -82,6 +83,7 @@ Now comes the tricky part! You must find a way to securely, secretly communicate
     * Do not close OnionShare during this process.
     * Do not interrupt your Internet connection during this process.
     * Do not put your computer to sleep, hibernate, or let it be shut down until the download has completed.
+1. Once the download has completed, OnionShare's indicator light will turn back to gray and report that sharing is "*Stopped because transfer is complete*" in its status bar. This ensures that no one else will be able to download the sensitive file. (See [§ Enabling or disabling multiple downloads](#enabling-or-disabling-multiple-downloads) to learn more about this fact.)
 
 ## Receiver steps
 
@@ -119,6 +121,22 @@ While useful, you should be aware that flipping these roles has several importan
 * The longer an Onion site is available, the more likely it is that it will be found out. Carefully consider which one of you ("receiver" or "sender") has more stability and can more safely operate the Onion site.
 * Putting OnionShare in Receive Mode means that other anonymous people will be able to upload files to your computer. These files may not be what you *expect* to receive! What are some ways you can safely examine the files you receive before they can damage your computer or your safety? (This also applies to files you download, not just files uploaded to you by others!)
 * OnionShare supports an advanced feature known as Onion service client authorization or "[*Stealth Mode*](https://github.com/micahflee/onionshare/wiki/Stealth-Onion-Services)". This makes it possible to restrict which Tor clients (e.g., Tor Browsers) can connect to your Onion site, but is more difficult to set up. See "[Connecting to an authenticated Onion service](https://github.com/AnarchoTechNYC/meta/wiki/Connecting-to-an-authenticated-Onion-service)" for details.
+
+## Enabling or disabling multiple downloads
+
+Immediately after the receiver finishes downloading the sensitive file, the sender's Onion site automatically shuts down. This means no one can connect to it any longer, effectively ensuring that one and only one receiver can download the shared file(s). In our example scenario, this is exactly the behavior we want because it is critical to ensure that only the intended recipient is the one who received the sensitive file, but this is not always what you want.
+
+To allow multiple downloads, you must instruct OnionShare not to shut down your Onion site after the first download that has been initiated completes. To do this, you need to *disable* the "[*Stop sharing after files have been sent*](https://github.com/micahflee/onionshare/wiki/Configuring-OnionShare#stop-sharing-after-first-download) option in the OnionShare's *Settings* screen.
+
+**Do this** to allow multiple downloads:
+
+1. Click the gear icon next to the OnionShare mode toggle to open the OnionShare Settings screen. The gear icon looks like this:  
+   ![Screenshot of OnionShare Settings screen access button.](screenshots/onionshare-gear-icon.png)
+   The *OnionShare Settings* window will appear.
+1. Deselect (uncheck) the "*Stop sharing after files have been sent*" option:
+   ![Annotated screenshot of OnionShare Settings screen pointing to the "Stop sharing after files have been sent" option.](screenshots/onionshare-macos-settings-stop-sharing-after-files-have-been-sent.png)
+
+As always, consider the security implications of what you are doing when you disable this option and allow multiple downloads.
 
 # Additional references
 
