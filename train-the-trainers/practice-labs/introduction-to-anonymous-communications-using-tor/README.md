@@ -119,7 +119,19 @@ Connecting to the Tor network is deceptively simple, even anti-climactic. After 
 1. If all goes well, you will be connected to the Tor network. The Tor Browser will present you with a new window that may look very familiar, because it is based on a popular Web browser's interface. In the Web browser's viewport, you will see (something that looks similar to) the following screenshot:  
    ![Screenshot of Tor Browser's successful connection startup screen.](screenshots/tor-browser-about-tor.png) 
 
-Believe it or not, you are now connected to the Tor network and, should you so desire, you can browse both regular Internet Web sites or *clearnet* sites as well as more anonymized *darknet* or *onionland* sites. All you need to know is what Web address (URL) to type into the Tor Browser's location bar, just as you would need to know for any other Web site using any other Web browser. But before we recklessly go gallivanting around the Dark Web, let's learn a little bit about what just happened and more about the tools we're using.
+Believe it or not, you are now connected to the Tor network and, should you so desire, you can browse both regular Internet Web sites or *clearnet* sites as well as more anonymized *darknet* or *onionland* sites. All you need to know is what Web address (URL) to type into the Tor Browser's location bar, just as you would need to know for any other Web site using any other Web browser.
+
+As a quick example, try visiting the clearnet (regular, non-Tor) Web page at [`check.torproject.org`](https://check.torproject.org/) from within the Tor Browser. You should be greeted with a page that happily informs you, "Congratulations. This browser is configured to use Tor," in big green lettering.
+
+![Screenshot of the check.torproject.org homepage when accessed via the Tor Browser.](screenshots/check-torproject-org-congratulations-this-browser-is-configured-to-use-tor.png)
+
+This page offers you a quick way to check whether your Tor connection is working.
+
+Now compare this result with the page you are presented with when you load the same Web site using a browser other than the Tor Browser. You will probably see a different message reading, "Sorry. You are not using Tor," written in big red lettering.
+
+![Screenshot of the check.torproject.org homepage when not accessed via Tor.](screenshots/check-torproject-org-sorry-you-are-not-using-tor.png)
+
+As you can see, the page reports whether or not you are connecting to it via the Tor network. If you are, you can browse both the regular, clearnet Internet, as well as Web sites published on `.onion` domains. But before we recklessly go gallivanting around the Dark Web, let's learn a little bit about what just happened and more about the tools we're using.
 
 ## Understanding the difference between Tor and Tor Browser
 
@@ -189,13 +201,25 @@ As you increase the Security Level from *Standard* (least safe) to *Safest* (mos
 
 Also as you increase the Security Level, the shield icon in the Tor Browser toolbar will change from being an outline (the *Standard* level) to being a fully opaque shield (the *Safest* level), making it easy to see which Security Level is currently applied. When you change the Security Level, changes take effect immediately; there is no "Save" button. However, already-loaded pages will need to be reloaded or refreshed in order for them to be effected by your new Security Level selection.
 
-The process by which these modern Web features can track you even if you are using the Tor Browser is called *browser fingerprinting*. This is an ever-evolving field of study. While we will demonstrate some simple examples later in this lab, but refer to the [§ Browser fingerprinting](#browser-fingerprinting) discussion section, below, for more in-depth information. For now, the key takeaway is to understand that protections against highly sophisticated browser fingerprinting techniques are one of the benefits offered by the Tor Browser and is one reason why you are much more likely to remain anonymous when you browse the Web using the Tor Browser than any other torified Web browser. This is also where the common refrain in digital security circles, "Use Tor," comes from.
+The process by which these modern Web features can track you even if you are using the Tor Browser is called *browser fingerprinting*. This is an ever-evolving field of study. We will demonstrate some simple examples of browser fingerprinting and how the Tor Browser defends against it later in this lab, but you can refer to the [§ Browser fingerprinting](#browser-fingerprinting) discussion section, below, for more in-depth information. For now, though, the key takeaway is to understand that protections against highly sophisticated browser fingerprinting techniques are one of the benefits offered by the Tor Browser and is one reason why you are much more likely to remain anonymous when you browse the Web using the Tor Browser than any other torified Web browser. This is also where the common refrain in digital security circles, "Use Tor," comes from.
 
-Now, we need to make a connection to someplace else on the Internet. Our connection will be most comprehensible if we have a clear net (normal) Internet connection to compare it to.
+Now that we understand that the Tor Browser is simply a Web browser with enhanced privacy-protecting features, it raises an obvious question: how does the Tor Browser make use of Tor for network connectivity? To understand this, let's now turn our attention to the other major piece of the Tor Browser's bundled software package, the core Tor software.
 
-> TK-TODO - This part should involve Wireshark analysis.
+### Tor as a SOCKS proxy
+
+As we learned in the previous section, when you download and run the Tor Browser, you are actually downloading and running *two* pieces of software. The most visible of these is the Tor *Browser*, a fork of Mozilla Firefox developed and maintained by the Tor Project. The Tor Browser is, in simple terms, a Web browser that is already pre-configured in such a way to ensure that it interacts with the core Tor networking software instead of using your computer's regular, default network settings.
+
+The other piece is, of course, the Tor software itself. Among the various capabilities of the Tor software is that it can function as a *SOCKS proxy*. Put plainly, a SOCKS proxy is a program that accepts connections from other programs (like Web browsers, including the Tor Browser) and then forwards the other program's messages via some specific intermediary. In the case of Tor's SOCKS proxy, that intermediary is the Tor network.
+
+To better understand how this works, let's start by examining the Tor Browser's connection settings.
+
+#### Tor Browser's manual proxy configuration
+
+> :construction: TK-TODO
 
 ### A tale of two processes
+
+> TK-TODO - This part should involve Wireshark analysis.
 
 It may be helpful for understanding the difference between Tor and Tor Browser by first opening a process monitor on your machine, so that you may see the difference between the Tor process and the Tor Browser process (which, again, is really just a Firefox process).
 
