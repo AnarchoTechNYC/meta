@@ -44,6 +44,7 @@ In this practice lab, you will learn how Tor can maximize your privacy while usi
 1. [Discussion](#discussion)
     1. [Browser add-ons for improved privacy](#browser-add-ons-for-improved-privacy)
     1. [Browser fingerprinting](#browser-fingerprinting)
+    1. [More about SOCKS proxies](#more-about-socks-proxies)
     1. [Additional Tor infrastructure: Directory Authorities](#additional-tor-infrastructure-directory-authorities)
 1. [Additional references](#additional-references)
 
@@ -99,9 +100,11 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 ## Introduction
 
-Although not officially an acronym, *Tor* is a state-of-the-art implementation of an *onion routing* system, so you could be forgiven for mistaking the name as an acronym for *The Onion Router*. Onion routing takes its name from the idea of wrapping something valuable up inside multiple layers of difficult-to-penetrate protection that must be unwrapped one at a time, "like the layers of an onion." On a computerized *onion network* (such as the *Tor network*), this protection is digital encryption. You might also hear the Tor network colloquially described as "*onionland*," so named both for the fact of its onion routing protocol and the [officially reserved top-level domain for servers on its network, whose names end in `.onion`](https://en.wikipedia.org/wiki/.onion).
+Although not officially an acronym, *Tor* is a state-of-the-art implementation of an *onion routing* system, so you could be forgiven for mistaking the name as an acronym for *The Onion Router*. Onion routing takes its name from the idea of wrapping something valuable up inside multiple layers of difficult-to-penetrate protection that must be unwrapped one at a time, "like the layers of an onion." On a computerized *onion network* (such as the *Tor network*), this protection is encryption. You might also hear the Tor network colloquially described as "*onionland*," so named both for the fact of its onion routing protocol and the [officially reserved top-level domain for servers on its network, whose names end in `.onion`](https://en.wikipedia.org/wiki/.onion).
 
-Each message transmitted by your copy of the Tor software is (by default) *encapsulated* inside three layers of Tor's encrypted onion routing scheme, so that by the time your computer delivers your message to the Tor network itself, the content of your communication is already well-protected. The Tor network itself is made up of other computers very much like your own that are also running copies of the same Tor software in various configurations. This means that anyone who has a copy of the Tor software can use Tor both to provide privacy for their own communications&mdash;we call this *Tor client* behavior&mdash;as well as opt-in to donating a portion of their computer's own resources (its processing speed, network bandwidth, etcetera) to protect the privacy of other Tor users's communications&mdash;this is called *Tor relay* behavior.
+Each message transmitted by your copy of the Tor software is (by default) *encapsulated* inside three layers of Tor's encrypted onion routing scheme, so that by the time your computer delivers your message to the Tor network itself, the content of your communication is already well-protected from potentially nosy Internet Service Providers (ISPs), weakly secured Wi-Fi networks, and other eavesdroppers who are positioned more closely to your own computer. Moreover, this thrice-layered protection even offers some defense against potentially malicious Tor network participants. The first participating Tor network computer your computer contacts may learn some bits of information about who you are, but it will not be able to discern where your message is ultimately destined. Inversely, the final participating Tor network computer your computer contacts may learn some bits of information about your message, but it will not be able to discern who sent that message unless you explicitly or, worse, accidentally tell it that you are the source.
+
+The Tor network itself is made up of other computers very much like your own that are also running copies of the same Tor software in various configurations. This means that anyone who has a copy of the Tor software can use Tor both to provide privacy for their own communications&mdash;we call this *Tor client* behavior&mdash;as well as opt-in to donating a portion of their computer's own resources (its processing speed, network bandwidth, etcetera) to protect the privacy of other Tor users's communications&mdash;this is called *Tor relay* behavior.
 
 By itself, Tor may seem to do very little because it merely provides an onion-routed transport channel for other applications. For example, the Tor Browser application uses the core Tor software to provide the ability to browse the Web through the Tor network. That is, Tor is proxying the Tor Browser's messages. We say that the Tor Browser is a "*torified* Web browser," meaning simply that it is a Web browser whose connections are going through the Tor network, i.e., they are "torified." Many applications beyond Web browsers can make use of Tor, of course, including instant message (IM) chat apps, digital calendaring services, contact books, e-mail, and much more. In each case, the application providing the specific functionality (such as IM chat) must be torified in order to gain the protections offered by Tor.
 
@@ -197,9 +200,9 @@ As can be seen from the screenshot above, the initial state of Tor Browser's sec
 * *Safer*, and
 * *Safest*.
 
-As you increase the Security Level from *Standard* (least safe) to *Safest* (most safe), fewer modern Web features, such as autoplaying sound and video, embedded JavaScript programs, custom Web fonts, and more are disabled. This is because each of these modern Web features can be abused by Web site authors and other actors to track, surveil, or even de-anonymize you. By disabling these features, you trade some functionality for more effective security. Unfortunately, some Web sites require these more modern features in order to function, so you may be faced with the need to make a judgement call regarding exactly what trade-offs you are willing to make. The remainder of this practice lab will help you make a more informed choice for your particular situation.
+As you increase the Security Level from *Standard* (least safe) to *Safest* (most safe), fewer modern [Web features](https://developer.mozilla.org/docs/Web), such as autoplaying sound and video, embedded JavaScript programs, custom Web fonts, and more will function. This is because each of these modern Web features can be abused by Web site authors and other actors to track, surveil, or even de-anonymize you. By disabling these features, you trade some functionality for more effective security. Unfortunately, some Web sites require these more modern features in order to function, so you may be faced with the need to make a judgement call regarding exactly what trade-offs you are willing to make. The remainder of this practice lab will help you make a more informed choice for your particular situation.
 
-Also as you increase the Security Level, the shield icon in the Tor Browser toolbar will change from being an outline (the *Standard* level) to being a fully opaque shield (the *Safest* level), making it easy to see which Security Level is currently applied. When you change the Security Level, changes take effect immediately; there is no "Save" button. However, already-loaded pages will need to be reloaded or refreshed in order for them to be effected by your new Security Level selection.
+Also as you increase the Security Level, the shield icon in the Tor Browser toolbar will change from being an outline (the *Standard* level) to being a fully opaque shield (the *Safest* level), making it easy to see which Security Level is currently applied. When you change the Security Level, changes take effect immediately; there is no "Save" button. However, already-loaded pages will need to be reloaded or refreshed in order for them to be affected by your new Security Level selection.
 
 The process by which these modern Web features can track you even if you are using the Tor Browser is called *browser fingerprinting*. This is an ever-evolving field of study. We will demonstrate some simple examples of browser fingerprinting and how the Tor Browser defends against it later in this lab, but you can refer to the [§ Browser fingerprinting](#browser-fingerprinting) discussion section, below, for more in-depth information. For now, though, the key takeaway is to understand that protections against highly sophisticated browser fingerprinting techniques are one of the benefits offered by the Tor Browser and is one reason why you are much more likely to remain anonymous when you browse the Web using the Tor Browser than any other torified Web browser. This is also where the common refrain in digital security circles, "Use Tor," comes from.
 
@@ -211,11 +214,33 @@ As we learned in the previous section, when you download and run the Tor Browser
 
 The other piece is, of course, the Tor software itself. Among the various capabilities of the Tor software is that it can function as a *SOCKS proxy*. Put plainly, a SOCKS proxy is a program that accepts connections from other programs (like Web browsers, including the Tor Browser) and then forwards the other program's messages via some specific intermediary. In the case of Tor's SOCKS proxy, that intermediary is the Tor network.
 
-To better understand how this works, let's start by examining the Tor Browser's connection settings.
+> :beginner: Confusingly, SOCKS is not an acronym, but rather an abbreviation for "Socket Secure." There are several versions of the SOCKS protocol. Tor uses version 5. See the discussion section, [§ More about SOCKS proxies](#more-about-socks-proxies) for further information.
+
+To better understand how this works, let's examine the Tor Browser's connection settings.
 
 #### Tor Browser's manual proxy configuration
 
-> :construction: TK-TODO
+In order for an application to make use of Tor's onion routing capabilities, it must direct its network traffic to Tor instead of directly to the Internet. Inserting an intermediary between two communicating endpoints is a common requirement in many different computer networking scenarios, so numerous facilities for doing this are built into many applications. Generically, these facilities are known as *proxy settings* because they set up a proxy (i.e., an intermediary) for the connection. Naturally, Mozilla Firefox and thus the Tor Browser have exactly such a facility.
+
+**Do this** to access Tor Browser's proxy settings screen:
+
+1. Click on the "hamburger menu" (the three stacked horizontal lines that look similar to &#2630;) at the top-right corner of the Tor Browser window.
+1. Click on the *Preferences* menu item to open the *Preferences* window. You can also access this screen directly by entering `about:preferences` in the Tor Browser's location bar.
+1. From the Preferences window's sidebar, select the *General* tab if it is not already selected.
+1. Scroll to the bottom of the window until you see the *Network Proxy* heading:  
+    ![Screenshot of the Network Proxy section in Tor Browser's Preferences window.](screenshots/tor-browser-preferences-general-network-proxy.png)
+1. Click on the *Settings&hellip;* button. The *Connection settings* dialogue box will open.  
+    ![Screenshot of the Tor Browser's default Network Proxy connection settings.](screenshots/tor-browser-preferences-network-proxy-connection-settings.png)
+
+As you can see, the Tor Browser is already configured to use a "*Manual proxy configuration*." Further, as expected, the specific proxy in use is a SOCKS proxy, evident by the fact that the only filled-in proxy configuration line item is the *SOCKS Host* line. Its value is `127.0.0.1`, with a port number of `9150`. We can see that version 5 of the SOCKS protocol is being used by the fact that the radio button next to the label `SOCKS v5` is selected.
+
+In the common case of computer (inter-)networking using the standard Internet Protocol (IP), `127.0.0.1` is the address of the local computer. Put another way, in the "language" of computer networking, `127.0.0.1` is the word "me." When an application is configured to make network connections to the computer on which it is running (as opposed to some other computer across the network), we say it is communicating with "the *local host*," or sometimes we say it is "using the *loopback* connection." This is akin to the way that you might have an "internal dialogue" with yourself when you are thinking through some problem. Computers are not above (or below) talking to themselves any more (or less) than humans are.
+
+The reason Tor Browser is configured to use the loopback connection for its SOCKS proxy connection is because both the Tor Browser and the Tor software are running on the same computer&mdash;yours!
+
+Just as each computer has one or more IP addresses associated with it, each of the IP addresses associated with it has 65,535 application *ports* available for use by programs running on that computer. A computer network application port is a number that is reserved by a given running program as a (temporary) address extension, similar to the way a specific business person might be reachable at a specific extension number after dialing the phone number for the business's main office. As we can see from the above screenshot, Tor Browser's bundled core Tor software requests (and is granted) port number 9150 for its SOCKS interface. There is nothing particularly special about port number 9150. It is simply a port that is not often used by other programs&mdash;in general, only one program can reserve or *bind* to a given port at a given time&mdash;and so it is often available on most people's personal computers.
+
+Equipped with this knowledge, we now know how to torify other programs that are capable of using the SOCKS version 5 proxy protocol.
 
 ### A tale of two processes
 
@@ -256,6 +281,10 @@ We should pause here to make it clear that "the" Dark Web, as appears often in t
 > :construction: TK-TODO
 
 ## Browser fingerprinting
+
+> :construction: TK-TODO
+
+## More about SOCKS proxies
 
 > :construction: TK-TODO
 
