@@ -1,6 +1,6 @@
 # Introduction to Anonymous Communications Using Tor
 
-*Tor* is a free, state-of-the-art, privacy-enhancing digital communications tool that evolved from work originally performed at the United States's Naval Research Laboratory (NRL) in the mid 1990's. Today, its steward is the [Tor Project](https://torproject.org/), a registered US-based 501(c)3 non-profit organization that coordinates ongoing work by the Free and Open Source Software (FOSS) community on Tor itself along with its related software components, such as the *Tor Browser*. Tor's core privacy-enhancing feature is its implementation of an encrypted [*onion routing*](https://en.wikipedia.org/wiki/Onion_routing) protocol that makes it possible to obscure the destination of a message from the message's intermediary handlers as well as simultaneously obscuring the source of the message from the recipient at the destination.
+*Tor* is a free, state-of-the-art, privacy-enhancing digital communications tool that evolved from work originally performed at the United States's Naval Research Laboratory (NRL) in the mid 1990's. Today, its steward is the [Tor Project](https://torproject.org/), a US-based registered 501(c)3 non-profit organization that coordinates ongoing work by the Free and Open Source Software (FOSS) community on Tor itself along with its related software components, such as the *Tor Browser*. Tor's core privacy-enhancing feature is its implementation of an encrypted [*onion routing*](https://en.wikipedia.org/wiki/Onion_routing) protocol that makes it possible to obscure the destination of a message from the message's intermediary handlers as well as simultaneously obscuring the source of the message from the recipient at the destination.
 
 This ability to hide both the source and destination of messages makes Tor an invaluable tool in any privacy advocate's toolkit, since it enables both more anonymous online speech and far improved censorship circumvention efforts. After all, anonymity and censorship circumvention go hand-in-hand. If a censor does not know what information is being requested (because the destination is obscured), how can it know whether or not to perform any censorship? Similarly, if a server cannot determine who sent it a message (because the source is obscured), how can it make any discriminatory decisions based on that sender's identity?
 
@@ -22,6 +22,9 @@ In this practice lab, you will learn how Tor can maximize your privacy while usi
     1. [Your first Tor connection](#your-first-tor-connection)
     1. [Understanding the difference between Tor and Tor Browser](#understanding-the-difference-between-tor-and-tor-browser)
         1. [Tor Browser as a Web browser](#tor-browser-as-a-web-browser)
+            1. [Tor Browser is a Firefox fork](#tor-browser-is-a-firefox-fork)
+            1. [Tor Browser includes privacy-enhancing add-ons by default](#tor-browser-includes-privacy-enhancing-add-ons-by-default)
+            1. [Tor Browser includes custom, Tor-specific add-ons](#tor-browser-includes-custom-tor-specific-add-ons)
     1. [Understanding Tor circuits and relays](#understanding-tor-circuits-and-relays)
         1. [Guard relays](#guard-relays)
         1. [Middle relays](#middle-relays)
@@ -40,6 +43,7 @@ In this practice lab, you will learn how Tor can maximize your privacy while usi
     1. [Adding Tor authentication to your Onion service](#adding-tor-authentication-to-your-onion-service)
 1. [Discussion](#discussion)
     1. [Browser add-ons for improved privacy](#browser-add-ons-for-improved-privacy)
+    1. [Browser fingerprinting](#browser-fingerprinting)
     1. [Additional Tor infrastructure: Directory Authorities](#additional-tor-infrastructure-directory-authorities)
 1. [Additional references](#additional-references)
 
@@ -130,7 +134,7 @@ When you download and install the Tor Browser software package, you are actually
 
 As the name implies, the Tor *Browser* is a Web browser. It is the part of the Tor Web browsing experience that you spend most of your time interacting with, and it is designed to look and feel more or less like any other Web browser you may be accustomed to using. Meanwhile, the *Tor* part is the software that torifies (i.e. proxies via the Tor network) the network traffic produced and consumed by the Tor Browser. This second part has no graphical user interface, no window you can drag around your screen or resize, and no buttons or preference boxes with which you can adjust its many settings and options.
 
-These two parts are designed and built as two independent software programs in their own right. They have different development teams, independent goals, and their own project infrastructure. However, also as the name implies, Tor Browser depends on Tor. Without the Tor part, the Tor Browser is, well, not the *Tor* Browser. Due to this dependent relationship, we say that the Tor project is *upstream* of the Tor Browser project, which, as you might expect, is therefore *downstream* of the Tor project. Both projects are stewarded by the Tor Project and are, of course, closely related, but from the software's viewpoint they are distinct and independent groups.
+These two parts are designed and built as two independent software programs in their own right. They have different development teams, independent goals, and some of their own project infrastructures. However, also as the name implies, Tor Browser depends on Tor. Without the Tor part, the Tor Browser is, well, not the *Tor* Browser. Due to this dependent relationship, we say that the Tor project is *upstream* of the Tor Browser project, which, as you might expect, is therefore *downstream* of the Tor project. Both projects are stewarded by the Tor Project non-profit proper and are, of course, closely related, but from the software's viewpoint they are distinct and independent groups.
 
 Implicit in this architecture is the fact that Tor can be used&mdash;and is quite useful&mdash;on its own, without the Tor Browser. Indeed, if you wanted to use Tor for purposes other than Web browsing, you could download a "*system Tor*" instead of downloading the Tor Browser (bundle). You could then use your browser-less system Tor to torify whatever other applications you have. You could even torify other Web browsers, such as Apple's Safari or Microsoft's Edge, and browse the Dark Web using those browsers. That being said, there are very good reasons to download and use the Tor Browser as your primary torified Web browser instead of Web browsers not designed for the purpose, and we'll soon demonstrate many reasons why this is so.
 
@@ -140,17 +144,21 @@ In the mean time, now that you know these are two different but cooperating piec
 
 As the name implies, Tor Browser is a Web browser. Also as the name implies, it is a *torified* Web browser, which means that it is set up in such a way as to ensure that all of its network traffic is routed through the Tor network. But there are additional improvements to your online privacy that Tor Browser provides that are important to know about beyond merely onion routing.
 
+#### Tor Browser is a Firefox fork
+
 The Tor Browser's interface may already be very familiar to you if you have ever used a modern Web browser, such as Google Chrome or [Mozilla Firefox](https://www.mozilla.org/firefox/). In fact, if you are a Firefox user, the Tor Browser probably looks *extremely* familiar. There is a good reason for that: the Tor Browser is based on Mozilla Firefox! View the Tor Browser's "About" window (by going to, for example, the *Tor Browser* &rarr; *About Tor Browser* menu item on a macOS computer) and you'll see this fact reported plain as day:
 
 ![Screenshot of the Tor Browser's "About" window on macOS.](screenshots/tor-browser-macos-about-tor-browser.png)
 
-In the screenshot, you can see that the Tor Browser reports it is "based on Mozilla Firefox," gives its Firefox version number, and then the three-letter acronym ESR, which stands for Extended Support Release. These special release versions of Mozilla Firefox are, as their name implies, supported by Mozilla for longer than other versions of their Firefox Web browser are. The Tor Browser is based on these specific versions because these versions change less quickly and thus offer the Tor Browser team a slower moving target at which they can target their special, privacy-enhancing modifications to the Firefox code, making Tor Browser development a lot easier.
+In the screenshot, you can see that the Tor Browser reports it is "based on Mozilla Firefox," gives its Firefox version number, and then the three-letter acronym ESR, which stands for Extended Support Release. These special release versions of Mozilla Firefox are, as their name implies, supported by Mozilla for longer than other versions of their Firefox Web browser are. The Tor Browser is based on these specific versions because these versions change less quickly and thus offer the Tor Browser team a slower moving target at which they can aim their special, privacy-enhancing modifications to the Firefox code, making Tor Browser development a lot easier. When a project is "based on" another project in this way, programmers call it a *fork* of the original ("upstream") project.
 
 Basing itself on Firefox also provides the Tor Browser with a number of other dramatic benefits. Not least among these is the fact that the Tor Browser team does not need to write a whole new Web browser from scratch. Instead, as Mozilla updates and improves the underlying Web browsing technology in its Firefox product, the Tor Browser automatically and freely gets these improvements, too. So, if you like and support the Tor Project, consider supporting the [Mozilla Foundation](https://mozilla.org/), as well.
 
 Since the Tor Browser is simply a specially-crafted derivative of the Mozilla Firefox Web browser, most of the things you would expect to be possible with a Web browser are possible in the Tor Browser. You can bookmark your favorite sites, perform Internet searches using search engines like Google (although note that the Tor Browser's search field defaults to using a more privacy-conscious competitor, [DuckDuckGo](https://duckduckgo.com/)), open multiple tabs, print pages or documents, and so on.
 
 So far, the only clue in any of this that you're using a privacy-enhanced or *hardened* Web browser is the fact that some of the default options chosen by the less privacy-focused Web browsers are different. The Google Chrome Web browser, which is made by Google, Inc., tries to steer you towards using Google-branded products and services. The Tor Browser, on the other hand, does a number of things you can see and a lot that you may not immediately notice to realize a more privacy-friendly Web browsing experience.
+
+#### Tor Browser includes privacy-enhancing add-ons by default
 
 Among these things are several pre-installed Web browser extensions or *add-ons*. These are small programs that run inside your Web browser itself and either change its default behavior or give you more options for controlling the Web browser when it encounters various things online. These installed-by-default extensions are visible in the Tor Browser's toolbar to the right of the search field:
 
@@ -160,7 +168,28 @@ These are the Electronic Frontier Foundation's [HTTPS Everywhere](https://www.ef
 
 These two browser add-ons are so useful that the author suggests you install these (or add-ons offering equivalent functionality) in your regular (non-Tor) Web browser. If your regular Web browser is Mozilla Firefox, you can simply [navigate to the "Add-ons" screen in your browser](https://support.mozilla.org/en-US/kb/find-and-install-add-ons-add-features-to-firefox) and install these exact same add-ons. Again, this is possible because Tor Browser is simply a version of Firefox. If you often use a different Web browser, refer to the discussion section, "[§ Browser add-ons for improved privacy](#browser-add-ons-for-improved-privacy)," below. Either way, the key takeaway here is that Tor Browser comes equipped with some additional privacy-shielding armor in the form of smart, expert choices regarding its browser configuration and add-on choice.
 
-Finally, for now, you may also have noticed that there are several other icons visible in the Tor Browser's toolbar that are not present in an ordinary Firefox installation.
+#### Tor Browser includes custom, Tor-specific add-ons
+
+Finally, at least for now, you may also have noticed that there are a couple other icons visible in the Tor Browser's toolbar that are not present in an ordinary Firefox installation. By default, these are placed in between the browser's Web address field (the "location bar"), and the search field. They are called the *TorButton*, which looks like the outline of an onion, and the *shield menu*, which looks like the outline of a shield:
+
+![Screenshot of the custom Tor Browser add-ons, TorButton and the shield menu.](screenshots/tor-browser-custom-add-ons.png)
+
+These icons expose functionality specific to the Tor Browser. The TorButton icon, on the left, allows you to access the Tor Network Settings wizard interface that you saw when you first launched Tor Browser. This is part of a component called the Tor Launcher and makes it easy to set up a Tor connection from within the Tor Browser's graphical user interace. It also provides access to two other important functions: the ability to check for an update to the Tor Browser package, and the ability to wipe clean your browsing history and other network fingerprints by requesting a new *identity*. We'll explore what exactly Tor Browser means by "identity" soon, but for now you can think of this feature as a sort of super-powered do-over that wipes as much of your browsing data as possible from your computer and gives you a brand new connection to the Tor network unrelated to your prior connection.
+
+The other icon, the shield icon, reveals the *Security Level* panel, which provides a summary of the security settings that are currently in effect:
+
+![Screenshot of the Tor Browser's shield menu's Security Level panel.](screenshots/tor-browser-security-level-panel.png)
+
+As can be seen from the screenshot above, the initial state of Tor Browser's security settings is at the *Standard* level. At this security level, all Tor Browser and website features are enabled. You can change your running Security Level by clicking on the *Advanced Security Settings&hellip;* button at the bottom of the Security Level panel. This will take you to the Tor Browser's *Preferences* screen, whose first item lets you change the running Security Level to one of two more secure variants. These are:
+
+* *Safer*, and
+* *Safest*.
+
+As you increase the Security Level from *Standard* (least safe) to *Safest* (most safe), fewer modern Web features, such as autoplaying sound and video, embedded JavaScript programs, custom Web fonts, and more are disabled. This is because each of these modern Web features can be abused by Web site authors and other actors to track, surveil, or even de-anonymize you. By disabling these features, you trade some functionality for more effective security. Unfortunately, some Web sites require these more modern features in order to function, so you may be faced with the need to make a judgement call regarding exactly what trade-offs you are willing to make. The remainder of this practice lab will help you make a more informed choice for your particular situation.
+
+Also as you increase the Security Level, the shield icon in the Tor Browser toolbar will change from being an outline (the *Standard* level) to being a fully opaque shield (the *Safest* level), making it easy to see which Security Level is currently applied. When you change the Security Level, changes take effect immediately; there is no "Save" button. However, already-loaded pages will need to be reloaded or refreshed in order for them to be effected by your new Security Level selection.
+
+The process by which these modern Web features can track you even if you are using the Tor Browser is called *browser fingerprinting*. This is an ever-evolving field of study. While we will demonstrate some simple examples later in this lab, but refer to the [§ Browser fingerprinting](#browser-fingerprinting) discussion section, below, for more in-depth information. For now, the key takeaway is to understand that protections against highly sophisticated browser fingerprinting techniques are one of the benefits offered by the Tor Browser and is one reason why you are much more likely to remain anonymous when you browse the Web using the Tor Browser than any other torified Web browser. This is also where the common refrain in digital security circles, "Use Tor," comes from.
 
 Now, we need to make a connection to someplace else on the Internet. Our connection will be most comprehensible if we have a clear net (normal) Internet connection to compare it to.
 
@@ -199,6 +228,10 @@ We should pause here to make it clear that "the" Dark Web, as appears often in t
 > :construction: TK-TODO
 
 ## Browser add-ons for improved privacy
+
+> :construction: TK-TODO
+
+## Browser fingerprinting
 
 > :construction: TK-TODO
 
