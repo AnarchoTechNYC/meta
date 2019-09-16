@@ -1,4 +1,4 @@
-# Introduction to Network Scanning
+# Introduction to Network Sniffing and Scanning
 
 > TK-TODO
 
