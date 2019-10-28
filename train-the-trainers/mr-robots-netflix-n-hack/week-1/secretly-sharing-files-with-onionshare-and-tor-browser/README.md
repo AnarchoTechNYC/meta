@@ -68,7 +68,7 @@ As the sender, you must prepare an Onion site able to transmit the files to the 
    ![Screenshot of main OnionShare window with Death Star Plans ready to be shared.](screenshots/onionshare-macos-file-selected.png)
 1. Click the *Start Sharing* button. Wait a few moments as OnionShare prepares your Onion site.
     * When the Onion site is successfully running, the gray indicator light will turn green and the "Start Sharing" button will change to read "Stop Sharing" instead.
-    * Additionally, a new link will appear ("Copy URL") near a Web address that will look something like `http://wiegirarsdypaggqkysclp7qucyu6aqlsumjyhhenn2rrv4bpdfsw6ad.onion/gullible-oxidant`.
+    * Additionally, a new link will appear ("Copy URL") near a Web address that will look something like `http://onionshare:doozy-annuity@xl4gnh7yt5oa77lgs4qdm6lo5r6fyf6mzgfzrqz4c6brui7q72i3riyd.onion`.
     ![Screenshot of main OnionShare window with Onion service server started sharing Death Star Plans file.](screenshots/onionshare-macos-sharing-file.png)
 
 Now comes the tricky part! You must find a way to securely, secretly communicate this Web address to your friend. Remember, if you are caught communicating this secret information to your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
