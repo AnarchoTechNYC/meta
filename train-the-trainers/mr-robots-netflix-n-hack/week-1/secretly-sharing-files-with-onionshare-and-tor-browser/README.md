@@ -101,7 +101,7 @@ As the receiver, you must acquire knowledge of the secret Onion site where the D
 Now comes the tricky part! You must find a way to securely, secretly communicate with your friend to learn the Web address of their Onion site. Remember, if you are caught requesting this secret information from your friend, you will spend time in an Imperial detention facility for sure, or worse! This step is intentionally ommited from this exercise; if you are not sure what to do, consult the other exercises in this repository, search the Internet for advice, or ask the facilitator of the workshop if one is available.
 
 1. Once you have acquired the Onion site's Web address, carefully type it verbatim (or copy-and-paste it) into the location bar of your open Tor Browser, then press the "Go" button or press the Return key. If successful, you should see a page like the following:  
-   ![Screenshot of the OnionShare server providin the Death Star plans.](screenshots/tor-browser-windows-onionshare-page-loaded.png)
+   ![Screenshot of the OnionShare server providin the Death Star plans.](screenshots/tor-browser-macos-onionshare-page-loaded.png)
 1. Click on the "*Download Files*" button to begin the download.
     * OnionShare may package the files in a single `.zip` archive.
 1. After the download is complete, you may need to [uncompress the downloaded ZIP file](http://www.computerhope.com/issues/ch000506.htm).
