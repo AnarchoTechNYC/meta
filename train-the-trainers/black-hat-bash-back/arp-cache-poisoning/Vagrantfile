@@ -33,12 +33,12 @@ Vagrant.configure("2") do |config|
   # A quick 'n' dirty provisioner for the Debian-derived systems.
   debian_script = <<-DEBIAN_SCRIPT
     apt update
-    apt install -y avahi-utils xinit lxde lxsession-logout
+    apt install --yes avahi-utils xinit lxde lxsession-logout
     sudo -u vagrant echo "exec startlxde" > ~vagrant/.xinitrc
   DEBIAN_SCRIPT
 
   config.vm.define "red" do |c|
-    c.vm.box = "ubuntu/xenial64"
+    c.vm.box = "ubuntu/bionic64"
     c.vm.hostname = "red"
     c.vm.network "private_network",
       ip: "172.22.33.55",
@@ -49,7 +49,8 @@ Vagrant.configure("2") do |config|
     c.vm.provision "Red team", type: "shell", inline: <<-SCRIPT
       apt install --yes \
         nmap arp-scan arping ettercap-text-only \
-        golang-1.10 libpcap-dev libnetfilter-queue-dev \
+        golang-1.10 build-essential libpcap-dev \
+        libusb-1.0-0-dev libnetfilter-queue-dev \
         dsniff # dsniff has `arpspoof` and friends
       ln -s /usr/lib/go-1.10/bin/go /usr/local/bin/go
       go get github.com/bettercap/bettercap
@@ -59,7 +60,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "blue_desktop" do |c|
-    c.vm.box = "ubuntu/xenial64"
+    c.vm.box = "ubuntu/bionic64"
     c.vm.hostname = "blue-desktop"
     c.vm.network "private_network",
       ip: "172.22.33.50",
