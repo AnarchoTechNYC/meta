@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
       ln -s /usr/lib/go-1.10/bin/go /usr/local/bin/go
       go get github.com/bettercap/bettercap
       mv ~/go/bin/bettercap /usr/local/bin/bettercap
-      mv "/vagrant/Red Team/AnarchoTechNYC-RedTeam.png" "/etc/alternatives/desktop-background"
+      cp "/vagrant/Red Team/AnarchoTechNYC-RedTeam.png" "/etc/alternatives/desktop-background"
     SCRIPT
   end
 
@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
       virtualbox__intnet: "arpspoofnet"
     c.vm.provision "Debian base", type: "shell", inline: debian_script
     c.vm.provision "Blue desktop", type: "shell",
-      inline: "mv '/vagrant/Blue Team/AnarchoTechNYC-BlueTeam.png' '/etc/alternatives/desktop-background'"
+      inline: "cp '/vagrant/Blue Team/AnarchoTechNYC-BlueTeam.png' '/etc/alternatives/desktop-background'"
   end
 
   config.vm.define "blue_server" do |c|
