@@ -570,7 +570,7 @@ You shake your head.
 
 "Okay."
 
-Alice leans forward in her chair to point at the screen at the back of desk. "See the last line there, on the bottom of your window? That's your prompt. It's not just asking you what command to run next. It's also full of information that tells you about where you are and what's currently going on."
+Alice leans forward in her chair to point at the screen at the back of the desk. "See the last line there, on the bottom of your window? That's your prompt. It's not just asking you what command to run next. It's also full of information that tells you about where you are and what's currently going on."
 
 You review the prompt on the screen:
 
