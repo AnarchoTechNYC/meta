@@ -1201,7 +1201,7 @@ See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetwo
 
 ## Using `ssh-audit.py`
 
-> :construction: See https://github.com/arthepsy/ssh-audit
+> :construction: See https://github.com/jtesta/ssh-audit
 >
 > ![Screenshot of ssh-audit.py audit results.](https://cloud.githubusercontent.com/assets/7356025/19233757/3e09b168-8ef0-11e6-91b4-e880bacd0b8a.png)
 
