@@ -24,7 +24,6 @@ In this starter lab, you will get you up and running with Virtual Machines using
         1. [Vagrant installation on GNU/Linux](#vagrant-installation-on-gnulinux)
         1. [Vagrant installation on FreeBSD](#vagrant-installation-on-freebsd)
         1. [Vagrant installation on Solaris](#vagrant-installation-on-solaris)
-    1. [VirtualBox DHCP server configuration](#virtualbox-dhcp-server-configuration)
 1. [Practice](#practice)
     1. [Vagrantfile creation](#vagrantfile-creation)
     1. [Virtual machine startup](#virtual-machine-startup)
