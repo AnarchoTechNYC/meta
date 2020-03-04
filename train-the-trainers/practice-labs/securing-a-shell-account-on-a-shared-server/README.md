@@ -65,9 +65,9 @@ In addition, you will need a user account on a remote system. This practice lab 
 With that understood, if you choose to proceed with the practice lab's own virtualized server, you will also need:
 
 * [VirtualBox](https://www.virtualbox.org/), for running the virtualized server.
-    * :beginner: See [§ "VirtualBox installation"](../introduction-to-securing-virtualized-secure-shell-servers/README.md#virtualbox-installation) for detailed instructions on installing VirtualBox.
+    * :beginner: See [§ "VirtualBox installation"](../introduction-to-virtual-machine-management-with-vagrant/README.md#virtualbox-installation) for detailed instructions on installing VirtualBox.
 * [Vagrant](https://www.vagrantup.com/), for automatically configuring the lab environment on the virtualized server.
-    * :beginner: See [§ "Vagrant installation"](../introduction-to-securing-virtualized-secure-shell-servers/README.md#vagrant-installation) for detailed instructions on installing Vagrant.
+    * :beginner: See [§ "Vagrant installation"](../introduction-to-virtual-machine-management-with-vagrant/README.md#vagrant-installation) for detailed instructions on installing Vagrant.
 
 Alternatively, if you choose to use an account on a publicly accessible shared server and do not already have one, you will need to acquire such an account yourself. The procedure for registering such accounts varies from one provider to another. Generally, however, you fill out a Web form or send an email to an administrator who reviews your application and processes (or denies) your request. See [our list of free shell account providers](https://github.com/AnarchoTechNYC/meta/wiki/Free-shell-account-providers) for links to a variety of options.
 
