@@ -12,7 +12,7 @@ In this starter lab, you will get you up and running with Virtual Machines using
 1. [Bill of materials](#bill-of-materials)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
-    1. [VirtualBox installation](#virutalbox-installation)
+    1. [VirtualBox installation](#virtualbox-installation)
     1. [Vagrant installation](#vagrant-installation)
 1. [Practice](#practice)
     1. [Vagrantfile creation](#vagrantfile-creation)
