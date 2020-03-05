@@ -13,17 +13,7 @@ In this starter lab, you will get you up and running with Virtual Machines using
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
     1. [VirtualBox installation](#virutalbox-installation)
-        1. [VirtualBox installation on Windows](#virtualbox-installation-on-windows)
-        1. [VirtualBox installation on macOS](#virtualbox-installation-on-macos)
-        1. [VirtualBox installation on GNU/Linux](#virtualbox-installation-on-gnulinux)
-        1. [VirtualBox installation on FreeBSD](#virtualbox-installation-on-freebsd)
-        1. [VirtualBox installation on Solaris](#virtualbox-installation-on-solaris)
     1. [Vagrant installation](#vagrant-installation)
-        1. [Vagrant installation on Windows](#vagrant-installation-on-windows)
-        1. [Vagrant installation on macOS](#vagrant-installation-on-macos)
-        1. [Vagrant installation on GNU/Linux](#vagrant-installation-on-gnulinux)
-        1. [Vagrant installation on FreeBSD](#vagrant-installation-on-freebsd)
-        1. [Vagrant installation on Solaris](#vagrant-installation-on-solaris)
 1. [Practice](#practice)
     1. [Vagrantfile creation](#vagrantfile-creation)
     1. [Virtual machine startup](#virtual-machine-startup)
@@ -74,51 +64,11 @@ Similarly, there are pre-built versions of Vagrant for Windows, macOS, and numer
 
 ## VirtualBox installation
 
-In most cases, VirtualBox can be easily installed by [downloading the appropriate pre-built package](https://www.virtualbox.org/wiki/Downloads) for your operating system and hardware architecture and following the standard installation procedure as you would any other software. This section provides additional guidance for installing VirtualBox, and offers advice to troubleshoot installation problems.
-
-### VirtualBox installation on Windows
-
-> :construction: TK-TODO
-
-### VirtualBox installation on macOS
-
-> :construction: TK-TODO
-
-### VirtualBox installation on GNU/Linux
-
-> :construction: TK-TODO
-
-### VirtualBox installation on FreeBSD
-
-> :construction: TK-TODO
-
-### VirtualBox installation on Solaris
-
-> :construction: TK-TODO
+In most cases, VirtualBox can be easily installed by [downloading the appropriate pre-built package](https://www.virtualbox.org/wiki/Downloads) for your operating system and hardware architecture and following the standard installation procedure as you would any other software. The [VirtualBox User Manual §1.5, "Installing Oracle VM VirtualBox and Extension Packs"](https://www.virtualbox.org/manual/UserManual.html#intro-installing) covers general installation procedures, while [Chapter 2: "Installation Details"](https://www.virtualbox.org/manual/UserManual.html#installation) offers specific guidance for each supported Operating System.
 
 ## Vagrant installation
 
-In most cases, Vagrant can be easily installed by [downloading the appropriate pre-built package](https://vagrantup.com/downloads.html) for your operating system and hardware architecture and following the standard installation procedure as you would any other software. This section provides additional guidance for installing Vagrant, and offers advice to troubleshoot installation problems.
-
-### Vagrant installation on Windows
-
-> :construction: TK-TODO
-
-### Vagrant installation on macOS
-
-> :construction: TK-TODO
-
-### Vagrant installation on GNU/Linux
-
-> :construction: TK-TODO
-
-### Vagrant installation on FreeBSD
-
-> :construction: TK-TODO
-
-### Vagrant installation on Solaris
-
-> :construction: TK-TODO
+In most cases, Vagrant can be easily installed by [downloading the appropriate pre-built package](https://vagrantup.com/downloads.html) for your operating system and hardware architecture and following the standard installation procedure as you would any other software. [Vagrant's Installation docs](https://www.vagrantup.com/docs/installation/) offers installation guidance for each supported Operating System.
 
 # Practice
 
@@ -134,7 +84,7 @@ Once VirtualBox is installed and running, you can manually create a new virtual 
 
 To accomplish this, Vagrant reads files that describe various aspects of a virtual machine. These aspects range from what hardware to virtualize (e.g., how many network adapters the virtual machine should have, or how much memory should be installed into it), to what commands should be run when the virtual machine boots up for the first time (e.g., which software packages to install to prepare it for a given use). All of this information is contained within [a file literally named `Vagrantfile`](https://www.vagrantup.com/docs/vagrantfile/).
 
-A single `Vagrantfile` is intended to describe a complete Vagrant *project*. When Vagrant finds a `Vagrantfile`, the folder in which the `Vagrantfile` is found is considered the Vagrant *project root*. For the purposes of this lab, we will be using separate Vagrant projects for each virtual machine. This means we will be creating two `Vagrantfile`s, one for the SSH server and the other for our SSH client.
+A single `Vagrantfile` is intended to describe a complete Vagrant *project*. When Vagrant finds a `Vagrantfile`, the folder in which the `Vagrantfile` is found is considered the Vagrant *project root*.
 
 > :bulb: A single `Vagrantfile` can actually describe the configuration of multiple virtual machines. See the [Vagrant multi-machine](#vagrant-multi-machine) discussion for more information on this Vagrant feature.
 
