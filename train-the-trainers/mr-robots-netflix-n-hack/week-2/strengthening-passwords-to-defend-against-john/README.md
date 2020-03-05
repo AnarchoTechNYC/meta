@@ -8,6 +8,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
 1. [Scenario](#scenario)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
+    * [Optional virtual machine lab environment](#optional-virtual-machine-lab-environment)
     * [John the Ripper installation on Windows](#jtr-installation-on-windows)
     * [John the Ripper installation on macOS](#jtr-installation-on-macos)
     * [John the Ripper installation on GNU/Linux](#jtr-installation-on-gnulinux)
@@ -69,13 +70,21 @@ To participate in this exercise, you must have:
 In addition to your laptop or desktop computer, you will need to acquire the following tools.
 
 * For cracking Tyrell's password: [John the Ripper password cracker](http://www.openwall.com/john/), often written as *JtR*
-* For managing your own passwords: [KeePassX](https://www.keepassx.org/)
+* For managing your own passwords: [KeePassXC](https://www.keepassxc.org/)
 
-There are pre-built versions of KeePassX for both Windows and macOS available for download from the [KeePassX downloads page](https://www.keepassx.org/downloads). For GNU/Linux users, KeePassX is ordinarily provided as a standard software package directly from your operating system's distributor. Use your system's default package manager to install it.
+There are pre-built versions of KeePassXC for both Windows and macOS available for download from the [KeePassXC downloads page](https://keepassxc.org/download/). For GNU/Linux users, KeePassXC is ordinarily provided as a standard software package directly from your operating system's distributor. Use your system's default package manager to install it.
 
 > :bulb: If you already use a different password manager or prefer to choose one of the many different [recommended password managers](https://prism-break.org/en/all/#password-managers), you can still follow along with the overwhelming majority of this exercise. The fundamental features of all password managers are, generally speaking, equivalent to one another. [What matters is that you use one, not necessarily which one you use](https://www.troyhunt.com/password-managers-dont-have-to-be-perfect-they-just-have-to-be-better-than-not-having-one/).
 
 There are several different procedures to install John the Ripper available to you. If you're comfortable doing so, you can follow the above link, download JtR's source code, and install the software configuration of your choosing. (See [Beginner's Guide to Installing from Source](http://moi.vonos.net/linux/beginners-installing-from-source/) if you're not comfortable, but want to try that anyway.) The rest of this section will describe more common approaches to installing John the Ripper in a little more detail.
+
+## Optional virtual machine lab environment
+
+By its nature, password cracking consumes a very large amount of system resources, primarily CPU cycles. This means that you are almost certainly going to get better performance from the cracking tools we'll use in this lab if you run those tools directly on your physical hardware. This exercise is therefore different than many others we supply in that we tend to assume you are running on physical hardware, rather than inside of a virtualized environment.
+
+However, for educational purposes, you may be more interested in having a safe and isolated lab environment in which to learn how to use these tools before you install them on your physical host system, so this exercise also provides a [Vagrant](https://vagrantup.com/) virtual machine configuration that will install all the necessary prerequisites for you. (See the [included `Vagrantfile`](Vagrantfile) for the source.) For more information about using virtual machines with Vagrant, refer to the [Introduction to Virtual Machine Management with Vagrant](../../../practice-labs/introduction-to-virtual-machine-management-with-vagrant/README.md) practice lab.
+
+Once you have the necessary virtualization and automation tools installed, you can bring the virtual machine lab environment online with a single `vagrant up` command. The virtual machine only installs the [Openbox window manager](http://openbox.org/), not a full desktop environment like GNOME or KDE. This means you will need to use the `startx` command after you log in (the username is `vagrant` and the password is `vagrant`) to start the Openbox GUI. Once Openbox itself is running, you should right-click to access the Openbox main menu and launch an application, such as a terminal emulator or the KeePassXC GUI. Alternatively, you can forward your X11 session over an SSH connection by invoking `vagrant ssh -- -X` to connect to the virtual machine.
 
 ## JtR installation on Windows
 
@@ -873,8 +882,8 @@ This simple separation between an easier-to-remember password used to "unlock" y
 **Do this:**
 
 1. Choose one or two low-priority (unimportant) online accounts that you have. These will be the first accounts whose passwords you will reset to much stronger ones. Use low-priority accounts so you can practice using the password manager before relying on it for your high-priority accounts.
-1. Search the Internet for a guide to using the password manager of your choice. Here are recommended guides for KeePassX and LastPass:
-    * [Tuts+: Guide to KeePassX](https://web.archive.org/web/20170314130128/https://computers.tutsplus.com/tutorials/the-tuts-guide-to-keepass--cms-21308)
+1. Search the Internet for a guide to using the password manager of your choice. Here are recommended guides for KeePassXC and LastPass:
+    * [KeePassXC for Beginners](https://medium.com/%40mshelton/keypass-for-beginners-dc8adfcdad54)
     * [LastPass User Manual: Getting Started with LastPass](https://helpdesk.lastpass.com/)
 1. Follow the guide. :) Be certain that you also:
     1. Generate a strong, randomized, unique password for your online service account using your password manager of choice.

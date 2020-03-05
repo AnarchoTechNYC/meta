@@ -1,0 +1,10 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/buster64"
+  config.vm.provision "shell", inline: <<~EOF
+    apt update
+    apt install --yes john hashcat \
+        xinit openbox xterm keepassxc iceweasel
+    echo "alias john=/usr/sbin/john" > ~vagrant/.bash_profile
+    chown vagrant:vagrant ~vagrant/.bash_profile
+  EOF
+end
