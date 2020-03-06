@@ -1,0 +1,218 @@
+# Introduction to Network Sniffing and Scanning
+
+> NOTE: Maybe advise people to start somewhere else before getting into this? There is an assumption of prior knowledge at this stage.
+
+If we pair down digital networks to their most vital essentials, what's really happening is something like a very complicated phone call between machines (or sometimes, a machine speaking to itself). In order to better grasp what is happening within this conversation, we must first be able to hear what is being "said," and then graducally become familiar with the languages being spoken on the wire.
+
+What follows is a collection of small exercises using a variety of commonly used, FOSS networking tools. These exercises are intended to increase one's ability to "listen in" on the conversation on a given network, and to move towards understanding what is being "said."
+
+# Contents
+
+> TK-TODO
+
+Bill of materials
+Prerequisites
+Set up
+    X installation on Windows
+    X installation on macOS
+    X installation on GNU/Linux
+Practice
+    Introduction
+    Section One
+    Section Two
+Discussion
+    Section One
+    Section Two
+    Additional X 
+Additional references
+
+# Objectives
+
+When you complete this lab, you will have acquired the following capabilities:
+
+> TK-TODO
+
+# Bill of materials
+> TK-TODO
+
+# Prerequisites
+> TK-TODO
+
+# Set up
+X installation on Windows
+X installation on macOS
+X installation on GNU/Linux
+
+# Practice
+
+## Exercise 0.1: Understanding basic networking concepts
+
+> Caveat this with, "here we aren't going into packet structures, which is needed to understand how this all works; much as we must understand that a plant comes from a seed."
+
+* IP addresses, external vs. internal
+* Logical addresses rather than physical ones
+* Visual traceroute
+
+## Exercise 1.1: Finding other machines on the Internet
+
+In order to begin exploring cyberspace, one of our first goals is to locate other machines (otherwise, we won't have explored very much at all). One of the first question then is, how do we _find_ these other machines?
+
+The most naïve way of finding other machines would be something like, randomly typing addresses into the domain bar and seeing whether or not you get something. At its most fundamental, network scanning is very much like this, although when we get further into scanning, we'll be dealing mostly with IP addresses rather than with domain names.
+
+> Not sure if this is a good place to get into the distinction between the two, but the phonebook metaphor should probably come in here, especially if the "phonecall" metaphor is going to hold up in the earlier part.
+
+### Intro to `traceroute`
+
+If we're sick of sitting around typing random names, words, and domains into our URL bar, we can try something a little bit more direct.
+
+The Internet, as we said before, is really like a multi-billion-way call between machines. But if two machines are not physically located near one another, or physically connected in some way, they have to reach each other via some other mechanism other than a physical wire or radio connection. The way this is done is very simple, conceptually: computers simply pass messages along from one to the nearest computer, much as how note-passing works in classrooms (and, yes, there is a consideration to be made as to whether or not your message has been intercepted and read, or even changed, by someone in-between; but that'll come later).
+
+The main point is that Internet packets are passed just the same as these messages, and are made to be sent along until they arrive at their specified recipient.
+
+This means that we can actually trace the route of the message by using a utility called `traceroute`.
+
+> Question: How does `traceroute` actually use UDP to trace its procession across the Internet? How does the information retrieved get sent back to the inquirer?
+
+Let's run a `traceroute` right now and see what we can find.
+
+1. Select an endpoint to which you will be tracing the route. This can be any machine, although it usually serves one well to select a machine that is reliably available, such as `google.com`. You can give `traceroute` a domain name or an IP address.
+1. Run a `traceroute` (`tracert` on Windows) to that machine. For example:
+
+`traceroute google.com`
+
+1. Now let's examine the results of that command. Most of what you'll probably see in your `traceroute` output is a series of IP addresses, perhaps also some domain names. These machines are the machines your message traversed in order to go from your origin point (where you are) to your destination (if you used `google.com`, this would be some machine that is on the other end of `google.com`.) You may notice some machines with domain names, such as this one, which I got when running a `traceroute google.com` from my location:
+
+```
+451be066.cst.lightpath.net (65.19.99.102)  18.839 ms 64.15.4.56 (64.15.4.56)
+```
+
+This time, rather than guessing randomly where a machine might be by guessing domain names, I've located a machine by following the path my message took.
+
+It looks like that machine is associated with the domain name `lightpath.net`. Let's say we want to find out more about what that is.
+
+## Exercise 1.2: Finding out more who's behind a website
+
+Obviously, from our last steps, one of the most immediate ways to check out a website would be to simply go to that domain. Let's see what happens if we try to visit `http://lightpath.net` in a browser.
+
+And lo and behold, we see that there isn't a _website_ at that address. This doesn't mean there isn't a machine there, of course. There are many, many more things on the Internet than just websites. But it means that that there doesn't happen to be one at that URL. Yet, the domain name is still registered. This is a key detail, and one that can be used to discover more about the owner of the machine at that address.
+
+> Talk a little bit more about the paperwork registration of a domain name?
+
+### IANA's Whois database
+
+So, say you want to know more about `lightpath.net`, and there's no website to visit. How else can we get information about it?
+
+One thing we could and probably should try to do is a simple cursory search on the Internet to see if we can find any information about a service with that name or associated with that domain, but this isn't always reliable. Especially with a name like "Lightpath," where there is a good chance that (and actually, in this case, there are) there are other services that have nothing to do with what `lightpath.net` is serving have the same name.
+
+Instead, we will have a better chance of getting authentic informaton by digging into the domain name itself, and any records associated with it.
+
+The simplest way to do this is by querying the [IANA Whois database (Internet Assigned Numbers Authority)](https://www.iana.org/) for the domain.
+
+> More info about IANA.
+
+While IANA provides a nice Web interface for searching this database, we'll prefer to use the commandline utility, which is simply called `whois`.
+
+Using `whois` in its most basic form is as simple as using the command with a domain name as its argument, such as:
+
+`whois google.com`
+
+Running this command will give us back some information about the registrant of the domain, `google.com`:
+
+```
+whois google.com
+[Querying whois.verisign-grs.com]
+[Redirected to whois.markmonitor.com]
+[Querying whois.markmonitor.com]
+[whois.markmonitor.com]
+Domain Name: google.com
+Registry Domain ID: 2138514_DOMAIN_COM-VRSN
+Registrar WHOIS Server: whois.markmonitor.com
+Registrar URL: http://www.markmonitor.com
+Updated Date: 2019-09-09T08:39:04-0700
+Creation Date: 1997-09-15T00:00:00-0700
+Registrar Registration Expiration Date: 2028-09-13T00:00:00-0700
+Registrar: MarkMonitor, Inc.
+Registrar IANA ID: 292
+Registrar Abuse Contact Email: abusecomplaints@markmonitor.com
+Registrar Abuse Contact Phone: +1.2083895740
+Domain Status: clientUpdateProhibited (https://www.icann.org/epp#clientUpdateProhibited)
+Domain Status: clientTransferProhibited (https://www.icann.org/epp#clientTransferProhibited)
+Domain Status: clientDeleteProhibited (https://www.icann.org/epp#clientDeleteProhibited)
+Domain Status: serverUpdateProhibited (https://www.icann.org/epp#serverUpdateProhibited)
+Domain Status: serverTransferProhibited (https://www.icann.org/epp#serverTransferProhibited)
+Domain Status: serverDeleteProhibited (https://www.icann.org/epp#serverDeleteProhibited)
+Registrant Organization: Google LLC
+Registrant State/Province: CA
+Registrant Country: US
+Admin Organization: Google LLC
+Admin State/Province: CA
+Admin Country: US
+Tech Organization: Google LLC
+Tech State/Province: CA
+Tech Country: US
+Name Server: ns4.google.com
+Name Server: ns3.google.com
+Name Server: ns2.google.com
+Name Server: ns1.google.com
+DNSSEC: unsigned
+URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
+```
+
+As we can see, from here we can get information such as:
+
+* The "Admin Organization" - Google LLC
+* The registry date of the domain - 1997-09-15
+* The registrant state and country - CA and US, respectively
+
+Now, let's try asking the same question for `lightpath.net`:
+
+`whois lightpath.net`
+
+And we'll get similar-looking information:
+
+```
+Domain Name: lightpath.net
+Registry Domain ID: 4524746_DOMAIN_NET-VRSN
+Registrar WHOIS Server: whois.godaddy.com
+Registrar URL: http://www.godaddy.com
+Updated Date: 2019-08-20T14:56:25Z
+Creation Date: 1997-08-21T04:00:00Z
+Registrar Registration Expiration Date: 2020-08-20T04:00:00Z
+Registrar: GoDaddy.com, LLC
+Registrar IANA ID: 146
+Registrar Abuse Contact Email: abuse@godaddy.com
+Registrar Abuse Contact Phone: +1.4806242505
+Domain Status: clientTransferProhibited http://www.icann.org/epp#clientTransferProhibited
+Domain Status: clientUpdateProhibited http://www.icann.org/epp#clientUpdateProhibited
+Domain Status: clientRenewProhibited http://www.icann.org/epp#clientRenewProhibited
+Domain Status: clientDeleteProhibited http://www.icann.org/epp#clientDeleteProhibited
+Registrant Organization: Cablevision Systems Corporation
+Registrant State/Province: New York
+Registrant Country: US
+Registrant Email: Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=lightpath.net
+Admin Email: Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=lightpath.net
+Tech Email: Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=lightpath.net
+Name Server: AUTHNS1.CV.NET
+Name Server: AUTHNS1.CVNET.COM
+DNSSEC: signedDelegation
+```
+
+Here, we can see that the registrant organization is "Cablevision Systems Corporation," and they are registered in New York, USA.
+
+* dig
+* GeoIP tools
+
+## Exercise 1.3: Introducing port scanning
+
+## Exercise 1.4: Scanning an entire IP space with Nmap
+
+## Exercise 1.5: Finding more services
+
+* censys.io
+* Shodan
+
+# Discussion
+    Section One
+    Section Two
+    Additional X 
+# Additional references
