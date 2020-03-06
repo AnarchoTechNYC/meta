@@ -1,30 +1,18 @@
 # Introduction to Network Sniffing and Scanning
 
-> NOTE: Maybe advise people to start somewhere else before getting into this? There is an assumption of prior knowledge at this stage.
-
 If we pair down digital networks to their most vital essentials, what's really happening is something like a very complicated phone call between machines (or sometimes, a machine speaking to itself). In order to better grasp what is happening within this conversation, we must first be able to hear what is being "said," and then graducally become familiar with the languages being spoken on the wire.
 
 What follows is a collection of small exercises using a variety of commonly used, FOSS networking tools. These exercises are intended to increase one's ability to "listen in" on the conversation on a given network, and to move towards understanding what is being "said."
 
 # Contents
 
-> TK-TODO
-
-Bill of materials
-Prerequisites
-Set up
-    X installation on Windows
-    X installation on macOS
-    X installation on GNU/Linux
-Practice
-    Introduction
-    Section One
-    Section Two
-Discussion
-    Section One
-    Section Two
-    Additional X 
-Additional references
+1. [Objectives](#objectives)
+1. [Bill of materials](#bill-of-materials)
+1. [Prerequisites](#prerequisites)
+1. [Set up](#set-up)
+1. [Practice](#practice)
+1. [Discussion](#discussion)
+1. [Additional references](#additional-references)
 
 # Objectives
 
@@ -33,15 +21,28 @@ When you complete this lab, you will have acquired the following capabilities:
 > TK-TODO
 
 # Bill of materials
-> TK-TODO
+
+This folder contains the following files and folders:
+
+* `README.md` - This file.
 
 # Prerequisites
-> TK-TODO
+
+To perform this lab, you must have:
+
+* A computer running any modern version of:
+    * Windows,
+    * macOS,
+    * FreeBSD,
+    * Solaris, or
+    * any flavor of the GNU/Linux operating system.
+* An active Internet connection (for downloading the required tools in the [set up](#set-up) step, as well as Vagrant base boxes, and the required software packages into the virtual machines; you do not need an Internet connection once you have completed the set up portion of this lab).
+
+> :beginner: :computer: This exercise requires the use of a command line, or "terminal." If you don't know what that means, or if you do but you feel intimidated by that, consider going through [Tech Learning Collective&rsquo;s free, online and self-paced *Foundations: Command Line Basics* course](https://techlearningcollective.com/foundations/), spending an hour at [Apple's Terminal User Guide](https://support.apple.com/guide/terminal/) (for macOS users), [Ubuntu's Command Line for Beginners tutorial](https://ubuntu.com/tutorials/command-line-for-beginners) (for GNU/Linux users) or reviewing [Computer Hope's article, "How to use the Windows command line (DOS)"](http://www.computerhope.com/issues/chusedos.htm) (for Windows users) if you want to get started quickly. You don't need to complete the whole tutorial or article to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics. If you want a more thorough but equally gentle introduction to the same material, consider reading (and listening to) [Taming the Terminal](https://www.bartbusschots.ie/s/blog/taming-the-terminal/).
 
 # Set up
-X installation on Windows
-X installation on macOS
-X installation on GNU/Linux
+
+> :construction: TK-TODO
 
 # Practice
 
@@ -55,7 +56,7 @@ X installation on GNU/Linux
 
 ## Exercise 1.1: Finding other machines on the Internet
 
-In order to begin exploring cyberspace, one of our first goals is to locate other machines (otherwise, we won't have explored very much at all). One of the first question then is, how do we _find_ these other machines?
+In order to begin exploring cyberspace, one of our first goals is to locate other machines (otherwise, we won't have explored very much at all). One of the first question then is, how do we *find* these other machines?
 
 The most naïve way of finding other machines would be something like, randomly typing addresses into the domain bar and seeing whether or not you get something. At its most fundamental, network scanning is very much like this, although when we get further into scanning, we'll be dealing mostly with IP addresses rather than with domain names.
 
@@ -77,14 +78,13 @@ Let's run a `traceroute` right now and see what we can find.
 
 1. Select an endpoint to which you will be tracing the route. This can be any machine, although it usually serves one well to select a machine that is reliably available, such as `google.com`. You can give `traceroute` a domain name or an IP address.
 1. Run a `traceroute` (`tracert` on Windows) to that machine. For example:
-
-`traceroute google.com`
-
+    ```sh
+    traceroute google.com
+    ```
 1. Now let's examine the results of that command. Most of what you'll probably see in your `traceroute` output is a series of IP addresses, perhaps also some domain names. These machines are the machines your message traversed in order to go from your origin point (where you are) to your destination (if you used `google.com`, this would be some machine that is on the other end of `google.com`.) You may notice some machines with domain names, such as this one, which I got when running a `traceroute google.com` from my location:
-
-```
-451be066.cst.lightpath.net (65.19.99.102)  18.839 ms 64.15.4.56 (64.15.4.56)
-```
+    ```
+    451be066.cst.lightpath.net (65.19.99.102)  18.839 ms 64.15.4.56 (64.15.4.56)
+    ```
 
 This time, rather than guessing randomly where a machine might be by guessing domain names, I've located a machine by following the path my message took.
 
@@ -94,7 +94,7 @@ It looks like that machine is associated with the domain name `lightpath.net`. L
 
 Obviously, from our last steps, one of the most immediate ways to check out a website would be to simply go to that domain. Let's see what happens if we try to visit `http://lightpath.net` in a browser.
 
-And lo and behold, we see that there isn't a _website_ at that address. This doesn't mean there isn't a machine there, of course. There are many, many more things on the Internet than just websites. But it means that that there doesn't happen to be one at that URL. Yet, the domain name is still registered. This is a key detail, and one that can be used to discover more about the owner of the machine at that address.
+And lo and behold, we see that there isn't a *website* at that address. This doesn't mean there isn't a machine there, of course. There are many, many more things on the Internet than just websites. But it means that that there doesn't happen to be one at that URL. Yet, the domain name is still registered. This is a key detail, and one that can be used to discover more about the owner of the machine at that address.
 
 > Talk a little bit more about the paperwork registration of a domain name?
 
@@ -114,11 +114,13 @@ While IANA provides a nice Web interface for searching this database, we'll pref
 
 Using `whois` in its most basic form is as simple as using the command with a domain name as its argument, such as:
 
-`whois google.com`
+```sh
+whois google.com
+```
 
 Running this command will give us back some information about the registrant of the domain, `google.com`:
 
-```
+```sh
 whois google.com
 [Querying whois.verisign-grs.com]
 [Redirected to whois.markmonitor.com]
@@ -166,7 +168,9 @@ As we can see, from here we can get information such as:
 
 Now, let's try asking the same question for `lightpath.net`:
 
-`whois lightpath.net`
+```sh
+whois lightpath.net
+```
 
 And we'll get similar-looking information:
 
@@ -199,7 +203,7 @@ DNSSEC: signedDelegation
 
 Here, we can see that the registrant organization is "Cablevision Systems Corporation," and they are registered in New York, USA.
 
-* dig
+* `dig`
 * GeoIP tools
 
 ## Exercise 1.3: Introducing port scanning
@@ -208,11 +212,13 @@ Here, we can see that the registrant organization is "Cablevision Systems Corpor
 
 ## Exercise 1.5: Finding more services
 
-* censys.io
-* Shodan
+* [censys.io](https://censys.io/)
+* [Shodan](https://shodan.io/)
 
 # Discussion
-    Section One
-    Section Two
-    Additional X 
+
+> :construction: TK-TODO
+
 # Additional references
+
+> :construction: TK-TODO
