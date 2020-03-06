@@ -4,13 +4,13 @@
 # These machines are:
 #
 # * `red` - The attacker's machine.
-# * `blue_desktop` - The "desktop" machine being attacked.
-# * `blue_server` - Box that the `red` machine will impersonate.
+# * `blue-desktop` - The "desktop" machine being attacked.
+# * `blue-server` - Box that the `red` machine will impersonate.
 #
-# Each of these are attached to a VirtualBox internal network
-# called "arpspoofnet" and are assigned an IP address in the
-# 172.22.33.0 network. Hopefully, this IP range will not conflict
-# with a network in use on your system. (Change it if it does.)
+# Each of these are attached to a VirtualBox host-only network
+# and are assigned an IP address in the 172.22.33.0 network.
+# Hopefully, this IP range will not conflict with a network in
+# use on your system. (Change it if it does.)
 #
 # Moreover, the relevant virtual NIC of each machine has a specific
 # MAC address associated with it that mirrors the IP address so as
@@ -33,8 +33,7 @@ Vagrant.configure("2") do |config|
   # A quick 'n' dirty provisioner for the Debian-derived systems.
   debian_script = <<-DEBIAN_SCRIPT
     apt update
-    apt install --yes avahi-utils xinit lxde lxsession-logout
-    sudo -u vagrant echo "exec startlxde" > ~vagrant/.xinitrc
+    apt install --yes avahi-daemon avahi-utils xinit lxde lxsession-logout
   DEBIAN_SCRIPT
 
   config.vm.define "red" do |c|
@@ -43,8 +42,7 @@ Vagrant.configure("2") do |config|
     c.vm.network "private_network",
       ip: "172.22.33.55",
       netmask: "255.255.255.0",
-      :mac => "080027000055",
-      virtualbox__intnet: "arpspoofnet"
+      :mac => "080027000055"
     c.vm.provision "Debian base", type: "shell", inline: debian_script
     c.vm.provision "Red team", type: "shell", inline: <<-SCRIPT
       apt install --yes \
@@ -59,27 +57,25 @@ Vagrant.configure("2") do |config|
     SCRIPT
   end
 
-  config.vm.define "blue_desktop" do |c|
+  config.vm.define "blue-desktop" do |c|
     c.vm.box = "ubuntu/bionic64"
     c.vm.hostname = "blue-desktop"
     c.vm.network "private_network",
       ip: "172.22.33.50",
       netmask: "255.255.255.0",
-      :mac => "080027000050",
-      virtualbox__intnet: "arpspoofnet"
+      :mac => "080027000050"
     c.vm.provision "Debian base", type: "shell", inline: debian_script
     c.vm.provision "Blue desktop", type: "shell",
       inline: "cp '/vagrant/Blue Team/AnarchoTechNYC-BlueTeam.png' '/etc/alternatives/desktop-background'"
   end
 
-  config.vm.define "blue_server" do |c|
+  config.vm.define "blue-server" do |c|
     c.vm.box = "centos/7"
     c.vm.hostname = "blue-server"
     c.vm.network "private_network",
       ip: "172.22.33.10",
       netmask: "255.255.255.0",
-      :mac => "080027000010",
-      virtualbox__intnet: "arpspoofnet"
+      :mac => "080027000010"
     c.vm.provision "shell", inline: "mkdir -p /srv/www && chown vagrant:vagrant /srv/www"
     c.vm.provision "file", source: "Blue Team/server/www", destination: "/srv/www"
     c.vm.provision "Blue server", type: "shell" do |s|
