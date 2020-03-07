@@ -270,7 +270,7 @@ To do this, invoke [the `vagrant destroy` command](https://www.vagrantup.com/doc
 
 To define a multi-machine configuration, you wrap your `config.vm` object definitions in an outer `config.vm.define` Ruby block, like this:
 
-```sh
+```ruby
 # The outermost `Vagrant.configure("2")` block begins the Vagrant configuration.
 Vagrant.configure("2") do |config|
 
