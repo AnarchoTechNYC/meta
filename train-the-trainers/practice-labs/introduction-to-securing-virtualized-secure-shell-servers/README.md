@@ -717,7 +717,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
     ssh -Q key
     ```
     Several of the available options should now be at least cursorily familiar. We see the `ecdsa-sha2-nistp256` algorithm that we'd like to avoid from now on, along with the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` algorithms that use the Ed25519 cryptosystem, which we like.
-    > :beginner: The differences between the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` values relate to the use of SSH certificates instead of plain SSH keys. In this introductory lab, we won't be using SSH certificates at all, but you can learn more about the distinction in the [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys) discussion.
+    > :beginner: The differences between the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` values relate to the use of SSH certificates instead of plain SSH keys. In this introductory lab, we won't be using SSH certificates at all, but you can learn more about the distinction between plain SSH keys and SSH certificates in the [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys) discussion section.
 1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o "HostKeyAlgorithms ssh-ed25519"` as part of the `ssh` client invocation:
     ```sh
     ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.11
@@ -914,7 +914,26 @@ See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetwo
 
 ## SSH certificates versus SSH keys
 
-> :construction: TK-TODO: See the `CERTIFICATES` section of the `ssh-keygen` manual page.
+In addition to *plain SSH keys*, OpenSSH and most other SSH server and client software can use *SSH certificates* to authenticate both servers (SSH hosts) and users (SSH clients). Although SSH certificates are not implemented in exactly the same way as TLS certificates (used for making HTTPS connections to Web sites), both SSH certificates and TLS certificates use the same architectural principles. In essence, an SSH certificate relies on a pre-existing SSH Public Key Infrastructure (PKI) to be useful, much as a Web site's TLS certificate relies on a pre-existing TLS PKI that your Web browser makes use of.
+
+There are many advantages to using SSH certificates instead of plain SSH keys for authenticating SSH connections, but because of the extra steps required to create and centrally manage certificates, few small SSH server deployments make use of them. As a result, SSH certificates are mostly used only by larger organizations with many dozens, hundreds, or thousands of SSH servers in their fleets. Nevertheless, the benefits that SSH certificates bring are orthogonal to the size of the organization using them.
+
+For system administrators (server-side), using SSH certificates enables easier key rotation on some periodic schedule without triggering SSH host key verification authentication failures in clients. Certificate-based authentication is also at the heart of solutions such as SSH support in [Cloudflare Access](https://blog.cloudflare.com/public-keys-are-not-enough-for-ssh-security/), so learning about SSH certificates in general help in understanding and setting up those systems.
+
+As an SSH user (client-side), using SSH certificates in an infrastructure with an SSH PKI set up ahead of time removes the need to manage SSH host key fingerprints manually. This means that instead of being presented with the server's host key fingerprint the first time you connect to it, your SSH client refers to a single public key contained in a certificate issued by your organization’s own Certificate Authority (CA) and checks to see whether the host key of the server you are connecting to was signed (approved) by that authority.
+
+To create a trusted SSH certificate, at least two plain SSH keypairs are required. One pair of keys is used to sign the second keypair, which is used as an SSH identity. The act of signing a plain SSH key creates an SSH certificate that can then be used by other SSH software. The basic command for signing a key uses an `ssh-keygen` command that looks something like the following:
+
+```sh
+ssh-keygen -s $SIGNING_KEYPAIR_PRIVATE_KEY_FILE \
+    [-h] [-z $CERTIFICATE_SERIAL_NUMBER] [-V $VALIDITY_PERIOD] \
+    -n $ENTITY_NAME -I $ENTITY_ID \
+    $IDENTITY_KEYPAIR_PUBLIC_KEY_FILE
+```
+
+Note that the two required keypairs, shown above as `$SIGNING_KEYPAIR_PRIVATE_KEY_FILE` and `$IDENTITY_KEYPAIR_PUBLIC_KEY_FILE`, always use the private portion of the authority's "signing" key to sign the public portion of the entity's plain SSH key (identity file). SSH certificates, like TLS certificates, can also carry optional attributes such as the time period for which they are valid, a serial number, or other extensions.
+
+To learn more, [Tech Learning Collective provides an interactive sample SSH certificate primer](https://techlearningcollective.com/sample/scaling-ssh-authentication-with-certificates) on their Web site. For even more information about how to work with SSH certificates, refer to the `CERTIFICATES` section of the `ssh-keygen(1)` manual page.
 
 ## Additional host key verification options
 
