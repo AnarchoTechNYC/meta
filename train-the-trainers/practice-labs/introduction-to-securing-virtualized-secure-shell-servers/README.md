@@ -45,9 +45,9 @@ To successfully complete this lab, you will need to construct a virtualized netw
 This folder contains the following files and folders:
 
 * `README.md` - This file.
+* `Vagrantfile` - The Vagrant configuration for our virtual private cloud, including the CentOS 7 SSH server and Ubuntu Bionic SSH client.
 * `Virtualized Network Topology.svg` - A Scalable Vector Graphics image file displaying the desired network topology for this lab.
 * `Virtualized Network Topology.xml` - An editable [Draw.IO](https://draw.io/) diagram that can be exported as SVG to produce the `Virtualized Network Topology.svg` image file.
-* `Vagrantfile` - The Vagrant configuration for our virtual private cloud, including the CentOS 7 SSH server and Ubuntu Bionic SSH client.
 
 # Prerequisites
 
@@ -663,40 +663,6 @@ Despite these drawbacks, the `password` authentication method is still widely us
 > For the majority of use cases we care about, this authentication method is not considered useful because it fundamentally relies on trust relationships between machines rather than user account identity verification. We'll touch on this mechanism but for the purposes of this lab, won't actually dive that deep into it. 
 
 # Discussion
-
-## Network interfaces in GNU/Linux
-
-> :construction: TK-TODO
-
-> TK-TODO: Talk a little bit about `udev`, the `/dev` hierarchy, and what a "[device file](https://en.wikipedia.org/wiki/Device_file)" is. Also touch on [looback devices](https://en.wikipedia.org/wiki/Localhost#Loopback).
-
-## Network masks and subnetting
-
-> :construction: TK-TODO
-
-Let's take a closer look at an example IP address and network mask combination, say `192.168.9.10/24` for example.
-
-```
-192       . 168       . 9         . 10        /24
-1100 0000 . 1010 1000 . 0000 1001 . 0000 1010
-     ^
-     | The 1s mean "read this bit as part of a network ID."
-     v
-255       . 255       . 255       . 0
-1111 1111 . 1111 1111 . 1111 1111 . 0000 0000
-```
-
-See also: [Practical Networking's Subnetting Mastery](https://www.practicalnetworking.net/stand-alone/subnetting-mastery/) is a pretty decent introduction.
-
-## IPv6 addressing
-
-> :construction: TK-TODO
-
-## DHCP options
-
-> :construction: TK-TODO
-
-> More about what you can do with DHCP: set a client's DNS server, provide PXE boot addresses, etc.
 
 ## What are NIST curves and why can't they be trusted?
 
