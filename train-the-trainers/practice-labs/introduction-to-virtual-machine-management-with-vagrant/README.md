@@ -18,6 +18,10 @@ In this starter lab, you will get up and running with virtual machines using the
     1. [Vagrantfile creation](#vagrantfile-creation)
     1. [Virtual machine startup](#virtual-machine-startup)
     1. [Virtual machine operation](#virtual-machine-operation)
+        1. [Using the VirtualBox console](#using-the-virtualbox-console)
+        1. [Connecting over SSH with Vagrant](#connecting-over-ssh-with-vagrant)
+    1. [Turning off the virtual machine](#turning-off-the-virtual-machine)
+    1. [Destroying the virtual machine](#removing-the-virtual-machine)
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
     1. [VirtualBox networking modes](#virtualbox-networking-modes)
@@ -143,7 +147,7 @@ Each time we call the `config.vm.network` method, Vagrant tries adding another N
 config.vm.network "private_network", type: "dhcp", virtualbox__intnet: "testnet"
 ```
 
-> :beginner: While the `testnet` (part of the `virtualbox__intnet` keyword argument) is arbitrary—it merely needs to be the same for both machines—the `type: "dhcp"` keyword argument is not. It refers to the [Dynamic Host Configuration Protocol](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol). DHCP is a way that network administrators can automatically inform machines joining their network what networking parameters they should use in order to have access to network services, not least of which is access to the Internet. You may not have heard about it before, but you probably use DHCP every time you connect to a Wi-Fi network.
+> :beginner: While the `testnet` (part of the `virtualbox__intnet` keyword argument) is arbitrary—it merely needs to be the same for both machines—the `type: "dhcp"` keyword argument is not. It refers to the [Dynamic Host Configuration Protocol](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol). DHCP is a way that network administrators can automatically inform machines joining their network what networking parameters they should use in order to have access to network services, not least of which is access to the Internet. You may not have heard about it before, but you probably use DHCP every time you connect to a Wi-Fi network. To learn more about what DHCP is and how it works, complete the [Introduction to Basic Network Administration](../introduction-to-basic-network-administration/README.md) practice lab.
 
 Each of machine that you want to attach to the same virtual network must have this same line, and by including this same line in all machine configurations, they will all be attached to the same virtual network.
 
@@ -189,6 +193,8 @@ In order to complete this lab, we must first be able to operate within the conte
 
 It's useful to know about both of these methods because it's very possible that you will nullify your ability to use the second method (Vagrant's SSH facility) if you make certain errors during some practice labs. In case you do, you'll still be able to use the first method (the direct VirtualBox console) to recover. Your third option, of course, is to start over (discarding all your progress) by using [the `vagrant destroy` command](https://www.vagrantup.com/docs/cli/destroy.html).
 
+### Using the VirtualBox console
+
 Let's showcase the VirtualBox console first, and then try out Vagrant's (arguably more comfortable) SSH facility.
 
 **Do this:**
@@ -212,6 +218,8 @@ This method of accessing your virtual machine emulates having a physical keyboar
 Using the VirtualBox Manager in this manner means no network connections are involved. In fact, your virtual machine doesn't even need to have a network adapter installed for this to function. If you are ever unable to access your virtual machine using a network connection (like SSH), you can still control it through this emulated physical connection. You might hear this method described as a *direct console*, *serial console*, or *physical console*.
 
 > :beginner: In order to disconnect your physical keyboard and mouse from the virtual machine and return to using your host computer normally, VirtualBox watches for any press of a special key it calls the *host key*. On most computers, this is the right Control key. On macOS computers, it is the left Command key. Learn more about [capturing and releasing keyboard and mouse input in §1.9.2 of the VirtualBox Manual](https://www.virtualbox.org/manual/ch01.html#keyb_mouse_normal).
+
+### Connecting over SSH with Vagrant
 
 Now that you can reliably control your virtual machine regardless of network connectivity, let's try using Vagrant's SSH facility to do the same thing.
 
@@ -240,11 +248,52 @@ Now that you can reliably control your virtual machine regardless of network con
 
 You are now at the command line of the CentOS 7 virtual machine. Using `vagrant ssh` from a Vagrant project directory, you can immediately access the command line of the virtual machine using the pre-provisioned SSH server that came as part of the Vagrant box and the first (NAT'ed) network adapter that Vagrant instructs VirtualBox to attach to the virtual machine.
 
+To return to your host computer's command line, use the `exit` command when you are logged in to the guest.
+
+## Turning off the virtual machine
+
+Virtual machines may be easy to manage, but they still take up quite a bit of physical resources, suh as memory on your host machine that all the other programs you are using might need. In this sense, virtual machines are very much like physical machines: you should probably turn them off when you're not using them.
+
+Turning off a virtual machine managed by Vagrant is extremely simple. By invoking [the `vagrant halt` command](https://www.vagrantup.com/docs/cli/halt.html) command, the virtual machine(s) in your Vagrant project will be shut down.
+
+## Destroying the virtual machine
+
+Even if your virtual machine is powered down, it may still be taking up resources on your physical host computer that you want to use for other purposes, such as hard disk space. That's why, when you are well and truly done with a virtualized environment, you should completely remove it from your system to reclaim all the resources previously reserved by the virtual machine(s) that were part of your Vagrant project.
+
+To do this, invoke [the `vagrant destroy` command](https://www.vagrantup.com/docs/cli/destroy.html). After confirming that, yes, you really do want to delete everything in your virtualized environments, Vagrant will delete the virtual machine's hard disk drive image files along with all references to the machine in your hypervisor, including any snapshots or other saved state information. This wipes the slate clean and returns your computer to the state it was in before you first ran `vagrant up` to bring the virtual machine(s) online.
+
 # Discussion
 
 ## Vagrant multi-machine
 
-> :construction: Discuss the utility of [Vagrant's multi-machine features](https://www.vagrantup.com/docs/multi-machine/). This is a great "exercise left to the reader," since it is a relatively advanced Vagrant-specific construct and slightly tangential to SSH hardening.
+[Vagrant's multi-machine features](https://www.vagrantup.com/docs/multi-machine/) make it easy to have a single `Vagrantfile` that defines more than one virtual machine. This means you can bring up two or more distinct virtual machines with a single invocation of the `vagrant up` command to, for example, simulate more complex lab environments that require two or more computers, perhaps communicating over a network. Many of our labs make use of this feature to demonstrate networking-related concepts and practices while keeping operational instructions short.
+
+To define a multi-machine configuration, you wrap your `config.vm` object definitions in an outer `config.vm.define` Ruby block, like this:
+
+```sh
+# The outermost `Vagrant.configure("2")` block begins the Vagrant configuration.
+Vagrant.configure("2") do |config|
+
+  # A call to the `config.vm.define` method provides a name for the
+  # new machine to Vagrant, here called `name-of-machine-for-vagrant`.
+  config.vm.define "name-of-machine-for-vagrant" do |c|
+
+    # Here, at the innermost block is where you define the VM itself,
+    # just as you do for a single Vagrant machine configuration.
+    c.vm.box = "centos/7"
+
+  end
+
+  # Optionally, you can repeat the `config.vm.define` method call as
+  # many times as you want to create more VMs with Vagrant.
+  config.vm.define "name-of-another-machine" do |c|
+    config.vm.box = "ubuntu/xenial64"
+  end
+
+end
+```
+
+Note that at the inner-most block, the `config` object is referenced by the shorter `c` variable, as per normal Ruby scoping and variable assignment rules.
 
 ## VirtualBox networking modes
 
