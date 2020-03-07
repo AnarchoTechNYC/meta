@@ -4,7 +4,7 @@
 
 To learn SSH, you need at least two computers talking to each other: one playing client (the administrator's workstation or laptop), and one playing server (the remote system that the admin wants to log in to from afar). These days, multi-machine setups like this are easy to create using the magic of [Virtual Machine (VM)](https://simple.wikipedia.org/wiki/Virtual_machine) hypervisors, which can create many (virtual) machines in just a few clicks. Sometimes referred to as a [“Virtual Private Cloud” (VPC)](https://en.wikipedia.org/wiki/Virtual_private_cloud), these lab environments offer completely free and astonishingly powerful educational and operational opportunities.
 
-This workshop presents a brief crash course in configuring and hardening SSH. Along the way, we’ll also touch on some basics of spinning up a simple VPC using the free and open source [VirtualBox](https://en.wikipedia.org/wiki/VirtualBox) type-2 [hypervisor](https://en.wikipedia.org/wiki/Hypervisor) and the [Vagrant](https://en.wikipedia.org/wiki/Vagrant_%28software%29) hypervisor automation utility. We’ll have to create both the machines themselves and their virtualized network environment, so we'll cover some basic network engineering concepts as well. Finally, we’ll dig into the gritty of hardening (securing) your SSH server and client configurations so you can let your comrades in and keep [the CIA](https://www.ssh.com/ssh/cia-bothanspy-gyrfalcon) out.
+This workshop presents a brief crash course in configuring and hardening SSH. By digging into the gritty of hardening (securing) your SSH server and client configurations, you can be more confident that your computers are letting your comrades in and keeping [the CIA](https://www.ssh.com/ssh/cia-bothanspy-gyrfalcon) out.
 
 # Contents
 
@@ -12,8 +12,6 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
 1. [Bill of materials](#bill-of-materials)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
-    1. [Network connectivity checking](#network-connectivity-checking)
-    1. [VirtualBox DHCP server configuration](#virtualbox-dhcp-server-configuration)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [SSH server host keys and fingerprints](#ssh-server-host-keys-and-fingerprints)
@@ -22,10 +20,8 @@ This workshop presents a brief crash course in configuring and hardening SSH. Al
     1. [Basic SSH authentication methods](#basic-ssh-authentication-methods)
         1. [SSH `password` authentication](#ssh-password-authentication)
         1. [SSH `publickey` authentication](#ssh-publickey-authentication)
+        1. [SSH `hostbased` authentication](#ssh-hostbased-authentication)
 1. [Discussion](#discussion)
-    1. [Network interfaces in GNU/Linux](#network-interfaces-in-gnulinux)
-    1. [IPv6 addressing](#ipv6-addressing)
-    1. [DHCP options](#dhcp-options)
     1. [What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)
     1. [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys)
     1. [Additional host key verification options](#additional-host-key-verification-options)
@@ -51,10 +47,7 @@ This folder contains the following files and folders:
 * `README.md` - This file.
 * `Virtualized Network Topology.svg` - A Scalable Vector Graphics image file displaying the desired network topology for this lab.
 * `Virtualized Network Topology.xml` - An editable [Draw.IO](https://draw.io/) diagram that can be exported as SVG to produce the `Virtualized Network Topology.svg` image file.
-* `centos-7/` - Used for the CentOS 7 Vagrant VM.
-    * `Vagrantfile` - The Vagrant configuration for the CentOS 7 virtual machine.
-* `ubuntu-xenial64/` - Used for the Ubuntu Xenial 64  Vagrant VM.
-    * `Vagrantfile` - The Vagrant configuration for the Ubuntu Xenial64 virtual machine.
+* `Vagrantfile` - The Vagrant configuration for our virtual private cloud, including the CentOS 7 SSH server and Ubuntu Bionic SSH client.
 
 # Prerequisites
 
@@ -85,175 +78,10 @@ Then, bring the virtual machines for the lab online.
 
 1. Boot both virtual machines needed for the lab:
     ```sh
-    cd centos-7
-    vagrant up
-    cd ../ubuntu-xenial64
     vagrant up
     ```
 
 Once both the virtual machines are running, you can continue to the next step.
-
-## Network connectivity checking
-
-Recall that the purpose of SSH is to securely access one computer from a second. This implies that the two computers must be able to send messages to and receive messages from one another, whether secured or not. If the two computers can't interact for any reason, then whether you have hardened your SSH session is a moot point, since you cannot make use of the SSH protocol in the first place. Therefor, before we even concern ourselves with SSH, we need to ensure that the one machine is able to contact the other, and vice versa.
-
-Further, in order for one machine to send a message to another, it must have the name of the place at which the intended recipient can be found. This name is called an *address*. At this fundamental level, computer addresses work exactly the same way as postal addresses. If you've ever sent a postcard to a family member or friend while on vacation, you've written an address. Likewise, if you've ever sent an email to a coworker, chatted with a friend on Facebook, or placed a telephone call, you've used an address to direct the message towards your recipient. Postcards use *mailing addresses*, Facebook chats use Facebook *user names*, e-mails use *email addresses*, and telephone calls use *telephone numbers*. These are all examples of addresses.
-
-In many modern digital networks (like the Internet), the "place" in the network at which a given machine can be found is an address called an *[Internet Protocol (IP)](https://simple.wikipedia.org/wiki/Internet_Protocol) address*. In order for our virtual machines to be able to communicate with one another, both of them need to have their own IP address. When one sends a message to the other, it will write its own IP address on the message's envelope in the *source IP* field and, unsurprisingly, it will write the IP address of its intended recipient on the message's envelope in the *destination IP* field. These message envelopes are called *packet headers*.
-
-> :beginner: :bulb: If you think about it, of course, it's not enough merely to give two machines addresses. These addresses need to be *routable* between each other. That is, there needs to be an unbroken pathway from point A (the source) to point B (the destination), which further means each intermediary device handling their messages can forward them in the appropriate direction. Internetwork routing is beyond the scope of this lab, but have a look at [Henrik Frystyk's excellent (and superbly brief) *Introduction to the Internet*](https://www.w3.org/People/Frystyk/thesis/Internet.html), circa 1994, for more information. His article also lists references that, while old, are still profoundly relevant today.
-
-In this lab, both virtual machines are connected to two different networks: the NAT network required by Vagrant connects the virtual machine to the Internet, and the VirtualBox internal network we named `sshtestnet` is intended to allow the virtual machines to communicate with one another. It is our connections to this second network that we will be examining more closely.
-
-**Do this:**
-
-1. Log in to the CentOS 7 virtual machine using `vagrant ssh` if you have not already done so.
-    > :beginner: Yes, it's a little ironic that Vagrant already provides an SSH facility for us to use. This is in fact the same SSH facility that we will be hardening. Not to worry, though! All this means is that we won't need to *install* the SSH software ourselves, since all Vagrant boxes already package SSH as part of their base box. This, like the first network adapter, is a hard requirement of all Vagrant boxes since Vagrant itself uses SSH to remotely administer the virtual machine. In fact, commands like `vagrant halt` are simply shortcuts for opening an SSH connection to your virtual machine and issuing the `shutdown(1)` command (or an equivalent, if the virtual machine is not running an operating system for which `shutdown` is a recognized command).
-1. Look up the current IP network address configurations of the virtual machine by invoking [the `ip address` command](https://explainshell.com/explain?cmd=ip+address). You will see a readout showing you information about each of the machine's IP network devices and the current state of each of them:
-    ```sh
-    $ ip address
-    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-        inet 127.0.0.1/8 scope host lo
-           valid_lft forever preferred_lft forever
-        inet6 ::1/128 scope host
-           valid_lft forever preferred_lft forever
-    2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 52:54:00:c9:c7:04 brd ff:ff:ff:ff:ff:ff
-        inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic eth0
-           valid_lft 85862sec preferred_lft 85862sec
-        inet6 fe80::5054:ff:fec9:c704/64 scope link
-           valid_lft forever preferred_lft forever
-    3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 08:00:27:aa:0a:e6 brd ff:ff:ff:ff:ff:ff
-        inet6 fe80::a00:27ff:feaa:ae6/64 scope link
-           valid_lft forever preferred_lft forever
-    ```
-    > :beginner: If you're not familiar with IP internetwork routing, the amount of information presented here can feel overwhelming. Don't worry, though, we'll only be concerning ourselves with a few important bits. These are:
-    >
-    > * The *logical device name*. In the output above, we see three devices. The first is named `lo`, the second is named `eth0`, and the third is named `eth1`. You can see this in the lines that begin with `1: lo`, `2: eth0`, and `3: eth1`.
-    > * The IP address assigned to the named device. In this case, the `lo` device has the IP address `127.0.0.1/8`, the `eth0` device has the IP address `10.0.2.15/24`, and the `eth1` device doesn't have an IP address at all. You can see this in the indented lines that start with `inet`. Note that the third device's indented block does not have a line that begins with `inet` at all.
-    >
-    > Each of these devices corresponds to a (virtualized, in our case) hardware network adapter installed in the virtual machine, or a virtual network interface, such as the `lo` device in this example. Yes, that's a virtual network interface in a virtual machine. For more information about network devices, see the [Network interfaces in GNU/Linux](#network-interfaces-in-gnulinux) discussion section.
-    >
-    > Finally, note that each of the IP addresses end with a forward slash (`/`) and another number. The number following the forward slash is called a *network mask* or *netmask* for short. The forward slash itself indicates a particular notation called [Classless Inter-Domain Routing (CIDR)](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation. For a more thorough treatment of netmasks and their use for creating sub-networks (networks within networks), see the [Network masks and subnetting](#network-masks-and-subnetting) discussion section. For now, all you need to know is that reading netmasks correctly is an important part of determining how, and if, two machines can route messages to each other, because the netmask determines whether or not the two machines are logically located within "the same network" or not. So when reading IP addresses, remember to look at the netmask as well!
-    >
-    > :beginner: :bulb: In the output shown by the `ip address` command, lines starting with `inet` denote Internet Protocol version 4 information. There is another, newer version of the Internet Protocol called [IP version 6, or IPv6](https://en.wikipedia.org/wiki/IPv6) for short. Information about a machine's IPv6 addresses is also shown by the `ip address` command on lines that start with `inet6`. A network adapter can have an IPv4 and an IPv6 address at the same time. You'll see that IPv6 addresses look different than IPv4 addresses: they use hexadecimal numbers separated by a colon, instead of decimal numbers separated by a dot, but both versions still end with a forward slash and a decimal number to denote the address's netmask. For the purposes of this lab, we won't be dealing with IPv6 at all, but have a look at the [IPv6 addressing](#ipv6-addressing) discussion section for more information about the differences between IPv4 and IPv6.
-1. Exit the virtual machine by using [the `exit` command](https://explainshell.com/explain?cmd=exit). This will return you to your host operating system.
-1. Log in to the Ubuntu Xenial virtual machine and investigate its IP address configuration by using the `ip address` command again. You'll see similar but probably not identical output as you did on CentOS:
-    ```sh
-    $ ip address
-    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
-        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-        inet 127.0.0.1/8 scope host lo
-           valid_lft forever preferred_lft forever
-        inet6 ::1/128 scope host
-           valid_lft forever preferred_lft forever
-    2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 02:48:3e:15:b5:0c brd ff:ff:ff:ff:ff:ff
-        inet 10.0.2.15/24 brd 10.0.2.255 scope global enp0s3
-           valid_lft forever preferred_lft forever
-        inet6 fe80::48:3eff:fe15:b50c/64 scope link
-           valid_lft forever preferred_lft forever
-    3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 08:00:27:62:c4:26 brd ff:ff:ff:ff:ff:ff
-        inet6 fe80::a00:27ff:fe62:c426/64 scope link
-           valid_lft forever preferred_lft forever
-    ```
-    > :beginner: Did you notice the difference in these device names? For example, it was `eth1` on CentOS 7 but is `enp0s8` on Ubuntu Xenial. The `eth` prefix is a historical abbreviation for *[ethernet](https://simple.wikipedia.org/wiki/Ethernet)*, the lower-level networking technology on which many IP networks still depend. In contrast, `enp` stands for *ethernet network peripheral*. See the [Predictable Network Interface Names page on the Freedesktop Project's wiki](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/) for details about these naming choices.
-
-Astute readers will no doubt have noticed that `eth0` on the CentOS machine and `enp0s3` on the Ubuntu machine both have the same IP address. This is because both devices are set to use VirtualBox's NAT [networking mode](../introduction-to-virtual-machine-management-with-vagrant/README.md#virtualbox-networking-modes). These devices are attached to completely separated networks and can therefore have the same IP address without conflicting with one another. This is like two people sharing the same name, but being in totally different conversations. No one will be confused about who is being referred to by the name "Alex" if there is only one Alex in the room.
-
-If your IP address configurations look like the above, there is an obvious problem: the two virtual machines cannot yet communicate with one another. This is because VirtualBox has not given them IP addresses to use while on the `sshtestnet` internal network. To resolve this situation, we need to instruct VirtualBox to start doling out IP addresses to machines that are connected to this named internal network.
-
-## VirtualBox DHCP server configuration
-
-When a machine first joins a network, it doesn't necessarily have an IP address. Among other issues, this means it won't be able to receive messages from other machines, since no other machine knows how to address their messages to it. This is the dilemma that the [Dynamic Host Configuration Protocol (DHCP)](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol) was designed to solve.
-
-A DHCP server, then, is typically a machine that has joined a network ahead of time and is ready to assign IP addresses to new machines as they join the network after it has. These late comers are called *DHCP clients*. DHCP services could be offered by an entirely separate, wholly dedicated machine attached to the network, or they could be offered by any other machine running DHCP server software. For example, in a small home network, the Wi-Fi router probably has a DHCP server running on it. By using DHCP, you can avoid the need to manually configure the IP network settings of each device that wants to use the network each time that device joins the network.
-
-> :beginner: :bulb: DHCP is not limited to assigning IP addresses. It can be used to automatically configure all sorts of network settings, such as the address of upstream DNS servers, network boot images, and more. See the [DHCP options](#dhcp-options) discussion section for more information about the network settings that DHCP can automatically configure.
-
-Much like your home Wi-Fi router, VirtualBox itself has the ability to offer DHCP services to any of the networks it virtualizes. We'll be using this VirtualBox feature to ensure that the virtual machines on the `sshtestnet` network have IP addresses. Using [the `VBoxManage list dhcpservers` command](https://www.virtualbox.org/manual/ch08.html#vboxmanage-list), you can see all the DHCP servers that VirtualBox has added to its virtualized networks.
-
-> :beginner: The `VBoxManage(1)` command is the command-line equivalent of the VirtualBox Manager graphical application you used earlier. Everything that can be accomplished with the graphical point-and-click application can be accomplished with the `VBoxManage` command line, and then some. Each `VBoxManage` command takes a subcommand (such as `list` in the example above), which then may take additional options and arguments. Use the `--help` option to get a quick reference guide for how to use `VBoxManage`. For example, `VBoxManage --help` will show you a usage reference for every `VBoxManage` subcommand, while `VBoxManage list --help` will show you the usage reference just for the `VBoxManage list` subcommand. [Chapter 8 of the VirtualBox Manual](https://www.virtualbox.org/manual/ch08.html) covers the `VBoxManage` command in more complete detail.
-
-**Do this:**
-
-1. Open a terminal on your host machine.
-1. Get a list of all the VirtualBox DHCP servers currently installed. Your output will look something like the snippet below, which is truncated for length and clarity:
-    ```sh
-    $ VBoxManage list dhcpservers
-    NetworkName:    NatNetwork
-    IP:             10.0.2.3
-    NetworkMask:    255.255.255.0
-    lowerIPAddress: 10.0.2.4
-    upperIPAddress: 10.0.2.254
-    Enabled:        Yes
-
-    NetworkName:    intnet
-    IP:             172.16.222.1
-    NetworkMask:    255.255.255.0
-    lowerIPAddress: 172.16.222.100
-    upperIPAddress: 172.16.222.111
-    Enabled:        Yes
-    ```
-
-In the output above, we see two of VirtualBox's default DHCP servers. (There will probably more than two in the complete output; the above is just a small snippet.) Each DHCP server listing has the same format:
-
-* `NetworkName` displays the name of the VirtualBox network to which this DHCP server is attached. In the example above, `NatNetwork` refers to the `NAT` [VirtualBox networking mode](../introduction-to-virtual-machine-management-with-vagrant/README.md#virtualbox-networking-modes). This is the DHCP server from which your virtual machines received an IP address assignment when they started up the first time.
-* `IP` is the IP address of the DHCP server itself. Like any other machine, the DHCP server needs an IP address so that it can communicate with other machines on the network. DHCP servers themselves typically get *static* IP addresses, which is to say, their IP addresses are assigned manually by network administrators. You'll be doing this yourself in just a moment.
-* [`NetworkMask` is the other important part of an IP address](#network-masks-and-subnetting), and is displayed by VirtualBox in this output using the older dotted decimal notation, rather than the newer CIDR notation. A netmask of `255.255.255.0` in this older notation is equivalent to `/24` in CIDR notation.
-* `lowerIPAddress` is the first IP address available for DHCP clients. This is the lower bound in the range of IP addresses you'd like to make available for new machines to use as they join.
-* `upperIPAddress` is the last IP address available for DHCP clients. This is the upper bound in the range of IP addresses you'd like to make available for new machines to use as they join.
-    > :beginner: Taken together, the lower and upper IP address range is called an *IP address pool*. So, for example, if your lower IP address is 1.1.1.1 and your upper IP address is 1.1.1.2, you have an IP address pool consisting of two IP addresses. This means only two machines at a time will be given an IP address. If a third machine joins the same network, it must wait until one of the first two machines are done using their addresses before it will get an IP address of its own. This may take some time, hours or even days, depending on how the DHCP server is configured and how promptly the DHCP clients notify the server that they no longer need to use the IP address assigned to them.
-    >
-    > :construction: TK-TODO: Discuss the concept of a DHCP lease, reservation, and lease time. Describe `release`ing a DHCP lease (re-requesting a new DHCP lease), as well, which is a common command that Windows user will be familiar with: `ipconfig /renew`. GNU/Linux users will likely want to explore [the `dhclient(8)` command](https://linux.die.net/man/8/dhclient).
-* `Enabled` shows whether or not the VirtualBox DHCP server is actually turned on or not. If the DHCP server is not enabled, it will of course not respond to requests for IP assignments. :)
-
-In order to add DHCP services to our `sshtestnet` network, we merely need to instruct VirtualBox to enable a DHCP server on that named network. We do this using [the `VBoxManage dhcpserver` command](https://www.virtualbox.org/manual/ch08.html#vboxmanage-dhcpserver). If you didn't see a DHCP server listed for the `sshtestnet` network when you ran `VBoxManage list dhcpservers`, you'll need to use the `VBoxManage dhcpserver add` command to install a new DHCP server on the network. Otherwise, if you did see a DHCP server listed for the `sshtestnet` network, you can use `VBoxManage dhcpserver modify` with the exact same arguments as you would have used for the `add` invocation to edit the DHCP server's settings.
-
-Let's configure the DHCP server for the `sshtestnet` network now.
-
-**Do this:**
-
-1. At a terminal on your host machine, add a new DHCP server for the `sshtestnet` network that will offer a small number of IP addresses for the virtual machines to use:
-    ```sh
-    VBoxManage dhcpserver add --netname sshtestnet --ip 172.16.1.1 --netmask 255.255.255.0 --lowerip 172.16.1.10 --upperip 172.16.1.20 --enable
-    ```
-1. If you receive an error like `VBoxManage: error: DHCP server already exists`, run the same command but replace `add` with `modify`:
-    ```sh
-    VBoxManage dhcpserver modify --netname sshtestnet --ip 172.16.1.1 --netmask 255.255.255.0 --lowerip 172.16.1.10 --upperip 172.16.1.20 --enable
-    ```
-    > :beginner: :construction: TK-TODO: Go over this command invocation in more detail.
-1. Confirm that the VirtualBox hypervisor will provide DHCP services to the `sshtestnet` network by invoking `VBoxManage list dhcpservers` again. You should see a DHCP server listed in the output whose configuration matches this output:
-    ```
-    NetworkName:    sshtestnet
-    IP:             172.16.1.1
-    NetworkMask:    255.255.255.0
-    lowerIPAddress: 172.16.1.10
-    upperIPAddress: 172.16.1.20
-    Enabled:        Yes
-    ```
-
-With the DHCP server in place and enabled, you can now instruct your virtual machines to request IP addresses from it. The easiest way to do this is simply to reboot them. Vagrant provides [the `vagrant reload` command](https://www.vagrantup.com/docs/cli/reload.html) as a shortcut for `vagrant halt` and a subsequent `vagrant up` to turn off a virtual machine and then immediately turn it back on.
-
-**Do this:**
-
-1. Reboot both your CentOS 7 and your Ubuntu Xenial virtual machines using Vagrant.
-1. Log in to one of your virtual machines using `vagrant ssh` again.
-1. Look up the IP address configuration of the virtual machine. If the VirtualBox DHCP server is configured and responding correctly, the network adapter attached to the `sshtestnet` network should now have an IP address associated with it. You can use the `ip address show dev eth1` command to show the IP address(es) assigned to the logical network interface device named `eth1`. (You'll want to replace `eth1` with the name of the device in your virtual machine; this is likely `enp0s8` in the Ubuntu Xenial guest.) Doing this on the CentOS 7 virtual machine should now show you output similar to the following:
-    ```sh
-    $ ip address show dev eth1
-    3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 08:00:27:aa:0a:e6 brd ff:ff:ff:ff:ff:ff
-        inet 172.16.1.10/24 brd 172.16.1.255 scope global noprefixroute dynamic eth1
-           valid_lft 1162sec preferred_lft 1162sec
-        inet6 fe80::a00:27ff:feaa:ae6/64 scope link
-           valid_lft forever preferred_lft forever
-    ```
-
-Notice the presence of the `inet` line. This readout indicates that the virtual machine has been assigned an IP address. The address itself is in the range that we configured as the IP address pool for the DHCP server to oversee, which is a good indication that the DHCP server is responding correctly.
 
 # Practice
 
@@ -287,13 +115,14 @@ Let's get started by taking a look around.
 
 SSH has two main parts: a client, invoked by the `ssh(1)` command, and a server, invoked by the `sshd(8)` command. In day-to-day use, you'll start with using an SSH client and will be making connections to (i.e., requests of) a listening SSH server. Once the server hears (receives) a request from a client, it will respond in some way, either allowing or denying the request. Every SSH connection involves these two parts. We call these parts *endpoints* because they are each one end of the connection. This request-and-response model, in which one program makes requests of another, is called a [*client-server architecture*](https://wiki.wikipedia.org/wiki/Client%E2%80%93server_model).
 
-> :beginner: There isn't anything particularly magical about "servers." For the purposes of this lab, we will always be treating the CentOS 7 virtual machine as the SSH server. The Ubuntu Xenial virtual machine will therefore be our SSH client. However, it doesn't particularly matter which operating system or even which machine is the client and which the server. When talking about servers and clients (any servers and clients, not just SSH) all that matters is that the server application is running. Wherever the server application is running is called "the server." This same logic holds for the client: wherever the `ssh` client program is run is said to be "the client." A single machine can thus be both a server and a client at the same time simply by running both the server application and a corresponding client application on it. Even in this case, however, we still speak about "the server" and "the client" as distinct entities.
+> :beginner: There isn't anything particularly magical about "servers." For the purposes of this lab, we will always be treating the CentOS 7 virtual machine as the SSH server. The Ubuntu Bionic virtual machine will therefore be our SSH client. However, it doesn't particularly matter which operating system or even which machine is the client and which the server. When talking about servers and clients (any servers and clients, not just SSH) all that matters is that the server application is running. Wherever the server application is running is called "the server." This same logic holds for the client: wherever the `ssh` client program is run is said to be "the client." A single machine can thus be both a server and a client at the same time simply by running both the server application and a corresponding client application on it. Even in this case, however, we still speak about "the server" and "the client" as distinct entities.
 
 Let's have a look around our SSH server first.
 
 **Do this:**
 
-1. Access a command line of your CentOS 7 virtual machine. You can do this through the VirtualBox Manager graphical application or by navigating to the `centos-7` folder in this practice lab and invoking `vagrant ssh`.
+1. Access a command line of your CentOS 7 virtual machine. You can do this by invoking the `vagrant ssh server`.
+    > :beginner: Yes, it's a little ironic that Vagrant already provides an SSH facility for us to use. This is in fact the same SSH facility that we will be hardening. Not to worry, though! All this means is that we won't need to *install* the SSH software ourselves, since all Vagrant boxes already package SSH as part of their base box. This, like the first network adapter, is a hard requirement of all Vagrant boxes since Vagrant itself uses SSH to remotely administer the virtual machine. In fact, commands like `vagrant halt` are simply shortcuts for opening an SSH connection to your virtual machine and issuing the `shutdown(1)` command (or an equivalent, if the virtual machine is not running an operating system for which `shutdown` is a recognized command).
 1. Have a close look at the `/etc/ssh` directory by invoking [`ls -l /etc/ssh`](https://explainshell.com/explain?cmd=ls+-l+%2Fetc%2Fssh). You will see a number of files, which are used by the various SSH programs, in a readout that looks something like this:
     ```sh
     [vagrant@localhost ~]$ ls -l /etc/ssh
@@ -315,7 +144,7 @@ We will explore each of these files in detail soon but, for now, it's enough to 
 
 The `sshd_config` file in the `/etc/ssh` folder on the server is the SSH server's primary configuration file. That is to say it is the file read by the `sshd` (SSH daemon) program whenever it is launched. The `sshd` program is the program that starts and runs the SSH server process; it is *the* SSH server part of your "SSH server machine." Tweaking the values of the various configuration directives in this file will change the behavior of your SSH server. We will be spending a great deal of this lab modifying the values in this file and ensuring that our changes have been applied.
 
-> :beginner: As you may know, when available on a given system, the `man` command can be used to look up details about command invocations. This same `man` command can also be used to look up information about configuration files. Section 5 of the manual is the typical place to store file format information, and so invoking `man sshd_config` or `man 5 sshd_config` will often show you a manual page that describes the format of the `sshd_config` file along with many, if not all, of its configuration directives. Unfortunately, [CentOS 7's Vagrant box does not include manual pages for SSH](https://bugs.centos.org/view.php?id=14633), but most other systems do. Try `man sshd_config` on the Ubuntu Xenial virtual machine, for example.
+> :beginner: As you may know, when available on a given system, the `man` command can be used to look up details about command invocations. This same `man` command can also be used to look up information about configuration files. Section 5 of the manual is the typical place to store file format information, and so invoking `man sshd_config` or `man 5 sshd_config` will often show you a manual page that describes the format of the `sshd_config` file along with many, if not all, of its configuration directives. Unfortunately, [CentOS 7's Vagrant box does not include manual pages for SSH](https://bugs.centos.org/view.php?id=14633), but most other systems do. Try `man sshd_config` on the Ubuntu Bionic virtual machine, for example.
 >
 > :beginner: You may have noticed the `ssh_config` file. Not to be confused with the `sshd_config` file, this is the system-wide configuration file for the `ssh` client program. We will have a closer look at this file when we explore our SSH client's environment. So, for now, simply take care not to confuse the SSH daemon's configuration file (`sshd_config`) with the SSH client program's configuration file (`ssh_config`). Both files exist on the same machine since a single machine might be running both an SSH client and an SSH server at the same time.
 
@@ -380,64 +209,15 @@ Now you can see how host keys are used as SSH's mechanism for identifying server
 
 **Do this:**
 
-1. From your host machine, access a command line of your Ubuntu Xenial virtual machine. You can do this through the VirtualBox Manager graphical application or by navigating to the `ubuntu-xenial` folder in this practice lab and invoking `vagrant ssh`.
-1. Find the IP address of the CentOS 7 server. You can do this in a number of ways, such as:
-    * invoking `ip address` at the command line of the CentOS 7 virtual machine, as discussed in [Network connectivity checking](#network-connectivity-checking), or, perhaps more fun,
-    * emitting a network probe from the Ubuntu Xenial virtual machine using the `ping(1)` command to each of the IP addresses within [the DHCP address pool you configured earlier](#virtualbox-dhcp-server-configuration) and seeing which one responds:
-        ```sh
-        ping 172.16.1.10 # Is a machine on the network at this address?
-        ping 172.16.1.11 # How about this address?
-        ping 172.16.1.12 # And so on.
-        ping 172.16.1.13
-        ping 172.16.1.14 # Don't forget that one of these will be you!
-        ping 172.16.1.15 # You can ping yourself, but that won't help
-        ping 172.16.1.16 # you find a remote server. :)
-        ping 172.16.1.17
-        ping 172.16.1.18
-        ping 172.16.1.19
-        ping 172.16.1.20
-        ```
-        > :beginner: The `ping(1)` command is famous for exactly this use: to see if a network device is online. It's actually an abbreviation for "packet Internet groper," and it is analogous to the concept of a ping used in sonar technologies. While the `ping` command can do a number of neat things, all we're doing here is sending a message to the address you specify asking for a response. Much like making a telephone call to a friend, if they pick up and a response arrives, you know they're alive. If no response arrives, well, one hopes they're just not answering their phone right now. It happens!
-        >
-        > On most systems, invoking `ping` this way will cause your machine to try reaching the destination address forever. If no response arrives within a few seconds, though, it's very unlikely that trying for any longer will succeed. To stop `ping`, press the `Control` key and, while keeping it pressed, press the `c` key on your keyboard. This keyboard sequence is sometimes notated as `^C` (often called "Emacs style" or "hat style" notation) or `C-c` (often called "Vim style").
-        >
-        > If the address you probe does not respond, you might see output like that shown below. Notice that the `^C` indicates when the Control-C key combination was pressed to stop `ping`ing:
-        > ```sh
-        > vagrant@ubuntu-xenial:~$ ping 172.16.1.20
-        > PING 172.16.1.20 (172.16.1.20) 56(84) bytes of data.
-        > From 172.16.1.10 icmp_seq=1 Destination Host Unreachable
-        > From 172.16.1.10 icmp_seq=2 Destination Host Unreachable
-        > From 172.16.1.10 icmp_seq=3 Destination Host Unreachable
-        > ^C
-        > --- 172.16.1.20 ping statistics ---
-        > 5 packets transmitted, 0 received, +3 errors, 100% packet loss, time 4010ms
-        > ```
-        >
-        > In contrast, if you do get a response, you'll see output more like this, showing how long it took your machine to hear a response to "echo-location" request:
-        >
-        > ```sh
-        > vagrant@ubuntu-xenial:~$ ping 172.16.1.11
-        > PING 172.16.1.11 (172.16.1.11) 56(84) bytes of data.
-        > 64 bytes from 172.16.1.11: icmp_seq=1 ttl=64 time=0.409 ms
-        > ^C
-        > --- 172.16.1.11 ping statistics ---
-        > 1 packets transmitted, 1 received, 0% packet loss, time 0ms
-        > rtt min/avg/max/mdev = 0.409/0.409/0.409/0.000 ms
-        > ```
-        >
-        > Note that the specific IP addresses that respond to you may be different that those shown above because your DHCP server may have assigned your virtual machines different IP addresses than the author's. However, you should get a response from exactly two machines in the DHCP address pool: one is the Ubuntu Xenial virtual machine, and the other is the CentOS 7 virtual machine. Make sure you know which is which. Remember, you can always look up your current machine's IP address with the `ip address` command.
-        >
-        > :beginner: If only one machine within the DHCP address range responds, make sure that both your virtual machines are turned on and that you have correctly [configured the VirtualBox DHCP server](#virtualbox-dhcp-server-configuration), discussed earlier. In this lab, if you can't `ping` one machine from the other, then you also can't use `ssh` to connect to one from the other.
-        >
-        > :beginner: For the remainder of this guide, we assume that the CentOS 7 virtual machine has IP address `172.16.1.11` and that the Ubuntu Xenial virtual machine has the IP address `172.16.1.10`. If your machines are located at different addresses, adjust the commands in this guide accordingly.
-1. Once you have the IP address of the CentOS 7 virtual machine, use `ssh` to start a connection to it:
+1. From your host machine, access a command line of your Ubuntu Bionic virtual machine. You can do this through the VirtualBox Manager graphical application or by invoking the `vagrant ssh client`.
+1. Use `ssh` to start a connection to the SSH server using its IP address:
     ```sh
-    vagrant@ubuntu-xenial:~$ ssh 172.16.1.11 # Remember, your CentOS VM's IP address might be different.
-    The authenticity of host '172.16.1.11 (172.16.1.11)' can't be established.
+    vagrant@ssh-client:~$ ssh 172.16.1.111
+    The authenticity of host '172.16.1.111 (172.16.1.111)' can't be established.
     ECDSA key fingerprint is SHA256:bC7KnOz29hPzOtCHTI5faWHfOh7Hw2LmS13UWuZQsO0.
     Are you sure you want to continue connecting (yes/no)?
     ```
-    Before you do anything else, take a moment to read the output here carefully. You are once again confronted with the message, "`The authenticity of host '172.16.1.11 (172.16.1.11)' can't be established.`" Following that, you see the fingerprint of one of the server's host keys (the ECDSA one, in this case). This fingerprint uniquely identifies the machine to which you are connecting. Notice that even though the IP address of the host is different this time than last time (where it was `localhost (::1)`), the fingerprint is the same. Again, IP addresses are addresses, not server identities. Always use the server's key fingerprint to ensure you are connecting to the endpoint you intend.
+    Before you do anything else, take a moment to read the output here carefully. You are once again confronted with the message, "`The authenticity of host '172.16.1.111 (172.16.1.111)' can't be established.`" Following that, you see the fingerprint of one of the server's host keys (the ECDSA one, in this case). This fingerprint uniquely identifies the machine to which you are connecting. Notice that even though the IP address of the host is different this time than last time (where it was `localhost (::1)`), the fingerprint is the same. Again, IP addresses are addresses, not server identities. Always use the server's key fingerprint to ensure you are connecting to the endpoint you intend.
 1. Type `no` and then press the `Return` or `Enter` keys to abort your connection.
 
 Don't worry, we'll connect again in just a moment. Before we do, though, we need to become familiar with a few important files that your SSH client uses regularly. These are all located in your user account's home folder, inside a hidden folder called `.ssh`. Let's have a look inside it.
@@ -446,7 +226,7 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
 
 **Do this:**
 
-1. List the contents of your Ubuntu Xenial machine's `vagrant` home directory:
+1. List the contents of your Ubuntu Bionic machine's `vagrant` home directory:
     ```sh
     cd    # Be sure you are starting from your home folder.
     ls    # This will return no output, even though the folder is *not* empty.
@@ -454,29 +234,29 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
     ```
 1. List the contents of `vagrant`'s `.ssh` directory. You will see only one file, for now:
     ```sh
-    vagrant@ubuntu-xenial:~$ ls .ssh/
+    vagrant@ssh-client:~$ ls .ssh/
     authorized_keys
     ```
     Take note of the `authorized_keys` file, and that no other files are present.
     > :beginner: The `authorized_keys` file is discussed in [the "Basic SSH authentication methods" section](#basic-ssh-authentication-methods), so ignore it for now. This file exists because it was created by the creator of the Vagrant box. It's what allows you to use the `vagrant ssh` command successfully. In a brand-new machine that you build from scratch, you may need to make this file yourself. That's not difficult but, again, is discussed later.
 1. Make another connection to the CentOS 7 SSH server. After double-checking that the fingerprint is correct, type `yes` when prompted to continue the connection. The complete output might look something like this:
     ```sh
-    vagrant@ubuntu-xenial:~$ ssh 172.16.1.11
-    The authenticity of host '172.16.1.11 (172.16.1.11)' can't be established.
+    vagrant@ssh-client:~$ ssh 172.16.1.111
+    The authenticity of host '172.16.1.111 (172.16.1.111)' can't be established.
     ECDSA key fingerprint is SHA256:bC7KnOz29hPzOtCHTI5faWHfOh7Hw2LmS13UWuZQsO0.
     Are you sure you want to continue connecting (yes/no)? yes
-    Warning: Permanently added '172.16.1.11' (ECDSA) to the list of known hosts.
+    Warning: Permanently added '172.16.1.111' (ECDSA) to the list of known hosts.
     Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
     ```
-    This was *not* a successful login (as shown by the line starting with "`Permission denied`"), but that's to be expected at this time. The important thing to note is the `Warning` informing you that the `ECDSA` key fingerprint for the server at `172.16.1.11` was added to the list of known hosts.
+    This was *not* a successful login (as shown by the line starting with "`Permission denied`"), but that's to be expected at this time. The important thing to note is the `Warning` informing you that the `ECDSA` key fingerprint for the server at `172.16.1.111` was added to the list of known hosts.
 1. List the contents of your `.ssh` directory again. This time, you will see a second file, called `known_hosts`:
     ```sh
-    vagrant@ubuntu-xenial:~$ ls .ssh/
+    vagrant@ssh-client:~$ ls .ssh/
     authorized_keys  known_hosts
     ```
 1. Make another connection to the CentOS SSH server again. This time, notice that we are not presented with the key fingerprint as we have been before:
     ```sh
-    vagrant@ubuntu-xenial:~$ ssh 172.16.1.11
+    vagrant@ssh-client:~$ ssh 172.16.1.111
     Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
     ```
     The reason, as you may have guessed, is because the key fingerprint is now stored in the `known_hosts` file, which (unsurprisingly) contains a list of all the hosts (servers) known to the SSH client. In other words, it's a list of the addresses of non-strangers, along with information about what the servers at that address should look like (i.e., their key fingerprint).
@@ -492,7 +272,7 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
     Notice again that the fingerprint shown matches that of the fingerprint first presented to you when you connected to the server.
 1. Have one final look at the file, but this time adding the `-F` option, which finds a specific host in the file:
     ```sh
-    ssh-keygen -l -f ~/.ssh/known_hosts -F 172.16.1.11
+    ssh-keygen -l -f ~/.ssh/known_hosts -F 172.16.1.111
     ```
     This is the most human-readable output, as it displays the SSH server's address and fingerprint in the same manner as when you are using the `ssh` client program itself. All of these formats are equivalent, it's just a matter of presenting the data therein in one way or another. The point here is to illustrate that once you make a connection to a server, your SSH client program remembers this fact by writing a new line with the relevant details into the `known_hosts` file.
     > :bulb: In older versions of SSH, the `known_hosts` file listed the addresses of remote servers in cleartext. Newer versions of SSH (such as those used in this lab) no longer default to this behavior, which is why the host address portion of a `known_hosts` file is obscured. As long as your SSH client programs support it, you can immediately improve the security of your `known_hosts` file by hashing all the addresses with `ssh-keygen`'s `-H` option:
@@ -508,8 +288,8 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
     > :beginner: Should you ever want to remove an SSH server from the list of known hosts, you can do so with `ssh-keygen`'s `-R` option:
     >
     > ```sh
-    > # Remove host 172.16.1.11.
-    > ssh-keygen -R 172.16.1.11 -f ~/.ssh/known_hosts
+    > # Remove host 172.16.1.111.
+    > ssh-keygen -R 172.16.1.111 -f ~/.ssh/known_hosts
     > rm -i ~/.ssh/known_hosts.old # Optionally, remove the backup file `ssh-keygen` made.
     > ```
     >
@@ -538,7 +318,7 @@ We can watch this process take place in real time by starting an SSH connection 
 
 1. Start an SSH connection to your CentOS server with the client's verbosity turned up to level 2:
     ```sh
-    ssh -vv 172.16.1.11
+    ssh -vv 172.16.1.111
     ```
     > :beginner: There's going to be a *lot* of output from this command. This is all intended to help you troubleshoot problems, although here we're using it to show you some of how SSH works "under the hood." If you ever do run into a problem, though, you can use this technique to get a lot more information about what might be going wrong with the connection you're trying to make.
     >
@@ -546,7 +326,7 @@ We can watch this process take place in real time by starting an SSH connection 
     >
     > When started this way, most lines of output will be labelled with the debugging level that the message on the remainder of the line is associated with. In other words, lines that begin with `debug1: ` will be printed when you run `ssh -v`, whereas lines that begin with `debug2: ` will only be printed when you run `ssh -vv` (or `ssh -vvv` and so on).
     >
-    > If you're comfortable on a command line, you can use this fact to quickly filter the output to show you just what you're interested in. For example, [`ssh -vv 172.16.1.11 2>&1 | grep debug2`](https://explainshell.com/explain?cmd=ssh+-vv+172.16.1.11+2%3E%261+%7C+grep+debug2) will only show you the level 2 debugging output.
+    > If you're comfortable on a command line, you can use this fact to quickly filter the output to show you just what you're interested in. For example, [`ssh -vv 172.16.1.111 2>&1 | grep debug2`](https://explainshell.com/explain?cmd=ssh+-vv+172.16.1.111+2%3E%261+%7C+grep+debug2) will only show you the level 2 debugging output.
 
 Rather than dissect this output line by line, let's focus on just a few of the more important messages. The very first line will look like something like this:
 
@@ -557,7 +337,7 @@ OpenSSH_7.2p2 Ubuntu-4ubuntu2.4, OpenSSL 1.0.2g  1 Mar 2016
 This is the same output you'll see if you invoke `ssh` asking for its version information with the `-V` option:
 
 ```sh
-vagrant@ubuntu-xenial:~$ ssh -V
+vagrant@ssh-client:~$ ssh -V
 OpenSSH_7.2p2 Ubuntu-4ubuntu2.4, OpenSSL 1.0.2g  1 Mar 2016
 ```
 
@@ -581,10 +361,10 @@ debug1: /etc/ssh/ssh_config line 19: Applying options for *
 
 We could open the `/etc/ssh/ssh_config` file and sure enough, on line 19, we would find some configuration directives. Let's skip this for now, though, as we'll have plenty of time to examine the configuration file soon enough.
 
-Just a few lines later, we can see that `ssh` reports it is connecting to the server at the address we gave it, and that the connection succeeds ("`Connection established.`"). Right after that, `ssh` tries loading its own identity files, its *client [host] keys*, but finds that none exist ("`No such file or directory`"). This isn't an error, exactly, since none exist because we haven't created any yet. Finally, we see the beginning of an authentication attempt as `ssh` reports it is `Authenticating to 172.16.1.11:22 as 'vagrant'`. Here's that chunk of the output in full:
+Just a few lines later, we can see that `ssh` reports it is connecting to the server at the address we gave it, and that the connection succeeds ("`Connection established.`"). Right after that, `ssh` tries loading its own identity files, its *client [host] keys*, but finds that none exist ("`No such file or directory`"). This isn't an error, exactly, since none exist because we haven't created any yet. Finally, we see the beginning of an authentication attempt as `ssh` reports it is `Authenticating to 172.16.1.111:22 as 'vagrant'`. Here's that chunk of the output in full:
 
 ```
-debug1: Connecting to 172.16.1.11 [172.16.1.11] port 22.
+debug1: Connecting to 172.16.1.111 [172.16.1.111] port 22.
 debug1: Connection established.
 debug1: key_load_public: No such file or directory
 debug1: identity file /home/vagrant/.ssh/id_rsa type -1
@@ -607,7 +387,7 @@ debug1: Local version string SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.4
 debug1: Remote protocol version 2.0, remote software version OpenSSH_7.4
 debug1: match: OpenSSH_7.4 pat OpenSSH* compat 0x04000000
 debug2: fd 3 setting O_NONBLOCK
-debug1: Authenticating to 172.16.1.11:22 as 'vagrant'
+debug1: Authenticating to 172.16.1.111:22 as 'vagrant'
 debug1: SSH2_MSG_KEXINIT sent
 debug1: SSH2_MSG_KEXINIT received
 ```
@@ -642,7 +422,7 @@ Put simply, some of these are better than others. What we'd like to do is have `
 > :beginner: SSH can be installed with support for different algorithms. To find out which specific algorithms are supported by your copy of SSH, you can query the SSH client directly. Use the `-Q` option for this. For example, to ask your SSH client what host key algorithms it supports, use `-Q key`:
 >
 > ```sh
-> vagrant@ubuntu-xenial:~$ ssh -Q key
+> vagrant@ssh-client:~$ ssh -Q key
 > ssh-ed25519
 > ssh-ed25519-cert-v01@openssh.com
 > ssh-rsa
@@ -660,7 +440,7 @@ Put simply, some of these are better than others. What we'd like to do is have `
 > You can use `-Q` to ask `ssh` for a list of the supported values for any of the various session parameters of your SSH connection. For example, to see a list of the key exchange algorithms (which we'll talk about later) available for your use with this specific `ssh` client, use `-Q kex`:
 >
 > ```sh
-> vagrant@ubuntu-xenial:~$ ssh -Q kex
+> vagrant@ssh-client:~$ ssh -Q kex
 > diffie-hellman-group1-sha1
 > diffie-hellman-group14-sha1
 > diffie-hellman-group-exchange-sha1
@@ -710,7 +490,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
 
 1. First, remove the SSH client's knowledge of any previous connections by deleting the SSH server's host key from your `known_hosts` file:
     ```sh
-    ssh-keygen -R 172.16.1.11
+    ssh-keygen -R 172.16.1.111
     ```
 1. Next, list the host key algorithms available to you: 
     ```sh
@@ -720,7 +500,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
     > :beginner: The differences between the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` values relate to the use of SSH certificates instead of plain SSH keys. In this introductory lab, we won't be using SSH certificates at all, but you can learn more about the distinction between plain SSH keys and SSH certificates in the [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys) discussion section.
 1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o "HostKeyAlgorithms ssh-ed25519"` as part of the `ssh` client invocation:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.11
+    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.111
     ```
 
     > :beginner: SSH configuration options can include an equals sign (`=`) between the configuration directive's name and its value. For example, `-o HostKeyAlgorithms=ssh-ed25519` is equivalent to `-o "HostKeyAlgorithms ssh-ed25519"`. In this guide, the latter (space-separated) style is used as it matches exactly the syntax used in the SSH configuration files themselves.
@@ -729,7 +509,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
 1. Abort the connection by typing `no` and pressing the `Return` or `Enter` key.
 1. Connect to the SSH server again, but this time ask for level 2 debugging output:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" -vv 172.16.1.11 
+    ssh -o "HostKeyAlgorithms ssh-ed25519" -vv 172.16.1.111 
     ```
 1. Find the client's `KEXINIT proposal` again, and notice that this time the `host key algorithms` line contains one and only one option. The output will include a snippet like this:
     ```
@@ -753,16 +533,16 @@ When the public key does not match the expected fingerprint, we experience a *ho
 
 1. Remove any prior host key fingerprints saved in your `known_hosts` file for the SSH server:
     ```sh
-    ssh-keygen -R 172.16.1.11
+    ssh-keygen -R 172.16.1.111
     ```
 1. Make a connection to the SSH server as normal, and approve the connection to save the server's ECDSA fingerprint in your `known_hosts` file:
     ```sh
-    ssh 172.16.1.11
+    ssh 172.16.1.111
     ```
     Answer `yes` at the SSH connection prompt.
 1. Make a second connection to the SSH server, but this time use the `ssh-ed25519` host key algorithm to induce the SSH server to provide a different key than it did the last time you connected:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.11
+    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.111
     ```
     > :beginner: This is going to produce a scary-looking warning message. Don't panic! We did this intentionally, and the warning is designed to sound alarms.
 
@@ -781,12 +561,12 @@ Please contact your system administrator.
 Add correct host key in /home/vagrant/.ssh/known_hosts to get rid of this message.
 Offending ECDSA key in /home/vagrant/.ssh/known_hosts:1
   remove with:
-  ssh-keygen -f "/home/vagrant/.ssh/known_hosts" -R 172.16.1.11
-ED25519 host key for 172.16.1.11 has changed and you have requested strict checking.
+  ssh-keygen -f "/home/vagrant/.ssh/known_hosts" -R 172.16.1.111
+ED25519 host key for 172.16.1.111 has changed and you have requested strict checking.
 Host key verification failed.
 ```
 
-This warning message is clearly designed to make you stop what you're doing and take notice. SSH is outright telling you that "it is possible that someone is doing something nasty" and that "someone could be eavesdropping on you right now." This can happen because, again, addreses (like `172.16.1.11`) are not identities: when you connect to an SSH server at a given address, the address itself provides no guarantee that you're actually connecting to the same machine you connected to when trying to reach that address before.
+This warning message is clearly designed to make you stop what you're doing and take notice. SSH is outright telling you that "it is possible that someone is doing something nasty" and that "someone could be eavesdropping on you right now." This can happen because, again, addreses (like `172.16.1.111`) are not identities: when you connect to an SSH server at a given address, the address itself provides no guarantee that you're actually connecting to the same machine you connected to when trying to reach that address before.
 
 One thing that could be happening is that a machine you expect to be politely delivering your messages to their ultimate destination is actually opening those messages itself. This "machine-in-the-middle" situation is how all networks function. However, when one of these machines in between you and your ultimate destination starts snooping on your messages, a *machine-in-the-middle (MitM) attack*, there isn't anything inherent in the way most networks are built that can alert you to this. Only the fact that this machine in the middle does not have access to your specific SSH server's private host key file offers any meaningful ability to detect that this interception is happening.
 
@@ -812,7 +592,7 @@ Let's take a look at how `ssh`'s behavior changes if we turn `StrictHostKeyCheck
 
 1. Make a connection to your SSH server asking for its Ed25519 key while also telling `ssh` not to perform "strict" host key checking. We need to set two configuration directives to do this, so we'll include the `-o` option two times, once for each configuration directive:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" -o "StrictHostKeyChecking no" 172.16.1.11
+    ssh -o "HostKeyAlgorithms ssh-ed25519" -o "StrictHostKeyChecking no" 172.16.1.111
     ```
 
 We'll see similar output as before, with a few differences at the end of the warning that read as follows:
@@ -831,7 +611,11 @@ Finally, the comma-separated list shown in parentheses on this last line are the
 
 ## Basic SSH authentication methods
 
-> :beginner: :bulb: Up until this point, our exploration has focused on authenticating an SSH server so that you can be confident that your connections are being routed to the endpoint you intend to communicate with. *Server authentication* is the responsibility of the SSH-TRANS protocol. When completed successfully, we now have a bidirectional ("full-duplex"), secured connection to an authenticated server. From here on out, we will be utilizing features provided by the other three SSH protocols. The next step in the process, *client authentication* (also known as *user authentication*), is the responsibility of the SSH-AUTH protcol. This means that, technically speaking, we are about to "use SSH-AUTH over our SSH-TRANS connection." This distinction is largely academic; most SSH implementations you're likely to encounter expect that SSH-AUTH requests immediately follow the success of an SSH-TRANS connection, but this is a matter of convention. Custom SSH implementations may behave differently. It is useful to understand when a particular action you take is handled by one protocol or another, especially when troubleshooting problems or if you encounter a system that makes use of the SSH protocols differently.
+> :beginner: :bulb: Up until this point, our exploration has focused on authenticating an SSH server so that you can be confident that your connections are being routed to the endpoint you intend to communicate with. *Server authentication* is the responsibility of the SSH-TRANS protocol. When completed successfully, we now have a bidirectional ("full-duplex"), secured connection to an authenticated server. From here on out, we will be utilizing features provided by the other three SSH protocols.
+>
+> The next step in the process, *client authentication* (also known as *user authentication*), is the responsibility of the SSH-AUTH protcol. This means that, technically speaking, we are about to "use SSH-AUTH over our SSH-TRANS connection." This distinction is largely academic; most SSH implementations you're likely to encounter expect that SSH-AUTH requests immediately follow the success of an SSH-TRANS connection, but this is a matter of convention. Custom SSH implementations may behave differently.
+>
+> It is useful to understand when a particular action you take is handled by one protocol or another, especially when troubleshooting problems or if you encounter a system that makes use of the SSH protocols differently.
 
 As we've just seen, there are numerous ways for clients to authenticate to SSH servers. Some authentication methods are provided by the SSH software suite itself. You can also add new ones to a particular SSH server by way of various interfaces, such as the [pluggable authentication module (PAM)](https://en.wikipedia.org/wiki/Pluggable_authentication_module) system or the [Generic Security Services Application Program Interface (GSSAPI)](https://en.wikipedia.org/wiki/Generic_Security_Services_Application_Program_Interface). In this lab, we'll only be concerning ourselves with the two most common authentication methods, `password` and `publickey`, but see the [PAM and GSSAPI SSH authentication methods](#pam-and-gssapi-ssh-authentication-methods) discussion section if you're curious about using additional or creating custom authentication methods yourself. Moreover, the "[Additional SSH authentication methods](#additional-ssh-authentication-methods)" discussion provides details about other ways to authenticate to an SSH server.
 
@@ -871,6 +655,12 @@ Despite these drawbacks, the `password` authentication method is still widely us
 > 1. `PubkeyAcceptedKeyTypes`
 > 1. Using more than one public key, i.e., `AuthenticationMethods publickey,publickey`
 > 1. `RevokedKeys`
+
+### SSH `hostbased` authentication
+
+> :construction: TK-TODO
+>
+> For the majority of use cases we care about, this authentication method is not considered useful because it fundamentally relies on trust relationships between machines rather than user account identity verification. We'll touch on this mechanism but for the purposes of this lab, won't actually dive that deep into it. 
 
 # Discussion
 

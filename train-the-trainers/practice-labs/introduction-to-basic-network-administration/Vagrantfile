@@ -1,0 +1,13 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "centos" do |c|
+    c.vm.box = "centos/8"
+    c.vm.network "private_network", type: "dhcp", virtualbox__intnet: "testnet"
+  end
+
+  config.vm.define "ubuntu" do |c|
+    c.vm.box = "ubuntu/bionic64"
+    c.vm.network "private_network", type: "dhcp", virtualbox__intnet: "testnet""
+  end
+
+end
