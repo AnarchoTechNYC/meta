@@ -1,6 +1,6 @@
 # Secretly sharing files with OnionShare and Tor Browser
 
-In this exercise we will create a temporary (ephemeral) *Darknet* Website called an *Onion site* using the Tor anonymity system. We will use our Onion site to secretly transfer a "sensitive" file to a friend. Our goal is to successfully give our friend a copy of the sensitive file without exposing so much as *the fact that* we have even transferred the file in the first place.
+In this exercise we will create a temporary (ephemeral) *Darknet* Website called an *Onion site* [using the Tor anonymity system](../../../practice-labs/introduction-to-anonymous-communications-using-tor/README.md). We will use our Onion site to secretly transfer a "sensitive" file to a friend. Our goal is to successfully give our friend a copy of the sensitive file without exposing so much as *the fact that* we have even transferred the file in the first place.
 
 Essentially, we will be creating a kind of *digital [dead drop](https://en.wikipedia.org/wiki/Dead_drop)*.
 
@@ -25,6 +25,8 @@ When you complete this exercise, you will have acquired the following capabiliti
 * The ability to share files even if you are located behind restrictive firewalls or censored networks such as school, library, or employment networks.
 
 # Scenario
+
+[![Still from the movie "Star Wars IV: A New Hope" showing Leia in classic white Alderaan attire.](https://img.youtube.com/vi/2XOzyBQ594E/0.jpg)](https://www.youtube.com/watch?v=2XOzyBQ594E)
 
 [You are part of the Rebel Alliance (and a traitor)!](https://www.youtube.com/watch?v=2XOzyBQ594E) In order to avoid certain defeat at the hands of The Empire, you must transmit the Death Star plans to a friend of yours, a fellow resistance fighter, whose contact information you already have. However, if you are observed communicating with your friend, you will both be arrested and charged with conspiracy to commit treason against The Emperor.
 
