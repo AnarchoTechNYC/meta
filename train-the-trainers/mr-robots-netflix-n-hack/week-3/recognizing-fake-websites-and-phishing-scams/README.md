@@ -25,7 +25,7 @@ When you complete this exercise, you will have acquired the following capabiliti
 
 # Scenario
 
-[![Phishing Shayla scene.](https://web.archive.org/web/20170317233813/https://i.imgur.com/5js8hxe.jpg)](Mr.%20Robot%20S01E03%20-%20Simple%20Phishing%20Scam.mp4?raw=true)
+[![Clip from "Mr. Robot" Season 1, Episode 3, where Elliot phishes his neighbor, Shayla.](https://web.archive.org/web/20170317233813/https://i.imgur.com/5js8hxe.jpg)](Mr.%20Robot%20S01E03%20-%20Simple%20Phishing%20Scam.mp4?raw=true)
 
 > Of course I know Shayla. I hacked her email as soon as she moved in next door. With a simple phishing scam I owned her password pretty easily.
 
@@ -47,57 +47,21 @@ To participate in this exercise, you must have:
 
 In addition to your laptop or desktop computer, you will need to acquire the following tools:
 
-* For creating your phishing website: [Social Engineer's Toolkit (SET)](https://www.trustedsec.com/social-engineer-toolkit-set/), version 8 or newer.
-    * While you can install SET on any computer, it is officially supported only on GNU/Linux systems, while macOS and Windows support is experimental. In order to provide a more reliable and consistent experience through this exercise, we will be installing SET into a GNU/Linux virtual machine.
 * For managing the virtual machines: [VirtualBox](https://www.virtualbox.org/) version 5.0 or newer, sometimes written as *VBox*.
 * For automatically configuring virtual machine settings: [Vagrant](https://vagrantup.com/) version 2.1 or newer.
 
-There are pre-built versions of the VirtualBox hypervisor software for Windows, macOS, GNU/Linux, and Solaris available for download from the [VirtualBox downloads page](https://www.virtualbox.org/wiki/Downloads). Your operating system's package repositories may also include a copy of VirtualBox, but be certain to double-check the version available there before installing it to ensure you are using a new-enough version of the software. For [FreeBSD users, VirtualBox is provided as a package or a source port and can be installed by following the instructions in the FreeBSD Handbook, §21.6](https://www.freebsd.org/doc/handbook/virtualization-host-virtualbox.html).
+Complete the [Introduction to Virtual Machine Management with Vagrant](../introduction-to-virtual-machine-management-with-vagrant/README.md) practice lab before this one if you do not yet have VirtualBox and Vagrant installed or are unfamiliar with how to use them.
 
-Similarly, there are pre-built versions of Vagrant for Windows, macOS, and numerous different GNU/Linux flavors available from the [Vagrant downloads page](https://www.vagrantup.com/downloads.html). [Vagrant is also provided as a FreeBSD port](https://svnweb.freebsd.org/ports/head/sysutils/vagrant/). Solaris users can [install Vagrant by installing from source](https://www.vagrantup.com/docs/installation/source.html).
+Then, bring the virtual machine(s) for the lab online.
 
-## Exercise installation on Windows
+**Do this:**
 
-**Do this** to prepare your Windows computer for this exercise:
+1. Boot the virtual machine needed for the lab:
+    ```sh
+    vagrant up
+    ```
 
-1. Install [VirtualBox](https://virtualbox.org/). The installation process for VirtualBox on Windows is straightforward, as it is the same as any other standard application. For details, see [§2.1 of the VirtualBox User Manual](https://www.virtualbox.org/manual/UserManual.html#installation_windows).
-1. Install [Vagrant](https://vagrantup.com/). The installation process for Vagrant on Windows is straightforward, as it is the same as any other standard application. For details, see the [Vagrant installation documentation](https://www.vagrantup.com/docs/installation/).
-1. [Download the exercise files as a ZIP archive](https://github.com/AnarchoTechNYC/meta/archive/master.zip) if you have not done so already.
-1. [Extract (uncompress) the files from the archive](https://support.microsoft.com/en-us/help/14200/windows-compress-uncompress-zip-files).
-1. Using the File Explorer, find the `recognizing-fake-websites-and-phishing-scams` folder inside the extracted archive. You can find this folder in the following way:
-    1. Open the `train-the-trainers` folder.
-    1. Open the `mr-robots-netlix-n-hack` folder.
-    1. Open the `week-3` folder.
-    1. Open the `recognizing-fake-websites-and-phishing-scams` folder.
-1. Open a PowerShell (or Command Prompt) window in the exercise folder by right-clicking inside the File Explorer window and selecting the "`Open PowerShell window here`" or "`Open command window`" option from the contextual menu.
-1. Type `vagrant up` at the command prompt and press the `Enter` or `Return` key on your keyboard to begin the remainder of the installation process.
-1. You may be asked to select a network interface to bridge, choose the interface you want or if you are unsure, respond `1` and press the `Enter` or `Return` key to complete the remainder of the installation process.
-
-Alternatively, you may attempt a manual installation of SET directly to your Windows computer, but this is left as an exercise for the reader.
-
-## Exercise installation on macOS
-
-**Do this** to prepare your macOS computer for this exercise:
-
-1. Install [VirtualBox](https://virtualbox.org/). The installation process for VirtualBox on macOS is straightforward, as it is the same as any other standard application. For details, see [§2.2 of the VirtualBox User Manual](https://www.virtualbox.org/manual/UserManual.html#installation-mac).
-1. Install [Vagrant](https://vagrantup.com/). The installation process for Vagrant on macOS is straightforward, as it is the same as any other standard application. For details, see the [Vagrant installation documentation](https://www.vagrantup.com/docs/installation/).
-1. [Download the exercise files as a ZIP archive](https://github.com/AnarchoTechNYC/meta/archive/master.zip) if you have not done so already.
-1. [Extract (uncompress) the files from the archive](https://support.apple.com/guide/mac-help/compress-uncompress-files-folders-mac-mchlp2528/mac).
-1. Using the [Finder](https://support.apple.com/en-us/HT201732), find the `recognizing-fake-websites-and-phishing-scams` folder inside the uncompressed archive. You can find this folder in the following way:
-    1. Open the `train-the-trainers` folder.
-    1. Open the `mr-robots-netlix-n-hack` folder.
-    1. Open the `week-3` folder.
-    1. Open the `recognizing-fake-websites-and-phishing-scams` folder.
-1. Open [the Terminal application](https://support.apple.com/guide/terminal/welcome/mac). A new macOS window with a command shell will open.
-1. Navigate to the exercise folder by typing `cd ` (the letters `c`, `d`, and then a literal space) into the command shell, then dragging-and-dropping the `recognizing-fake-websites-and-phishing-scams` folder's icon onto the command shell. This will autocomplete the filesystem path to the exercise folder in the command shell window. Finally, press the `return` key on your keyboard. 
-1. Type `vagrant up` at the Terminal prompt and press the `Enter` or `Return` key on your keyboard to begin the remainder of the installation process.
-1. You may be asked to select a network interface to bridge, choose the interface you want or if you are unsure, respond `1` and press the `Enter` or `Return` key to complete the remainder of the installation process.
-
-Alternatively, you may attempt a manual installation of SET directly to your macOS computer, but this is left as an exercise for the reader.
-
-## Exercise installation on GNU/Linux
-
-> :construction: TK-TODo
+Once the virtual machine is running, you can continue to the next step.
 
 # Practice
 

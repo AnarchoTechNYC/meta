@@ -72,7 +72,7 @@ In addition to your laptop or desktop computer, you will need to acquire the fol
 
 Complete the [Introduction to Virtual Machine Management with Vagrant](../introduction-to-virtual-machine-management-with-vagrant/README.md) practice lab before this one if you do not yet have VirtualBox and Vagrant installed or are unfamiliar with how to use them.
 
-Then, bring the virtual machines for the lab online.
+Then, bring the virtual machine(s) for the lab online.
 
 **Do this:**
 

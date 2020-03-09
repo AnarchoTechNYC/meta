@@ -25,11 +25,11 @@ This directory contains the following subprojects:
 
 All educational resources in all of the subprojects above expect a certain level of dexterity with fundamental computer tools such as a command-line interface (CLI) or terminal. Moreover, the executable labs are provided in virtual machine environments (isolated, sandboxed computers), so learners must also be familiar with or take the time to learn the basics of administering virtual machines and virtual networks. If these topics are new to you, we strongly advise you to pause here and take the necessary time to learn these basics before you return.
 
-To get started, we recommend taking the following route to prepare for the materials:
+To get started, we recommend taking the following route to prepare for and then navigate through our educational materials:
 
 1. [Tech Learning Collective's "Foundations: Command Line Basics" course](https://techlearningcollective.com/foundations/#foundations-command-line-basics) is our recommended introduction to CLI/terminal use. **Do not skip this if a command line environment is new to you.**
 1. [Introduction to Virtual Machine Management with Vagrant](practice-labs/introduction-to-virtual-machine-management-with-vagrant/README.md) introduces you to using [Vagrant](https://vagrantup.com/) to create, control, and destroy the rest of the lab environments. **Do not skip this if virtual machines or the Vagrant automation utility are new to you.**
 
-Once you have completed these basics, feel free to browse the rest of the educational material presented here.
+Once you have completed these basics, feel free to browse the rest of the educational material presented here at your discretion.
 
 Punch up. &#x24B6;CAB forever.
