@@ -20,21 +20,26 @@ This workshop presents a brief crash course in configuring and hardening SSH. By
     1. [Basic SSH authentication methods](#basic-ssh-authentication-methods)
         1. [SSH `password` authentication](#ssh-password-authentication)
         1. [SSH `publickey` authentication](#ssh-publickey-authentication)
-        1. [SSH `hostbased` authentication](#ssh-hostbased-authentication)
 1. [Discussion](#discussion)
     1. [What are NIST curves and why can't they be trusted?](#what-are-nist-curves-and-why-cant-they-be-trusted)
     1. [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys)
     1. [Additional host key verification options](#additional-host-key-verification-options)
     1. [PAM and GSSAPI SSH authentication methods](#pam-and-gssapi-ssh-authentication-methods)
     1. [Additional SSH authentication methods](#additional-ssh-authentication-methods)
+        1. [SSH `hostbased` authentication](#ssh-hostbased-authentication)
+        1. [SSH Kerberos authentication](#ssh-kerberos-authentication)
+        1. [SSH `keyboard-interactive` authentication](#ssh-keyboard-interactive-authentication)
+    1. [Auditing your SSH configuration using `ssh-audit.py`](#auditing-your-ssh-configuration-using-ssh-auditpy)
+    1. [Creating a VPN-like experience over SSH with `sshuttle`](#creating-a-vpn-like-experience-over-ssh-with-sshuttle)
 1. [Additional references](#additional-references)
 
 # Objectives
 
 When you complete this lab, you will have acquired the following capabilities:
 
-* The ability to audit SSH server and client configuration files to spot potential security weaknesses and prove that these hardened configurations are in effect on both server and client endpoints.
+* The ability to verify the identity of the SSH server to which you are connecting.
 * The ability to log in to an SSH server using SSH's public key-based ("passwordless") authentication mechanism.
+* The ability to audit SSH server and client configuration files to spot potential security weaknesses and prove that these hardened configurations are in effect on both server and client endpoints.
 
 To successfully complete this lab, you will need to construct a virtualized network that matches the diagram shown below. We suggest that you refer to this diagram throughout this practice lab to check your understanding of the material presented herein.
 
@@ -656,12 +661,6 @@ Despite these drawbacks, the `password` authentication method is still widely us
 > 1. Using more than one public key, i.e., `AuthenticationMethods publickey,publickey`
 > 1. `RevokedKeys`
 
-### SSH `hostbased` authentication
-
-> :construction: TK-TODO
->
-> For the majority of use cases we care about, this authentication method is not considered useful because it fundamentally relies on trust relationships between machines rather than user account identity verification. We'll touch on this mechanism but for the purposes of this lab, won't actually dive that deep into it. 
-
 # Discussion
 
 ## What are NIST curves and why can't they be trusted?
@@ -709,14 +708,36 @@ To learn more, [Tech Learning Collective provides an interactive sample SSH cert
 ## Additional SSH authentication methods
 
 > :construction: TK-TODO
->
-> Talk about `hostbased`, Kerberos, `keyboard-interactive`, etc.
 
-## Using `ssh-audit.py`
+### SSH `hostbased` authentication
+
+> :construction: TK-TODO
+>
+> For the majority of use cases we care about, this authentication method is not considered useful because it fundamentally relies on trust relationships between machines rather than user account identity verification. We'll touch on this mechanism but for the purposes of this lab, won't actually dive that deep into it. 
+
+### SSH Kerberos authentication
+
+> :construction: TK-TODO
+
+### SSH `keyboard-interactive` authentication
+
+> :construction: TK-TODO
+
+## Auditing your SSH configuration using `ssh-audit.py`
 
 > :construction: See https://github.com/jtesta/ssh-audit
 >
 > ![Screenshot of ssh-audit.py audit results.](https://cloud.githubusercontent.com/assets/7356025/19233757/3e09b168-8ef0-11e6-91b4-e880bacd0b8a.png)
+
+## Creating a VPN-like experience over SSH with `sshuttle`
+
+> :construction: TK-TODO
+>
+> In brief, `sshuttle(1)` is a command that uses one of several methods to automatically redirect all outbound traffic over an established SSH session. This has the effect of turning an SSH connection into a lightweight Virtual Private Network (VPN) connection whereby your SSH server acts as your VPN endpoint. This obviates the need to do SSH port forwarding (using `ssh`'s `-L`/`-R` options).
+>
+> Since `sshuttle` uses an existing SSH configuration, all you have to do is make sure your SSH connection itself is working, and then invoke the `sshuttle` command (with a few optional arguments of its own), and it will do the rest to figure out how to forward your traffic.
+>
+> Under the hood, `sshuttle` typically uses an `iptables(8)` `PREROUTING` rule in the `nat` table (or an equivalent like `nftables` or `ipfw` when those systems are available instead) in order to alter the destination of outbound IP packets.
 
 # Additional references
 
