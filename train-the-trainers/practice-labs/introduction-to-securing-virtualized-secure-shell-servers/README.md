@@ -29,7 +29,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. By
         1. [SSH `hostbased` authentication](#ssh-hostbased-authentication)
         1. [SSH Kerberos authentication](#ssh-kerberos-authentication)
         1. [SSH `keyboard-interactive` authentication](#ssh-keyboard-interactive-authentication)
-    1. [Requiring multiple SSH authentication methods]()
+    1. [Requiring multiple SSH authentication methods](#requiring-multiple-ssh-authentication-methods)
     1. [Auditing your SSH configuration using `ssh-audit.py`](#auditing-your-ssh-configuration-using-ssh-auditpy)
     1. [Creating a VPN-like experience over SSH with `sshuttle`](#creating-a-vpn-like-experience-over-ssh-with-sshuttle)
 1. [Additional references](#additional-references)
