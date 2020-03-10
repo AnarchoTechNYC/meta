@@ -72,8 +72,8 @@ To perform this lab, you must have:
 
 In addition to your laptop or desktop computer, you will need to acquire the following tools.
 
-* For managing the virtual machines: [VirtualBox](https://www.virtualbox.org/) version 5.0 or newer, sometimes written as *VBox*.
-* For automatically configuring virtual machine settings: [Vagrant](https://vagrantup.com/) version 2.1 or newer.
+* For managing the virtual machines: [VirtualBox](https://www.virtualbox.org/) version 6.1 or newer, sometimes written as *VBox*.
+* For automatically configuring virtual machine settings: [Vagrant](https://vagrantup.com/) version 2.2.7 or newer.
 
 Complete the [Introduction to Virtual Machine Management with Vagrant](../introduction-to-virtual-machine-management-with-vagrant/README.md) practice lab before this one if you do not yet have VirtualBox and Vagrant installed or are unfamiliar with how to use them.
 

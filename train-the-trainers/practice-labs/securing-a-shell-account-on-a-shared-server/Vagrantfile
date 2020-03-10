@@ -2,12 +2,6 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
   config.vm.hostname = "secacct-practice-lab"
 
-  config.vm.provider "virtualbox" do |v|
-    # Set a name to avoid VirtualBox bug.
-    # See: https://github.com/hashicorp/vagrant/issues/9524
-    v.name = "securing-shell-account-anarchotech-practice-lab"
-  end
-
   config.vm.provision "shell", inline: <<-SHELL
     # Set up the base system.
     apt update
