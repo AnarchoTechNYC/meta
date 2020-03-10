@@ -29,6 +29,7 @@ This workshop presents a brief crash course in configuring and hardening SSH. By
         1. [SSH `hostbased` authentication](#ssh-hostbased-authentication)
         1. [SSH Kerberos authentication](#ssh-kerberos-authentication)
         1. [SSH `keyboard-interactive` authentication](#ssh-keyboard-interactive-authentication)
+    1. [Requiring multiple SSH authentication methods]()
     1. [Auditing your SSH configuration using `ssh-audit.py`](#auditing-your-ssh-configuration-using-ssh-auditpy)
     1. [Creating a VPN-like experience over SSH with `sshuttle`](#creating-a-vpn-like-experience-over-ssh-with-sshuttle)
 1. [Additional references](#additional-references)
@@ -636,6 +637,8 @@ Despite these drawbacks, the `password` authentication method is still widely us
 
 ### SSH `password` authentication
 
+Although password-based authentication is common, many modern Operating System distributions do not enable it by default because of all the drawbacks discussed earlier. Nevertheless, it is the simplest way to begin using SSH and provides an illustrative example for understanding how SSH authentication mechanisms work in general.
+
 > :construction: TK-TODO
 >
 > Basic outline is:
@@ -722,6 +725,12 @@ To learn more, [Tech Learning Collective provides an interactive sample SSH cert
 ### SSH `keyboard-interactive` authentication
 
 > :construction: TK-TODO
+
+## Requiring multiple SSH authentication methods
+
+> :construction: TK-TODO
+>
+> Basically, set `AuthenticationMethods` to a comma-separated one or more lists of valid methods. See `sshd_config(5)`.
 
 ## Auditing your SSH configuration using `ssh-audit.py`
 
