@@ -29,6 +29,7 @@ To get started, we recommend taking the following route to prepare for and then 
 
 1. [Tech Learning Collective's "Foundations: Command Line Basics" course](https://techlearningcollective.com/foundations/#foundations-command-line-basics) is our recommended introduction to CLI/terminal use. **Do not skip this if a command line environment is new to you.**
 1. [Introduction to Virtual Machine Management with Vagrant](practice-labs/introduction-to-virtual-machine-management-with-vagrant/README.md) introduces you to using [Vagrant](https://vagrantup.com/) to create, control, and destroy the rest of the lab environments. **Do not skip this if virtual machines or the Vagrant automation utility are new to you.**
+1. [Securing a Shell Account on a Shared Server](practice-labs/securing-a-shell-account-on-a-shared-server/README.md) fleshes out many critical but vastly underappreciated elements of secure computer use, building up foundations using historical context.
 
 Once you have completed these basics, feel free to browse the rest of the educational material presented here at your discretion.
 

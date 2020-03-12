@@ -43,7 +43,10 @@ Welcome to the AnarchoTech NYC "Securing a Shell Account on a Shared Server"
 practice lab. This system is a pre-built, isolated simulation of shared shell
 servers that exist elsewhere on the Internet. After you complete this lab,
 we encourage you to sign up for one or more shell accounts (they're often free)
-on other machines.
+on other machines. You can find several suggestions for shell account providers
+at our wiki, here:
+
+    https://github.com/AnarchoTechNYC/meta/wiki/Free-shell-account-providers
 
 Please use what you learn here for the betterment of humanity. Only share what
 you know with the people who you believe will do the same. Remember, intention

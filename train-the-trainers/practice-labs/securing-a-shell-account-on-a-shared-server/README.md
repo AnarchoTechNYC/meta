@@ -118,6 +118,8 @@ With the virtualized server successfully started, let's create your practice acc
 
 ## Creating your shell account
 
+> :beginner: **This section is optional.** If you do not create your own unique user account, then you can use the demo account (named `janedoe`) that the previous `vagrant up` command already created for you. You can safely skip to the [Practice](#practice) section, or you can return here later to learn more about how administrators create new shell accounts.
+
 Having a server is only part of the equation. To use the server for our purposes, you must also have a user account, sometimes referred to as a *shell account*. A user account is needed so that you can login to the system, which means identifying yourself as a user who has permission to use the computer's resources.
 
 > :beginner: A *shell* is simply another term for a user interface. The term is a metaphor that refers to the outer-most layer of an Operating System, the software that makes a computer interactive, that brings it to life. If the operating system is the guts of the computer, the shell is its skin or, well, its shell. That is, it's the part you actually touch when interacting with it. Shells are usually either textual, in which case they are often called *command-line interfaces* or CLIs, or graphical, which are the windows, menus, and icons you may be most familiar with. Graphical shells are also called *graphical user interfaces*, or GUIs (pronounced "goo-ees").
@@ -286,6 +288,8 @@ Welcome to Ubuntu 16.04.5 LTS (GNU/Linux 4.4.0-133-generic x86_64)
 
 There is a huge amount of information packed into this one line.
 
+> :beginner: The exact welcome message you are sent may be slightly different than the one printed above. In particular, version numbers may change depending on when exactly you are reading this. Don't be alarmed if there are slight differences between the example outputs in this guide and your own lab environment.
+
 [Ubuntu](https://www.ubuntu.com/) is the name of a free operating system distribution. This server purports to be [version 16.04.5](http://releases.ubuntu.com/16.04/) of that operating system. ["LTS" is Ubuntu's abbreviation for "long term support."](https://wiki.ubuntu.com/LTS) An LTS release of Ubuntu is a version of the operating system that the vendor promises to maintain for a longer period of time than other versions. System administrators tend to prefer LTS releases (or whatever equivalent terminology is used by their operating system of choice) because it makes their jobs easier as fewer incompatibilities are introduced between software version releases.
 
 Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating system in the same family. In this case, the system is using the GNU/Linux kernel, specifically version `4.4.0-133-generic`. Furthermore, the kernel is built to run on the `x86_64` hardware architecture.
@@ -302,7 +306,7 @@ Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating s
 >
 > :beginner: :bulb: Just as there are different operating systems, there are different hardware architectures, too. The most ubiquitous hardware for servers and most of the personal computer industry is [Intel's x86 microprocessor](https://simple.wikipedia.org/wiki/X86). Contemporary Apple macOS devices (not the iPhone, but the line of desktop and laptop Macintosh computers), Windows-based computers, and a huge range of BSD and GNU/Linux operating systems are all often built to be hardware-compatible with Intel's x86 chips.
 >
-> The `x86_64` variant is Intel's 64-bit computing hardware. The hardware is "64-bit" because the CPU can ingest 64 bits of data in one instruction. You might also see the term `amd64`, which is for all intents and purposes equivalent to `x86_64`. The `amd` stands for [Advanced Micro Devices (AMD), Inc.](https://simple.wikipedia.org/wiki/Advanced_Micro_Devices), a competitor to Intel producing microprocessors that are compatible with Intel's x86 instruction set.
+> The `x86_64` variant is Intel's 64-bit computing hardware. The hardware is "64-bit" because the individual instructions sent to the CPU, called a *hardware [word](https://simple.wikipedia.org/wiki/Word_%28computer_architecture%29)*, are at most 64 bits long (or "wide," depending on your viewpoint). You might also see the term `amd64`, which is for all intents and purposes equivalent to `x86_64`. The `amd` stands for [Advanced Micro Devices (AMD), Inc.](https://simple.wikipedia.org/wiki/Advanced_Micro_Devices), a competitor to Intel producing microprocessors that are compatible with Intel's x86 instruction set.
 >
 > As an end user, you need to know which hardware your computer (or shared server) is using so that you know which pre-compiled software packages will run on your system. If you try to run software compiled for, say, an [Advanced RISC Machine (ARM)](https://simple.wikipedia.org/wiki/ARM_architecture) architecture on a machine that uses an Intel x86-based CPU, it certainly won't work.
 
