@@ -2,7 +2,7 @@
 # Set up the base system.
 export DEBIAN_FRONTEND=noninteractive
 apt update && apt upgrade --yes
-apt install --yes finger links talk talkd
+apt install --yes finger links talk talkd tree
 
 # Restrict the `talk` and `ntalk` services in `inetd.conf` so that
 # the `talkd` process can only respond to requests from localhost.
@@ -37,7 +37,7 @@ for user in ${users[*]}; do
     # given user accounts with `vagrant`'s SSH feature as follows:
     #
     # ```sh
-    # vagrant ssh -- -l $user -i provision/home/$user/.ssh/id_rsa
+    # vagrant ssh --plain -- -l $user -i provision/home/$user/.ssh/id_rsa
     # ```
     cp "/home/$user/.ssh/id_rsa.pub" "/home/$user/.ssh/authorized_keys"
     chown -R "$user:$user" "/home/$user/"

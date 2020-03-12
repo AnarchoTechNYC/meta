@@ -24,6 +24,7 @@ While some of this is still true today—many people still don't understand how 
     1. [Welcome to Wonderland](#welcome-to-wonderland)
     1. [Hello, world](#hello-world)
     1. [Looking around in digital space](#looking-around-in-digital-space)
+    1. [Reading files and making changes to filesystem layout](#reading-files-and-making-changes-to-filesystem-layout)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -261,9 +262,9 @@ As you grumble something about overworked and underpaid system operators, you re
 
 1. Open a new command prompt (terminal) window.
 1. Navigate to the folder containing the virtual server.
-1. Log in to the shared server using the account you requested. For our virtual server, the command to do this is `vagrant ssh -- -l $user -i $identity_file`, where `$user` is the user account name you chose earlier and `$identity_file` is the name of the file containing your SSH private key. If you are using an actual publicly accessible shared server, your system administrator should have supplied you with the syntax of an example command that will log you in. For example, if the user account you created on the virtual server is `janedoe` and the SSH private keys were created as described in the [Creating your shell account](#creating-your-shell-account) section, above, you should be able to log in by invoking the following command:
+1. Log in to the shared server using the account you requested. For our virtual server, the command to do this is `vagrant ssh --plain -- -l $user -i $identity_file`, where `$user` is the user account name you chose earlier and `$identity_file` is the name of the file containing your SSH private key. If you are using an actual publicly accessible shared server, your system administrator should have supplied you with the syntax of an example command that will log you in. For example, if the user account you created on the virtual server is `janedoe` and the SSH private keys were created as described in the [Creating your shell account](#creating-your-shell-account) section, above, you should be able to log in by invoking the following command:
     ```sh
-    vagrant ssh -- -l janedoe -i shell-account_rsa
+    vagrant ssh --plain -- -l janedoe -i shell-account_rsa
     ```
 
     If successful, your command prompt will change to the following:
@@ -426,7 +427,7 @@ Perhaps the computer isn't impatiently waiting for your input. Maybe, just maybe
     1. Invoke the `vagrant up` command to turn on the virtual server. If the server is already running, this command will do nothing, so it is safe to use regardless of whether the server is currently on or off.
     1. Log in to your shell account with the `vagrant ssh` command, your shell account's user name, and your SSH identity file. For example:
         ```sh
-        vagrant ssh -- -l janedoe -i shell-account_rsa
+        vagrant ssh --plain -- -l janedoe -i shell-account_rsa
         ```
 1. Ask your shell for help by entering the `help` command:
     ```sh
@@ -594,9 +595,9 @@ Alice's pause causes you to look back at her and away from the screen. "I like t
 
 "The dollar sign (`$`) at the end?" you ask.
 
-"Yup," Alice answers. "That dollar sign is the conventional way of telling you that you are speaking to a command shell and have regular user privileges, and not any special powers or elevated privileges like the sysops and administrators have."
+"Yup," Alice answers. "That dollar sign is the computer's way of telling you that you are speaking to a command shell and have regular user privileges, and not any special powers or elevated privileges like the sysops and administrators have."
 
-"Right." You nod, but think it best not to ask too much about how to elevate your privileges just yet.
+"Right." You nod. Although immediately curious about these "elevated privilegs," you think it best not to ask too much about how to elevate your privileges just yet.
 
 "So, you're speaking to a command shell, and you're in your home folder. Enter the `pwd` command, then press the `return` key to run that command."
 
@@ -608,9 +609,235 @@ janedoe@secacct-practice-lab:~$ pwd
 janedoe@secacct-practice-lab:~$
 ```
 
+"See that?" Alice continues. "The response from the computer to the `pwd` command is to print out the pathname of where you are right now."
+
+"My home folder," you say.
+
+"Exactly. Your home folder is just like any other folder on your computer, but it's named the same as your user account&mdash;`janedoe`, in your case&mdash;and it's inside of another folder called `home`. That's why it's your *home* folder! It's a folder with your name on it inside of a folder called `home`. Each of the slashes in the output to the `pwd` command (`/`) represents the fact that the folder name on the right of the slash is inside of the folder named on the left. So, in this case, your `janedoe` folder is inside of a folder, which we know because there is a slash and another name to its left, and that folder is called `home`. Or, put another way, from the start of the computer's digital filing system, denoted by the first slash with nothing to its left, there is a folder called `home`, inside of which there is another folder called `janedoe`. And that's why it's called a pathname: it's the path to a file (or folder) from the very start, or *root* of the *filesystem*."
+
+"So," you start to form a question, pause to do so, and notice Alice smiling at you out of the corner of your eye.
+
+"Yes?"
+
+"Well, so, would that mean your home folder is a folder called `alice` inside the `home` folder?"
+
+"Exactly!" Alice beams. "But don't take my word for it. Go look for yourself."
+
+"Okay, how do I do that?" you ask, doing your best to suppress any embarrassment for having to ask.
+
+"Good question!" Alice declares, obviously excited. "There's another extremely important command that you need to know to do that, the `ls` command. This command lists the contents of folders. That's why it's called, '`ls`', it's just an abbreviation for 'list.' And, technically, we don't call them 'folders,' we call them *directories*, because the way a folder actually works is that it's just a special kind of file whose contents is a directory of addresses (called [*inodes*, short for *index nodes*](https://en.wikipedia.org/wiki/Inode)) for each of the files it contains. It works similarly to the placard posted at reception downstairs; the placard is a directory of the offices in this building, with a room number and the name of the person whose office that room is. If you issue the `ls` command, then a space, and then the pathname to a directory (folder), the computer will show you the contents of the directory at that pathname. That is, it prints the names of the files in that folder."
+
+You nod slightly. "And so, if I wanted to find out what's in the `home` folder&mdash;I mean, the `home` directory&mdash;I would tell the `ls` command to list its contents?"
+
+"Yup! It's that easy."
+
+Encouraged, you type out your first attempt:
+
+```
+janedoe@secacct-practice-lab:~$ ls home
+ls: cannot access 'home': No such file or directory
+```
+
+"Don't forget any of the slashes in the pathname," Alice reminds you even before you get a chance to read the computer's response.
+
+Your second attemt yields far more success:
+
+```
+janedoe@secacct-practice-lab:~$ ls /home/
+alice  bob  janedoe  labadmin  mallory  rappinbill  ubuntu  vagrant
+```
+
+"Ah, okay, so `/home/` is not the same as `home` with no slashes?"
+
+"Well, not exactly," Alice explains. "The difference isn't so much that they are not the same directory because, remember, these are *pathnames* you're typing, which simply refer to locations in the filing system. It's a bit like asking the librarian for a given book on a given shelf. If you don't specify the wing of the library and the number of the bookcase along with the shelf on that bookcase *and* the name of the book, then the librarian won't know exactly which shelf, and thus also which specific book, you're asking after. When you omit the slashes, you're using a *relative pathname*, which is a location relative to wherever in the filing system you are currently browsing. Since there isn't a directory (folder) called `home` inside *your* 'home folder,' the `ls` command told you that `No such file or directory` exists in the place you asked it to look. When you include the very first slash in the pathname, though, you're using an *absolute pathname*, which means you're describing precisely each and every step in the path from the start of the filing system all the way to your destination."
+
+"You're saying that the first time I used `ls`, I was actually asking for slash-home-slash-janedoe-slash-home (`/home/janedoe/home`), because `pwd` told me I was already browsing in `/home/janedoe`?"
+
+It feels awkward to say all those slashes out like that, but Alice mimics you without missing a beat.
+
+"Exactly. And then when you did it the second time asking for slash-home-slash (`/home/`), you were asking for the specific directory located at exactly that point in the filing system, because your request began with that first slash. And actually," Alice leans over your keyboard momentarily to place her finger on your monitor, "that last slash is unecessary, so you could have just asked for slash-home (`/home`) as well and that would have had the same effect."
+
+"Okay, I think I'm starting to get this," you say.
+
+"Of course you are," Alice says. "And look, there's my home folder."
+
+"And a bunch of other people's!" you say.
+
+"Have a look in mine," she says.
+
+"Okay," you say. "That would be…`ls` and then 'home alice'?"
+
+"That's right," Alice says.
+
+Vocalizing pathnames without all the slashes is certainly easier. Besides, Alice doesn't seem to need them to understand you anyway. When typing out the commands to the computer, however, you carefully reinsert all the required leading slashes. 
+
+```
+janedoe@secacct-practice-lab:~$ ls /home/alice
+intranet_html
+```
+
+"What's `intranet_html`?" you ask, suddenly curious.
+
+Alice smiles. "I'll show you that soon. But first, I want to show you another way that you can list out the contents of my home folder, which might make all this pathname stuff easier to understand, too. Type `ls`, but this time, use dot-dot-slash-alice (`../alice`) instead of slash-home-slash-alice (`/home/alice`) for the path."
+
+```
+janedoe@secacct-practice-lab:~$ ls ../alice
+intranet_html
+```
+
+"Same thing," you say.
+
+"Yup, you're listing the same folder, but you're refering to it in a different way."
+
+"A relative path again?" you ask.
+
+"Yup, which you can tell because the pathname doesn't start with a leading slash. Instead, it has two dots, which is the pathname syntax for 'up,' or 'above,' or 'before', or 'parent,' or 'towards the root,' or 'the folder inside this one,' whichever 'this one' happens to be at the moment. Using dot-dot-slash (`../`) is how you can ask for items ajacent to, or siblings of, your current location, because you're asking for the item in the folder (denoted by the `/`) 'above' the relative location of where you are (denoted by the double-dot syntax, `..`). If you want to see this more visually, use the `tree` command exactly the same way you would use the `ls` command."
+
+"So, like I could do `tree`-slash-home?"
+
+Alice gestures at your keyboard as if to tell you to have a go.
+
+```
+janedoe@secacct-practice-lab:~$ tree /home
+/home
+├── alice
+│   └── intranet_html
+│       ├── book
+│       │   └── chapter1.html
+│       └── index.html
+├── bob
+├── janedoe
+├── labadmin
+│   ├── bin
+│   │   └── intranet-httpd.py
+│   └── intranet_home
+│       └── index.html
+├── mallory
+├── rappinbill
+│   └── intranet_html
+│       └── index.html
+├── ubuntu
+└── vagrant
+
+13 directories, 5 files
+```
+
+"Oh, wow!" you say. "Yeah, this is way easier to visualize now."
+
+"Unlike `ls`, `tree` will actually list the contents of every folder that it encounters, *recursively*. You can get `ls` to do this too, but you need to explicitly tell it to do so by using a command line *option*. The point of `tree`, though, is to help you see the layout of the filesystem more visually. And, as you can see, the filesystem is always laid out in this tree-like structure, with a root at the very beginning, technically called 'the *root directory* and then individual folders fanning out into 'branches' of this metaphorical tree."
+
+"And the files are the leaves," you add.
+
+"Precisely," Alice smiles. "See, you're totally getting this."
+
+"You're right, there *are* a lot of metaphors."
+
+"Just wait," Alice says, grinning, "this is just the tip of the iceberg."
+
+"How many files are there?" you ask.
+
+"Well, a lot. I mean, I don't know exactly. There are some files we can't see because we don't have administrative capabilities to look in the folders where they are stored," Alice says. "But we can certainly try to find out. See how the last line of `tree` gives you a count of all the directories and files it saw?"
+
+"That's kind of what I was thinking. Can I just do `tree /`?" you ask.
+
+"It's going to print a *ton* of output, but it's not going to do any damage. Give it a whirl, and while you're at it, practice using `ls` to look around the filesystem some more."
+
+**Do this**
+
+1. To figure out where in the filesystem you are currently browsing, use the `pwd` command. The response from the computer shows you where you are as an absolute pathname. The command is an abbreviation for "Print Working Directory."
+    ```sh
+    pwd
+    ```
+1. Find out what's in the `/home` folder using the `ls` command:
+    ```sh
+    ls /home
+    ```
+1. List the contents of another user's home folder by referencing their home folder as a pathname.
+    1. Do this with an absolute path:
+        ```sh
+        ls /home/alice
+        ```
+    1. Do it with a relative path as well:
+        ```sh
+        ls ../alice
+        ```
+1. Visualize the filesystem layout in Alice's home folder using the `tree` command.
+    ```sh
+    tree /home/alice
+    ```
+1. Have `tree` count the total number of files and directories that you can find for the entire filesystem by referring to the root directory:
+    ```sh
+    tree / # THIS IS GOING TO PRINT A LOT OF OUTPUT.
+    ```
+
+After a few more quick experiments, the questions start piling up in your mind.
+
+"So, how do I find out what's in these files? Can I make my own? And how do I move them around?"
+
+"All good questions," Alice says. "For each of those actions, you use a different command. But first, one more super important command that'll help you look around: the `cd` command."
+
+"What does `cd` do?"
+
+"It changes where you're currently browsing. The command stands for 'change directory,' and all it does is move you to the place in the filesystem that you reference via pathname. From then on, all relative pathnames refer to your new location. For example, try first going to my home folder, and *then* listing the contents."
+
+"So that's just `cd` and then slash-home-slash-alice, just like with `ls`?"
+
+"Yup."
+
+"Okay," you say as you begin to type.
+
+```
+janedoe@secacct-practice-lab:~$ cd /home/alice
+janedoe@secacct-practice-lab:/home/alice$
+```
+
+"Ohhhhhhhhh," you say. "The prompt changed."
+
+"Exactly," Alice says. "The tilde (`~`) was replaced by your new location, which is where you `cd`'ed into. Think of `cd` like moving yourself to another place in the library. Now you can just list the contents of 'here,' because you're already in the place where you want to look."
+
+"How do I say 'here' in command-line-speak, though?" you ask.
+
+"Well, in a pathname, 'above here' is written as two dots (`..`), so just 'here' is written as a single dot (`.`) on its own."
+
+```
+janedoe@secacct-practice-lab:/home/alice$ ls .
+intranet_html
+```
+
+"That makes sense," you say.
+
+"Yup. But also, for some commands, `ls` included, if you don't specify a path, they will make an assumption for you. So in this case, you can also just type `ls` without the space and the dot, and you'll get the same effect."
+
+"Got it."
+
+"Finally, now that you've left your home folder, you should know that there's a super easy way to get back there just in case you ever find yourself metaphorically lost."
+
+"What's that?"
+
+"Just type `cd` without any path at all. By default, this will return you to your home folder no matter where you are."
+
+```
+janedoe@secacct-practice-lab:/home/alice$ cd
+janedoe@secacct-practice-lab:~$ 
+```
+
+"The path in the prompt changed back to a tilde again."
+
+"Yup. You can also say `cd ~`, of course, or you can do `cd /home/janedoe`, all of which would have the same effect. But `cd` on its own is enough. Plus, it's less to type."
+
+"Okay, I can move around, and I can look in folders, but what about inside files? How do I read this book you're apparently writing? Can I just `ls` the file?"
+
+"Nope, `ls` with a file instead of a directory as a path just tells you whether that file exists or not. Besides," Alice laughs, "there's not much to read yet, I have so much more work to do on my book. But to read it, you'll have to look at the file's contents itself, so we'll need a few other commands."
+
+You look at Alice expectantly as she pauses.
+
+"Okay, okay," she continues, "let's just get right into it then."
+
+## Reading files and making changes to filesystem layout
+
 > :construction: TK-TODO
 >
-> Go over the very basics of files and directories, that directories are files which simply contain a list of their contents, etc. This means we need to cover `pwd`, `ls`, `mkdir`, `cd`, `touch`, and other basics.
+> Cover `mkdir`, `touch`, and other basics.
 >
 > Then get into communicating with another user. The first tool for this should be `write(1)`, as it is the simplest. This is also the very first security issue: use `mesg n` to disable messages from other users. Put this in a startup script (such as `.profile` or `.bash_login`) in order to disable write access to your STDERR file descriptor upon login.
 >
