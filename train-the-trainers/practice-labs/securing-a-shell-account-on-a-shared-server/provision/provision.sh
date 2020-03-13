@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# Disable Canonical, Inc.'s spammy adverts during login.
+sed --in-place='' -e 's/ENABLED=1/ENABLED=0/' /etc/default/motd-news
+systemctl stop motd-news.timer
+systemctl disable motd-news.timer   # Disable the timer that triggers
+systemctl disable motd-news.service # the service. Belt 'n' suspenders.
+
 # Set up the base system.
 export DEBIAN_FRONTEND=noninteractive
 apt update && apt upgrade --yes

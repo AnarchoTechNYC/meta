@@ -311,7 +311,7 @@ Ubuntu is a derivative of [Debian](https://www.debian.org/), another operating s
 >
 > As an end user, you need to know which hardware your computer (or shared server) is using so that you know which pre-compiled software packages will run on your system. If you try to run software compiled for, say, an [Advanced RISC Machine (ARM)](https://simple.wikipedia.org/wiki/ARM_architecture) architecture on a machine that uses an Intel x86-based CPU, it certainly won't work.
 
-Following the operating system's "Welcome" line are some pointers in the form of Web addresses. There are pointers to [the official Ubuntu documentation](https://help.ubuntu.com), the [homepage for a management service called Landscape](https://landscape.canonical.com), and links to where you can find [paid support](https://ubuntu.com/advantage) or [business consulting](http://www.ubuntu.com/business/services/cloud). These are here because the maker of Ubuntu, a for-profit corporation by the name of [Canonical, Ltd.](https://www.canonical.com/), bases its paid offerings on their free offerings. All of these services are optional, but some organizations who use the Ubuntu operating system subscribe to these services, as well.
+Following the operating system's "Welcome" line are some pointers in the form of Web addresses. There are pointers to [the official Ubuntu documentation](https://help.ubuntu.com), the [homepage for a management service called Landscape](https://landscape.canonical.com), and links to where you can find [paid support](https://ubuntu.com/advantage). These are here because the maker of Ubuntu, a for-profit corporation by the name of [Canonical, Ltd.](https://www.canonical.com/), bases its paid offerings on their free offerings. All of these services are optional, but some organizations who use the Ubuntu operating system subscribe to these services, as well.
 
 You have no need of any of these, so you scroll right past this block of text:
 
@@ -319,9 +319,6 @@ You have no need of any of these, so you scroll right past this block of text:
  * Documentation:  https://help.ubuntu.com
  * Management:     https://landscape.canonical.com
  * Support:        https://ubuntu.com/advantage
-
-  Get cloud support with Ubuntu Advantage Cloud Guest:
-    http://www.ubuntu.com/business/services/cloud
 ```
 
 Next, the system shows you a brief summary of the state of the currently installed software on the shared server. The server reports that everything is up to date: no packages can be updated and, of these, none are security updates.
@@ -347,7 +344,7 @@ Run 'do-release-upgrade' to upgrade to it.
 *** System restart required ***
 ```
 
-This is a message from the Ubuntu operating system informing you that a newer LTS release of Ubuntu is available. You smile inwardly as you realize this message is certainly not intended for you. It's intended for the system administrator. Only an administrator has the privileges required to restart (or "reboot") the computer system, because doing so would interrupt all the other users connected to it. Moreover, only an administrator can make changes to the operating system, which a major upgrade would certainly be.
+This is a message from the Ubuntu operating system informing you that a newer LTS release of Ubuntu is available, along with a notification that the system needs a reboot, and is nudging the administrator to turn it off and then back on again (`System restart required`). You smile inwardly as you realize these messages are certainly not intended for you. They're intended for the system administrator. Only an administrator has the privileges required to restart (or "reboot") the computer system, because doing so would interrupt all the other users connected to it. Moreover, only an administrator can make changes to the operating system, which a major upgrade would certainly be.
 
 Your eyes linger on this message for longer than they need to. If this message was not intended for you, how is it that you're seeing it? What else can you find here that may not be intended for you? How much more is already in here, anyway? You push your mug of coffee further across your desk, realizing that you are now energized despite your relatively decaffeinated state. You read on, eyes widened in anticipation of what you might encounter next.
 
