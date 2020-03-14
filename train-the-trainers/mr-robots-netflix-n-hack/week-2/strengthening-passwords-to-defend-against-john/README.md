@@ -2,7 +2,7 @@
 
 In this exercise we will obtain the password of an unsuspecting user by "cracking" the hashed copy of that user's password. Then we will use a password manager to strengthen our own passwords in order to protect ourselves against the same sort of attacks. Our goal is to understand why and how using [password management software](https://en.wikipedia.org/wiki/Password_manager) makes having a digital life both safer and easier at the same time.
 
-In other words, you will perform a *[password cracking](https://en.wikipedia.org/wiki/Password_cracking) attack* and learn how to stop password crackers from cracking your own passwords.
+In other words, you will perform a *[password cracking](https://en.wikipedia.org/wiki/Password_cracking) attack* and learn how to stop password crackers from cracking your own passwords. We'll also briefly touch on alternative, passwordless identity authentication schemes that can be used to wholly replace password-based log in mechanisms.
 
 1. [Objectives](#objectives)
 1. [Scenario](#scenario)
@@ -32,6 +32,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     * [Hash string formats](#hash-string-formats)
     * [Salted versus unsalted hashes](#salted-versus-unsalted-hashes)
     * [Generating custom wordlists automatically](#generating-custom-wordlists-automatically)
+    * [Using passwordless authentication schemes](#using-passwordless-authentication-schemes)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -974,6 +975,19 @@ Furthermore, many huge, public, free lookup databases of previously-computed (or
 
 * [Generating Wordlists](https://netsec.ws/?p=457) - use `cewl` to generate a custom wordlist by spidering a website.
 * [Making a Perfect Custom Wordlist Using Crunch](https://thehacktoday.com/making-perfect-custom-wordlist-using-crunch/) - use `crunch` to automate the process of composing large wordlists, see espeically the `-t` option.
+
+## Using passwordless authentication schemes
+
+Perhaps we've buried the lede but, if the service or application you're logging in to supports it, you can often completely replace your username and password combination with an authentication scheme that does not rely on either of these. Two extremely powerful and increasingly widely deployed alternative schemes are the use of *identity files*, such as in [OpenSSH](https://www.openssh.com/), and the [Secure, Quick, Reliable Login (SQRL)](https://grc.com/sqrl/) identity management system.
+
+In both of these systems, rather than use a password to prove that you are who you say you are, you provide proof of your identity by having access to a unique file. In the case of OpenSSH, the identity file is known as your *private key*, whereas in SQRL, your identity file is more simply termed your *SQRL Identity*. Perhaps confusingly, passwords are still used in these systems, but they function much more like your password manager's "master" password; you use your password only to access your identity file and, once accessed, you send only data that is *derived* from your (master) identity to the service or app asking you to log in.
+
+This means that both systems replace the need for the remote side to remember a secret that they must protect on your behalf. If the remote system is compromised by an attacker, as E Corp's server was, the attacker will not have gained the ability to impersonate any of its users because, unlike when the server stores your password for you, the server does not contain the critical information necessary to do so: your identity file.
+
+For more information:
+
+* [Introduction to Securing Virtualized Secure Shell Servers § SSH `publickey` authentication](../../../practice-labs/introduction-to-securing-virtualized-secure-shell-servers#ssh-publickey-authentication)
+* [SQRL Explainer](https://www.grc.com/sqrl/SQRL_Explained.pdf)
 
 # Additional references
 
