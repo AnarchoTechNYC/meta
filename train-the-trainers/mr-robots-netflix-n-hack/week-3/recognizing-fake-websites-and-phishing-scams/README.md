@@ -8,46 +8,53 @@ In this exercise we will create a fake version of a popular website's login page
 1. [Set up](#set-up)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
-    1. Components of a Web-based phishing attack
-        1. Bait
-            1. Email bait
-            1. Text message bait
-            1. Social media message bait
-            1. Other types of phishing bait
-        1. Look-alike Web site
-        1. Command and Control server
-    1. Distinguishing Web browser chrome from remote content
-    1. Spoofable parts of Web browser chrome
-        1. Title bar
-        1. Status bar
-        1. Address bar
-        1. Lock icon
-        1. TLS certificate subject information
-    1. Checking TLS certificate fingerprints
-    1. Crafting a look-alike Web site
-        1. Coding from scratch
-        1. Mirroring existing sites with `wget`
-    1. Publishing phishing sites on the Web
-    1. Receiving POST-backs from lured users
-    1. Automating the attack
+    1. [Components of a Web-based phishing attack](#components-of-a-web-based-phishing-attack)
+        1. [Bait](#bait)
+            1. [Email bait](#email-bait)
+            1. [Text message bait](#text-message-bait)
+            1. [Social media message bait](#social-media-message-bait)
+            1. [Other types of phishing bait](#other-types-of-phishing-bait)
+        1. [Look-alike Web site](#look-alike-web-site)
+        1. [Command and Control server](#command-and-control-server)
+    1. [Distinguishing Web browser chrome from remote content](#distinguishing-web-browser-chrome-from-remote-content)
+    1. [Spoofable parts of Web browser chrome](#spoofable-parts-of-web-browser-chrome)
+        1. [Title bar](#title-bar)
+        1. [Status bar](#status-bar)
+        1. [Address bar](#address-bar)
+        1. [Lock icon](#lock-icon)
+        1. [TLS certificate subject information](#tls-certificate-subject-information)
+    1. [Checking TLS certificate fingerprints](#checking-tls-certificate-fingerprints)
+    1. [Crafting a look-alike Web site](#crafting-a-look-alike-web-site)
+        1. [Coding from scratch](#coding-from-scratch)
+        1. [Mirroring existing sites with `wget`](#mirroring-existing-sites-with-wget)
+    1. [Publishing phishing sites on the Web](#publishing-phishing-sites-on-the-web)
+    1. [Receiving POST-backs from lured users](#receiving-post-backs-from-lured-users)
+    1. [Automating the attack](#automating-the-attack)
+    1. [Implementing defensive measures](#implementing-defensive-measures)
+        1. [Be careful where you click](#be-careful-where-you-click)
+        1. [Enabling HTTPS Everywhere "strict mode"](#enabling-https-everywhere-strict-mode)
+        1. [Using a password manager](#using-a-password-manager)
 1. [Discussion](#discussion)
-    1. Leveraging current events in phishing bait
-    1. Web address (URL) obfuscation techniques
-        1. Registering look-alike domain names
-            1. Domain misspellings and pluralizations
-            1. Using alternate character sets
-            1. Using IRIs for IDN homograph attacks
-        1. Using subdomains of look-alike domain names
-        1. Using URL shorteners
-        1. Spoofing DNS
-    1. Obtaining TLS certificates for phishing attacks
-        1. Generating your own TLS certificate
-        1. Using the Automated Certificate Management Environment (ACME)
-        1. Tricking a legitimiate Certificate Authority to issue you a new certificate
-        1. Stealing authentic certificates from target sites
-    1. Auditing your device's root certificate store
-    1. Monitoring the Certificate Transparency Log (CTL) for phishing attacks
-    1. Command and Control (C2) infrastructures for large-scale phishing campaigns
+    1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
+    1. [Web address (URL) obfuscation techniques](#web-address-url-obfuscation-techniques)
+        1. [Registering look-alike domain names](#registering-look-alike-domain-names)
+            1. [Domain misspellings and pluralizations](#domain-misspellings-and-pluralizations)
+            1. [Using alternate character sets](#using-alternate-character-sets)
+            1. [Using IRIs for IDN homograph attacks](#using-iris-for-idn-homograph-attacks)
+        1. [Using subdomains of look-alike domain names](#using-subdomains-of-look-alike-domain-names)
+        1. [Using URL shorteners](#using-url-shorteners)
+        1. [Spoofing DNS](#spoofing-dns)
+    1. [Obtaining TLS certificates for phishing attacks](#obtaining-tls-certificates-for-phishing-attacks)
+        1. [Generating your own TLS certificate](#generating-your-own-tls-certificate)
+        1. [Using the Automated Certificate Management Environment (ACME)](#using-the-automated-certificate-management-environment-acme)
+        1. [Tricking a legitimiate Certificate Authority to issue you a new certificate](#tricking-a-legitimate-certificate-authority-to-issue-you-a-new-certificate)
+        1. [Stealing authentic certificates from target sites](#stealing-authentic-certificates-from-target-sites)
+    1. [Auditing your device's root certificate store](#auditing-your-devices-root-certificate-store)
+    1. [Monitoring the Certificate Transparency Log (CTL) for phishing attacks](#monitoring-the-certificate-transparency-log-ctl-for-phishing-attacks)
+    1. [Command and Control (C2) infrastructures for large-scale phishing campaigns](#command-and-control-c2-infrastructures-for-large-scale-phishing-campaigns)
+    1. [Insufficient defensive measures](#insufficient-defensive-measures)
+        1. [Two-factor authentication (2FA)](#two-factor-authentication-2fa)
+        1. [Web server security headers](#web-server-security-headers)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -193,6 +200,37 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 ## Automating the attack
 
+> :construction: TK-TODO - This needs to be fleshed out a bit more but, for now, the basic process is:
+
+Site cloning is a form of credential harvesting:
+
+1. Launch the Social Engineer's Toolkit:
+    ```sh
+    sudo ./setoolkit
+    ```
+1. Choose the "Social-Engineering Attacks" item from the main menu, option number `1`.
+1. Choose the "Website Attack Vectors" item from the submenu, option number `2`.
+1. Choose the "Credential Harvester Attack Method" item from the submenu, option number `3`.
+1. Choose the "Site Cloner" method, option number `2`.
+1. Enter the IP address of the cloned Web form's HTTP POST location (the form's `action` attribute value). This should be the public IP address of your server. (Choose the automatically detected IP address by pressing `Enter`.)
+1. Enter the URL of the site to clone. For example, `https://www.facebook.com/`
+
+## Implementing defensive measures
+
+> :construction: TK-TODO
+
+### Be careful where you click
+
+> :construction: TK-TODO
+
+### Enabling HTTPS Everywhere "strict mode"
+
+> :construction: TK-TODO
+>
+> Also called "Encrypt All Sites Eligible" in the HTTPS Everywhere user interface. This helps mitigate "[Client Domain Hooking](https://blog.duszynski.eu/client-domain-hooking-in-practice/)" by helping the user prevent *all* Web requests that are not secured with TLS. It only takes one non-HTTPS (HTTP-only) request to redirect a victim browser for the remainder of their browsing session.
+
+### Using a password manager
+
 > :construction: TK-TODO
 
 # Discussion
@@ -262,10 +300,34 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 ## Monitoring the Certificate Transparency Log (CTL) for phishing attacks
 
 > :construction: TK-TODO
+>
+> See [How to start catching phishermen before they catch you](https://techlearningcollective.com/2019/11/05/how-to-catch-the-phishermen-before-they-catch-you.html) on the Tech Learning Collective blog for now.
 
 ## Command and Control (C2) infrastructures for large-scale phishing campaigns
 
 > :construction: TK-TODO
+
+## Insufficient defensive measures
+
+> :construction: TK-TODO
+
+## Two-factor authentication (2FA)
+
+> :construction: TK-TODO
+>
+> A lot of people think enabling 2FA (like a text message with a login code, a TOTP-based authenticator such as Google Authenticator or Authy, or a hardware key such as FIDO U2F or using a Yubikey) is enough to stop phishing but, while this does raise the bar for attackers, there is nothing inherent in 2FA that addresses phishing in the first place. Automated phishing tools like [Modlishka](https://github.com/drk1wi/Modlishka) simply intercept the one-time password as the user enters it, same as they do with the user's own password.
+>
+> See, for example [Google: Phishing Attacks That Can Beat Two-Factor Are on the Rise](https://www.pcmag.com/news/google-phishing-attacks-that-can-beat-two-factor-are-on-the-rise).
+
+## Web server security headers
+
+> :construction: TK-TODO
+>
+> In brief, HSTS, CSP, and CORS headers are all insufficient because:
+>
+> * HSTS simply demands that the site be visited over HTTPS instead of HTTP. Any phishing site that is served over HTTPS will satisfy HSTS requirements.
+> * CSP controls the type of content that the browser is permitted to run, but if a victim has navigated to a phishing domain, the attacker's CSP headers are the ones being seen, not the origin server's.
+> * CORS controls what resources are permitted to be shared across origins but, as with CSP, this is in the attacker's control if a victim has already been lured to a phishing domain.
 
 # Additional references
 
