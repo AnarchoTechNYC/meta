@@ -6,9 +6,6 @@ In this exercise we will create a fake version of a popular website's login page
 1. [Scenario](#scenario)
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
-    * [Exercise installation on Windows](#exercise-installation-on-windows)
-    * [Exercise installation on macOS](#exercise-installation-on-macos)
-    * [Exercise installation on GNU/Linux](#exercise-installation-on-gnulinux)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. Components of a Web-based phishing attack
@@ -110,20 +107,163 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 > :construction: TK-TODO
 
-Site cloning is a form of credential harvesting:
+## Components of a Web-based phishing attack
 
-1. Launch the Social Engineer's Toolkit:
-    ```sh
-    setoolkit
-    ```
-1. Choose the "Social-Engineering Attacks" item from the main menu, option number `1`.
-1. Choose the "Website Attack Vectors" item from the submenu, option number `2`.
-1. Choose the "Credential Harvester Attack Method" item from the submenu, option number `3`.
-1. Choose the "Site Cloner" method, option number `2`.
-1. Enter the IP address of the cloned Web form's HTTP POST location (the form's `action` attribute value). This should be the public IP address of your server. (Choose the automatically detected IP address by pressing `Enter`.)
-1. Enter the URL of the site to clone. For example, `https://www.facebook.com/`
+> :construction: TK-TODO
+
+### Bait
+
+> :construction: TK-TODO
+
+#### Email bait
+
+> :construction: TK-TODO
+
+#### Text message bait
+
+> :construction: TK-TODO
+
+#### Social media message bait
+
+> :construction: TK-TODO
+
+#### Other types of phishing bait
+
+> :construction: TK-TODO
+
+### Look-alike Web site
+
+> :construction: TK-TODO
+
+### Command and Control server
+
+> :construction: TK-TODO
+
+## Distinguishing Web browser chrome from remote content
+
+> :construction: TK-TODO
+
+## Spoofable parts of Web browser chrome
+
+> :construction: TK-TODO
+
+### Title bar
+
+> :construction: TK-TODO
+
+### Status bar
+
+> :construction: TK-TODO
+
+### Address bar
+
+> :construction: TK-TODO
+
+### Lock icon
+
+> :construction: TK-TODO
+
+### TLS certificate subject information
+
+> :construction: TK-TODO
+
+## Checking TLS certificate fingerprints
+
+> :construction: TK-TODO
+
+## Crafting a look-alike Web site
+
+> :construction: TK-TODO
+
+### Coding from scratch
+
+> :construction: TK-TODO
+
+### Mirroring existing sites with `wget`
+
+> :construction: TK-TODO
+
+## Publishing phishing sites on the Web
+
+> :construction: TK-TODO
+
+## Receiving POST-backs from lured users
+
+> :construction: TK-TODO
+
+## Automating the attack
+
+> :construction: TK-TODO
 
 # Discussion
+
+> :construction: TK-TODO
+
+## Leveraging current events in phishing bait
+
+> :construction: TK-TODO
+
+## Web address (URL) obfuscation techniques
+
+> :construction: TK-TODO
+
+### Registering look-alike domain names
+
+> :construction: TK-TODO
+
+#### Domain misspellings and pluralizations
+
+> :construction: TK-TODO
+
+#### Using alternate character sets
+
+> :construction: TK-TODO
+
+#### Using IRIs for IDN homograph attacks
+
+> :construction: TK-TODO
+
+### Using subdomains of look-alike domain names
+
+> :construction: TK-TODO
+
+### Using URL shorteners
+
+> :construction: TK-TODO
+
+### Spoofing DNS
+
+> :construction: TK-TODO
+
+## Obtaining TLS certificates for phishing attacks
+
+> :construction: TK-TODO
+
+### Generating your own TLS certificate
+
+> :construction: TK-TODO
+
+### Using the Automated Certificate Management Environment (ACME)
+
+> :construction: TK-TODO
+
+### Tricking a legitimiate Certificate Authority to issue you a new certificate
+
+> :construction: TK-TODO
+
+### Stealing authentic certificates from target sites
+
+> :construction: TK-TODO
+
+## Auditing your device's root certificate store
+
+> :construction: TK-TODO
+
+## Monitoring the Certificate Transparency Log (CTL) for phishing attacks
+
+> :construction: TK-TODO
+
+## Command and Control (C2) infrastructures for large-scale phishing campaigns
 
 > :construction: TK-TODO
 
