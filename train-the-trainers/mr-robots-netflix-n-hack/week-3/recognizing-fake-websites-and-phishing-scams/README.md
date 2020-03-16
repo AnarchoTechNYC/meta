@@ -22,6 +22,7 @@ In this exercise we will create a fake version of a popular website's login page
     1. Distinguishing Web browser chrome from remote content
     1. Spoofable parts of Web browser chrome
         1. Title bar
+        1. Status bar
         1. Address bar
         1. Lock icon
         1. TLS certificate subject information
