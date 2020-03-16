@@ -11,7 +11,45 @@ In this exercise we will create a fake version of a popular website's login page
     * [Exercise installation on GNU/Linux](#exercise-installation-on-gnulinux)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
+    1. Components of a Web-based phishing attack
+        1. Bait
+            1. Email bait
+            1. Text message bait
+            1. Social media message bait
+            1. Other types of phishing bait
+        1. Look-alike Web site
+        1. Command and Control server
+    1. Distinguishing Web browser chrome from remote content
+    1. Spoofable parts of Web browser chrome
+        1. Title bar
+        1. Address bar
+        1. Lock icon
+        1. TLS certificate subject information
+    1. Checking TLS certificate fingerprints
+    1. Crafting a look-alike Web site
+        1. Coding from scratch
+        1. Mirroring existing sites with `wget`
+    1. Publishing phishing sites on the Web
+    1. Receiving POST-backs from lured users
+    1. Automating the attack
 1. [Discussion](#discussion)
+    1. Leveraging current events in phishing bait
+    1. Web address (URL) obfuscation techniques
+        1. Registering look-alike domain names
+            1. Domain misspellings and pluralizations
+            1. Using alternate character sets
+            1. Using IRIs for IDN homograph attacks
+        1. Using subdomains of look-alike domain names
+        1. Using URL shorteners
+        1. Spoofing DNS
+    1. Obtaining TLS certificates for phishing attacks
+        1. Generating your own TLS certificate
+        1. Using the Automated Certificate Management Environment (ACME)
+        1. Tricking a legitimiate Certificate Authority to issue you a new certificate
+        1. Stealing authentic certificates from target sites
+    1. Auditing your device's root certificate store
+    1. Monitoring the Certificate Transparency Log (CTL) for phishing attacks
+    1. Command and Control (C2) infrastructures for large-scale phishing campaigns
 1. [Additional references](#additional-references)
 
 # Objectives
