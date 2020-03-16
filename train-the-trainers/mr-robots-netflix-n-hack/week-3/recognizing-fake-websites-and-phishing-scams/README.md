@@ -33,8 +33,10 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Making the bait](#making-the-bait)
     1. [Implementing defensive measures](#implementing-defensive-measures)
         1. [Be careful where you click](#be-careful-where-you-click)
-        1. [Enabling HTTPS Everywhere "strict mode"](#enabling-https-everywhere-strict-mode)
-        1. [Using a password manager](#using-a-password-manager)
+        1. [Enable HTTPS Everywhere's "strict mode"](#enable-https-everywheres-strict-mode)
+        1. [Use a password manager](#use-a-password-manager)
+        1. [Use a hardware U2F-conformant security key](#use-a-hardware-u2f-conformant-security-key)
+        1. [Use SQRL to log in, a "secure single factor"](#use-sqrl-a-secure-single-factor)
 1. [Discussion](#discussion)
     1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
     1. [Spear-phishing](#spear-phishing)
@@ -229,15 +231,45 @@ Site cloning is a form of credential harvesting:
 
 > :construction: TK-TODO
 
-### Enabling HTTPS Everywhere "strict mode"
+### Enable HTTPS Everywhere's "strict mode"
 
 > :construction: TK-TODO
 >
 > Also called "Encrypt All Sites Eligible" in the HTTPS Everywhere user interface. This helps mitigate "[Client Domain Hooking](https://blog.duszynski.eu/client-domain-hooking-in-practice/)" by helping the user prevent *all* Web requests that are not secured with TLS. It only takes one non-HTTPS (HTTP-only) request to redirect a victim browser for the remainder of their browsing session.
 
-### Using a password manager
+### Use a password manager
 
 > :construction: TK-TODO
+
+### Use a hardware U2F-conformant security key
+
+> :construction: TK-TODO
+>
+> Much like a password manager, the U2F standard programmatically checks the domain of the destination server. It also authenticates using public-key crypto instead of a password, but just programmatically checking the origin server is enough to prove the point to most users.
+>
+> Note that, like a password manager, this *practically* reduces the possibility of phishing attacks succeeding, but it is not immune from cases where the following conditions are all true:
+>
+> * attackers have stolen the site's U2F private keys for a given user.
+> * DNS spoofing is in effect.
+>
+> Then again, if all the above conditions are all true, the site probably already has a much bigger problem than being having its users phished. :\
+>
+> For this reason, U2F hardware tokens are considered the strongest defense against phishing. Unfortunately, due to the cost and complexity of implementing this scheme, it is not typically available to organizations of smaller size or shallower pockets. For them, e.g., non-profits running single-server WordPress-powered sites, the recommendation is to adopt SQRL, which is free and easy.
+
+### Use SQRL to log in, a "secure single factor"
+
+> :construction: TK-TODO
+>
+> In brief, the Secure Quick Reliable Login (SQRL) is a relatively new mechanism that completely replaces username/password pairs with public-key cryptography for Web site login much in the same way that sysadmins have been using for decades with, e.g., passwordless login to SSH servers using SSH keys. In this system, the domain name of the origin server is part of the mathematics that derive the user's public-facing identity, which means that look-alike web sites will be presented with a different identity than the authentic (innocent) Web site.
+>
+> Note that, like a password manager and the U2F case, SQRL *practically* reduces the possibility of phishing attacks succeeding, but it is not immune from cases where the following conditions are all true:
+>
+> * DNS spoofing is in effect.
+> * Both the SQRL login agent and the login initiator (Web browser) share the same public IP address from the perspective of the targeted (innocent) Web site. In this situation, SQRL's MITM detection (same IP address check) is satisfied.
+>
+> While there are ways to arrange for this situation to occur, it is a *significantly* higher bar for an attacker to clear. Thanks to that, coupled with the ease with which SQRL can be implemented by extremely under-resourced organizations along with its strong identity protection guarantees (i.e., doing away with usernames and password pairs completely), we consider it a worthwhile anti-phishing investment.
+>
+> For more details, see [How SQRL Can Thwart Phishing Attacks](https://www.grc.com/sqrl/phishing.htm).
 
 # Discussion
 
@@ -325,7 +357,7 @@ Site cloning is a form of credential harvesting:
 
 > :construction: TK-TODO
 >
-> A lot of people think enabling 2FA (like a text message with a login code, a TOTP-based authenticator such as Google Authenticator or Authy, or a hardware key such as FIDO U2F or using a Yubikey) is enough to stop phishing but, while this does raise the bar for attackers, there is nothing inherent in 2FA that addresses phishing in the first place. Automated phishing tools like [Modlishka](https://github.com/drk1wi/Modlishka) simply intercept the one-time password as the user enters it, same as they do with the user's own password.
+> A lot of people think enabling 2FA (like a text message with a login code, a TOTP-based authenticator such as Google Authenticator or Authy) is enough to stop phishing but, while this does raise the bar for attackers, there is nothing inherent in 2FA that addresses phishing in the first place. Automated phishing tools like [Modlishka](https://github.com/drk1wi/Modlishka) simply intercept the one-time password as the user enters it, same as they do with the user's own password.
 >
 > See, for example [Google: Phishing Attacks That Can Beat Two-Factor Are on the Rise](https://www.pcmag.com/news/google-phishing-attacks-that-can-beat-two-factor-are-on-the-rise).
 
