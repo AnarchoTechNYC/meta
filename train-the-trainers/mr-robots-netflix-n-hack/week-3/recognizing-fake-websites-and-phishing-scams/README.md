@@ -30,12 +30,14 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Publishing phishing sites on the Web](#publishing-phishing-sites-on-the-web)
     1. [Receiving POST-backs from lured users](#receiving-post-backs-from-lured-users)
     1. [Automating the attack](#automating-the-attack)
+    1. [Making the bait](#making-the-bait)
     1. [Implementing defensive measures](#implementing-defensive-measures)
         1. [Be careful where you click](#be-careful-where-you-click)
         1. [Enabling HTTPS Everywhere "strict mode"](#enabling-https-everywhere-strict-mode)
         1. [Using a password manager](#using-a-password-manager)
 1. [Discussion](#discussion)
     1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
+    1. [Spear-phishing](#spear-phishing)
     1. [Web address (URL) obfuscation techniques](#web-address-url-obfuscation-techniques)
         1. [Registering look-alike domain names](#registering-look-alike-domain-names)
             1. [Domain misspellings and pluralizations](#domain-misspellings-and-pluralizations)
@@ -215,6 +217,10 @@ Site cloning is a form of credential harvesting:
 1. Enter the IP address of the cloned Web form's HTTP POST location (the form's `action` attribute value). This should be the public IP address of your server. (Choose the automatically detected IP address by pressing `Enter`.)
 1. Enter the URL of the site to clone. For example, `https://www.facebook.com/`
 
+## Making the bait
+
+> :construction: TK-TODO
+
 ## Implementing defensive measures
 
 > :construction: TK-TODO
@@ -238,6 +244,10 @@ Site cloning is a form of credential harvesting:
 > :construction: TK-TODO
 
 ## Leveraging current events in phishing bait
+
+> :construction: TK-TODO
+
+## Spear-phishing
 
 > :construction: TK-TODO
 
