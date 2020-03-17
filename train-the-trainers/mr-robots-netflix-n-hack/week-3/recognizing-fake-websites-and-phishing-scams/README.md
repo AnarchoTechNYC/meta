@@ -367,7 +367,7 @@ Site cloning is a form of credential harvesting:
 >
 > In brief, HSTS, CSP, and CORS headers are all insufficient because:
 >
-> * HSTS simply demands that the site be visited over HTTPS instead of HTTP. Any phishing site that is served over HTTPS will satisfy HSTS requirements.
+> * HSTS simply demands that the site be visited over HTTPS instead of HTTP. Any phishing site that is served over HTTPS with a trusted TLS certificate will satisfy HSTS requirements.
 > * CSP controls the type of content that the browser is permitted to run, but if a victim has navigated to a phishing domain, the attacker's CSP headers are the ones being seen, not the origin server's.
 > * CORS controls what resources are permitted to be shared across origins but, as with CSP, this is in the attacker's control if a victim has already been lured to a phishing domain.
 
