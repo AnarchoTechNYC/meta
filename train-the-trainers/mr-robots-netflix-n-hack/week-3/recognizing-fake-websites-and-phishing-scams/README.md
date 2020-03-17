@@ -33,7 +33,7 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Making the bait](#making-the-bait)
     1. [Implementing defensive measures](#implementing-defensive-measures)
         1. [Be careful where you click](#be-careful-where-you-click)
-        1. [Enable HTTPS Everywhere's "strict mode"](#enable-https-everywheres-strict-mode)
+        1. [Enable HTTPS Everywhere's "EASE mode"](#enable-https-everywheres-ease-mode)
         1. [Use a password manager](#use-a-password-manager)
         1. [Use a hardware U2F-conformant security key](#use-a-hardware-u2f-conformant-security-key)
         1. [Use SQRL to log in, a "secure single factor"](#use-sqrl-a-secure-single-factor)
@@ -231,11 +231,11 @@ Site cloning is a form of credential harvesting:
 
 > :construction: TK-TODO
 
-### Enable HTTPS Everywhere's "strict mode"
+### Enable HTTPS Everywhere's "EASE mode"
 
 > :construction: TK-TODO
 >
-> Also called "Encrypt All Sites Eligible" in the HTTPS Everywhere user interface. This helps mitigate "[Client Domain Hooking](https://blog.duszynski.eu/client-domain-hooking-in-practice/)" by helping the user prevent *all* Web requests that are not secured with TLS. It only takes one non-HTTPS (HTTP-only) request to redirect a victim browser for the remainder of their browsing session.
+> The [HTTPS Everywhere](https://www.eff.org/https-everywhere) add-on's "Encrypt All Sites Eligible" (EASE) mode in the HTTPS Everywhere user interface. This helps mitigate "[Client Domain Hooking](https://blog.duszynski.eu/client-domain-hooking-in-practice/)" by helping the user prevent *all* Web requests that are not secured with TLS. It only takes one non-HTTPS (HTTP-only) request to redirect a victim browser for the remainder of their browsing session.
 
 ### Use a password manager
 
