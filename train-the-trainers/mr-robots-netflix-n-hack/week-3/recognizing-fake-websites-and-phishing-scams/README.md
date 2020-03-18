@@ -40,8 +40,8 @@ In this exercise we will create a fake version of a popular website's login page
             1. [Use Secure Quick Reliable Login (SQRL)](#use-secure-quick-reliable-login-sqrl)
         1. [Validate endpoint and message authenticity](#validate-endpoint-and-message-authenticity)
             1. [Enable HTTPS Everywhere's "EASE mode"](#enable-https-everywheres-ease-mode)
-            1. [Use Signal and verify your contact's Safety Numbers]
-            1. [Require email be signed with PGP keys or S/MIME certificates]
+            1. [Use Signal and verify your contact's Safety Numbers](#use-signal-and-verify-your-contacts-safety-numbers)
+            1. [Require email be signed with PGP keys or S/MIME certificates](require-email-be-signed-with-pgp-keys-or-smime-certificates)
     1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
     1. [Spear-phishing](#spear-phishing)
     1. [Web address (URL) obfuscation techniques](#web-address-url-obfuscation-techniques)
@@ -275,7 +275,9 @@ Site cloning is a form of credential harvesting:
 >
 > While there are ways to arrange for this situation to occur, it is a *significantly* higher bar for an attacker to clear. Thanks to that, coupled with the ease with which SQRL can be implemented by extremely under-resourced organizations along with its strong identity protection guarantees (i.e., doing away with usernames and password pairs completely), we consider it a worthwhile anti-phishing investment.
 >
-> For more details, see [How SQRL Can Thwart Phishing Attacks](https://www.grc.com/sqrl/phishing.htm).
+> For more details, see [How SQRL Can Thwart Phishing Attacks](https://www.grc.com/sqrl/phishing.htm). Useful SQRL resources:
+>
+> * [SQRL Login plugin for WordPress plugin](https://wordpress.org/plugins/sqrl-login/)
 
 ### Validate endpoint and message authenticity
 
@@ -298,6 +300,8 @@ Site cloning is a form of credential harvesting:
 #### Require email be signed with PGP keys or S/MIME certificates
 
 > :construction: TK-TODO
+>
+> For example, use the [WP PGP Encrypted Emails plugin](https://wordpress.org/plugins/wp-pgp-encrypted-emails/) for your WordPress site to ensure that automated email sent by your Web site can be provably authenticated as the source of the email you receive claiming to be from your Web site. This makes it possible to authenticate "password reset" emails and other critical communications.
 
 ## Leveraging current events in phishing bait
 
