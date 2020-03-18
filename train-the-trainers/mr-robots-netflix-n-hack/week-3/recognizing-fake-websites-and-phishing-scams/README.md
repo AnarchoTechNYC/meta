@@ -36,7 +36,7 @@ In this exercise we will create a fake version of a popular website's login page
         1. [Enable HTTPS Everywhere's "EASE mode"](#enable-https-everywheres-ease-mode)
         1. [Use a password manager](#use-a-password-manager)
         1. [Use a hardware U2F-conformant security key](#use-a-hardware-u2f-conformant-security-key)
-        1. [Use SQRL to log in, a "secure single factor"](#use-sqrl-a-secure-single-factor)
+        1. [Use Secure Quick Reliable Login (SQRL)](#use-secure-quick-reliable-login-sqrl)
 1. [Discussion](#discussion)
     1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
     1. [Spear-phishing](#spear-phishing)
@@ -256,7 +256,7 @@ Site cloning is a form of credential harvesting:
 >
 > For this reason, U2F hardware tokens are considered the strongest defense against phishing. Unfortunately, due to the cost and complexity of implementing this scheme, it is not typically available to organizations of smaller size or shallower pockets. For them, e.g., non-profits running single-server WordPress-powered sites, the recommendation is to adopt SQRL, which is free and easy.
 
-### Use SQRL to log in, a "secure single factor"
+### Use Secure Quick Reliable Login (SQRL)
 
 > :construction: TK-TODO
 >
