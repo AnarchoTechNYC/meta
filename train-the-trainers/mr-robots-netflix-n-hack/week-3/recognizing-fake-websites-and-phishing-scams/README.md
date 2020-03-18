@@ -41,7 +41,7 @@ In this exercise we will create a fake version of a popular website's login page
         1. [Validate endpoint and message authenticity](#validate-endpoint-and-message-authenticity)
             1. [Enable HTTPS Everywhere's "EASE mode"](#enable-https-everywheres-ease-mode)
             1. [Use Signal and verify your contact's Safety Numbers](#use-signal-and-verify-your-contacts-safety-numbers)
-            1. [Require email be signed with PGP keys or S/MIME certificates](require-email-be-signed-with-pgp-keys-or-smime-certificates)
+            1. [Require email be signed with PGP keys or S/MIME certificates](#require-email-be-signed-with-pgp-keys-or-smime-certificates)
     1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
     1. [Spear-phishing](#spear-phishing)
     1. [Web address (URL) obfuscation techniques](#web-address-url-obfuscation-techniques)
