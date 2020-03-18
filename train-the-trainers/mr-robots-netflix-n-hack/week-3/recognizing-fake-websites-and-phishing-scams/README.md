@@ -32,7 +32,7 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Automating the attack](#automating-the-attack)
     1. [Making the bait](#making-the-bait)
 1. [Discussion](#discussion)
-    1. [Implementing additional defensive measures](#implementing-defensive-measures)
+    1. [Implementing additional defensive measures](#implementing-additional-defensive-measures)
         1. [Be careful where you click](#be-careful-where-you-click)
         1. [Harden log in](#harden-log-in)
             1. [Use a password manager](#use-a-password-manager)
