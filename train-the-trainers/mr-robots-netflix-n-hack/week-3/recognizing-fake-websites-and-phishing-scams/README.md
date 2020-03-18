@@ -31,13 +31,17 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Receiving POST-backs from lured users](#receiving-post-backs-from-lured-users)
     1. [Automating the attack](#automating-the-attack)
     1. [Making the bait](#making-the-bait)
-    1. [Implementing defensive measures](#implementing-defensive-measures)
-        1. [Be careful where you click](#be-careful-where-you-click)
-        1. [Enable HTTPS Everywhere's "EASE mode"](#enable-https-everywheres-ease-mode)
-        1. [Use a password manager](#use-a-password-manager)
-        1. [Use a hardware U2F-conformant security key](#use-a-hardware-u2f-conformant-security-key)
-        1. [Use Secure Quick Reliable Login (SQRL)](#use-secure-quick-reliable-login-sqrl)
 1. [Discussion](#discussion)
+    1. [Implementing additional defensive measures](#implementing-defensive-measures)
+        1. [Be careful where you click](#be-careful-where-you-click)
+        1. [Harden log in](#harden-log-in)
+            1. [Use a password manager](#use-a-password-manager)
+            1. [Use a hardware U2F-conformant security key](#use-a-hardware-u2f-conformant-security-key)
+            1. [Use Secure Quick Reliable Login (SQRL)](#use-secure-quick-reliable-login-sqrl)
+        1. [Validate endpoint and message authenticity](#validate-endpoint-and-message-authenticity)
+            1. [Enable HTTPS Everywhere's "EASE mode"](#enable-https-everywheres-ease-mode)
+            1. [Use Signal and verify your contact's Safety Numbers]
+            1. [Require email be signed with PGP keys or S/MIME certificates]
     1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
     1. [Spear-phishing](#spear-phishing)
     1. [Web address (URL) obfuscation techniques](#web-address-url-obfuscation-techniques)
@@ -223,7 +227,11 @@ Site cloning is a form of credential harvesting:
 
 > :construction: TK-TODO
 
-## Implementing defensive measures
+# Discussion
+
+> :construction: TK-TODO
+
+## Implementing additional defensive measures
 
 > :construction: TK-TODO
 
@@ -231,17 +239,15 @@ Site cloning is a form of credential harvesting:
 
 > :construction: TK-TODO
 
-### Enable HTTPS Everywhere's "EASE mode"
-
-> :construction: TK-TODO
->
-> The [HTTPS Everywhere](https://www.eff.org/https-everywhere) add-on's "Encrypt All Sites Eligible" (EASE) mode in the HTTPS Everywhere user interface. This helps mitigate "[Client Domain Hooking](https://blog.duszynski.eu/client-domain-hooking-in-practice/)" by helping the user prevent *all* Web requests that are not secured with TLS. It only takes one non-HTTPS (HTTP-only) request to redirect a victim browser for the remainder of their browsing session.
-
-### Use a password manager
+### Harden log in
 
 > :construction: TK-TODO
 
-### Use a hardware U2F-conformant security key
+#### Use a password manager
+
+> :construction: TK-TODO
+
+#### Use a hardware U2F-conformant security key
 
 > :construction: TK-TODO
 >
@@ -256,7 +262,7 @@ Site cloning is a form of credential harvesting:
 >
 > For this reason, U2F hardware tokens are considered the strongest defense against phishing. Unfortunately, due to the cost and complexity of implementing this scheme, it is not typically available to organizations of smaller size or shallower pockets. For them, e.g., non-profits running single-server WordPress-powered sites, the recommendation is to adopt SQRL, which is free and easy.
 
-### Use Secure Quick Reliable Login (SQRL)
+#### Use Secure Quick Reliable Login (SQRL)
 
 > :construction: TK-TODO
 >
@@ -271,7 +277,25 @@ Site cloning is a form of credential harvesting:
 >
 > For more details, see [How SQRL Can Thwart Phishing Attacks](https://www.grc.com/sqrl/phishing.htm).
 
-# Discussion
+### Validate endpoint and message authenticity
+
+> :construction: TK-TODO
+>
+> This category of phishing mitigations strengthening the identity guarantees of the person or website with which you are communicating. Note, importantly, that an authentic message can still be a phishing message if the sender's identity has been compromised. However, as this presents a much higher bar for an attacker to clear, and makes mass-phishing campaigns far less feasible, authenticating the source of your messages is a great way to dramatically reduce the liklihood both of being caught by an opportunitistically-motivated attacker as well as increasing the liklihood of noticing that something is amiss in the first place when reading messages you receive.
+>
+> Chief among these are TLS certificate checking, mentioned earlier, but there are additional identity verification methods you should know about and use to protect yourself and your team from phishing attacks.
+
+#### Enable HTTPS Everywhere's "EASE mode"
+
+> :construction: TK-TODO
+>
+> The [HTTPS Everywhere](https://www.eff.org/https-everywhere) add-on's "Encrypt All Sites Eligible" (EASE) mode in the HTTPS Everywhere user interface. This helps mitigate "[Client Domain Hooking](https://blog.duszynski.eu/client-domain-hooking-in-practice/)" by helping the user prevent *all* Web requests that are not secured with TLS. It only takes one non-HTTPS (HTTP-only) request to redirect a victim browser for the remainder of their browsing session.
+
+#### Use Signal and verify your contact's Safety Numbers
+
+> :construction: TK-TODO
+
+#### Require email be signed with PGP keys or S/MIME certificates
 
 > :construction: TK-TODO
 
