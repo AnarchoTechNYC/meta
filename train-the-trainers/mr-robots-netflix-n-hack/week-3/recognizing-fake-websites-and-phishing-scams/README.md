@@ -27,6 +27,7 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Crafting a look-alike Web site](#crafting-a-look-alike-web-site)
         1. [Coding from scratch](#coding-from-scratch)
         1. [Mirroring existing sites with `wget`](#mirroring-existing-sites-with-wget)
+        1. [Using a reverse proxy](#using-a-reverse-proxy)
     1. [Publishing phishing sites on the Web](#publishing-phishing-sites-on-the-web)
     1. [Receiving POST-backs from lured users](#receiving-post-backs-from-lured-users)
     1. [Automating the attack](#automating-the-attack)
@@ -44,6 +45,7 @@ In this exercise we will create a fake version of a popular website's login page
             1. [Require email be signed with PGP keys or S/MIME certificates](#require-email-be-signed-with-pgp-keys-or-smime-certificates)
     1. [Leveraging current events in phishing bait](#leveraging-current-events-in-phishing-bait)
     1. [Spear-phishing](#spear-phishing)
+    1. [Reverse proxies useful for phishing attacks](#reverse-proxies-useful-for-phishing-attacks)
     1. [Web address (URL) obfuscation techniques](#web-address-url-obfuscation-techniques)
         1. [Registering look-alike domain names](#registering-look-alike-domain-names)
             1. [Domain misspellings and pluralizations](#domain-misspellings-and-pluralizations)
@@ -198,6 +200,12 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 > :construction: TK-TODO
 
+### Using a reverse proxy
+
+There is one other popular, more modern method you can use to create your look-alike Web site that deserves a mention: using a reverse proxy. Although we won't spend too much time exploring this method, it's important to be aware that specialized reverse proxies can be used in phishing attacks because they are capable of defeating common forms of two-factor authentication (2FA). Instead of simply intercepting your user name and password, these tools intercept both your username/password pair *and* the additional, secondary one-time password sent to you via text message or generated using a 2FA app such as Google Athenticator or Authy when you try to log in.
+
+This set of attacker tools are no more difficult to use than the ones we'll be using in this exercise, but they do often require a little bit of extra infrastructure setup, which is why we'll leave using them as an exercise to the reader. For more information on using reverse proxies to mount phishing attacks, refer to the [Reverse proxies useful for phishing attacks](#reverse-proxies-useful-for-phishing-attacks) discussion section, below. Similarly, refer to the [Insufficient defensive measures: Two-factor authentication (2FA)](#two-factor-authentication-2fa) discussion section for more information on how two-factor authentication works and why it won't stop these more sophisticated phishing attacks using specialized reverse proxy frameworks.
+
 ## Publishing phishing sites on the Web
 
 > :construction: TK-TODO
@@ -310,6 +318,12 @@ Site cloning is a form of credential harvesting:
 ## Spear-phishing
 
 > :construction: TK-TODO
+
+## Reverse proxies useful for phishing attacks
+
+> :construction: TK-TODO
+>
+> Quick mentions of [Evilginx2](https://github.com/kgretzky/evilginx2), [Modlishka](https://github.com/drk1wi/Modlishka), etc. These are reverse proxies that do not require phishing pages to be crafted as look-alike sites through mirroring, site cloning, or manual editing. Rather, they act as application-level ("layer 7") shims that translate domain names, DNS queries, and more originally destined to the original site into requests for resources at the fraudulent phishing domain.
 
 ## Web address (URL) obfuscation techniques
 
