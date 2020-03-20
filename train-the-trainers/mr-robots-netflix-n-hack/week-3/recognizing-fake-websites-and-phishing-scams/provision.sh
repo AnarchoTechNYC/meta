@@ -22,6 +22,7 @@ git clone --depth 1 https://github.com/trustedsec/social-engineer-toolkit.git se
 chown -R vagrant:vagrant set
 cd set
 pip3 install -r requirements.txt
+cd -
 
 pip3 install pipx
 sudo --login -u vagrant pipx install mitmproxy
@@ -30,6 +31,8 @@ mkdir /tmp/evilginx2
 wget --quiet -O /tmp/evilginx2/evilginx2.zip \
     https://github.com/kgretzky/evilginx2/releases/download/2.3.0/evilginx_linux_x86_2.3.0.zip
 unzip -d /tmp/evilginx2 /tmp/evilginx2/evilginx2.zip
-# Execute in external `bash` process as install script not executable.
+cd /tmp/evilginx2
+# Run external `bash` process since install script is not executable.
 bash /tmp/evilginx2/install.sh && chmod a+x /usr/local/bin/evilginx
+cd -
 rm -rf /tmp/evilginx2
