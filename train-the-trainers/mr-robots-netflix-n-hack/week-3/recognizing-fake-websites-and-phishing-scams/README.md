@@ -187,6 +187,12 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 ## Checking TLS certificate fingerprints
 
 > :construction: TK-TODO
+>
+> In brief, this is no longer something only "paranoid" users should do. One easy verification utility is the [crt.sh](https://crt.sh/) certificate search service.
+>
+> See, for example, the [Kazakhstan national requirement to install a trusted root certificate](https://en.wikipedia.org/wiki/Kazakhstan_man-in-the-middle_attack) ([earlier reporting](https://thehackernews.com/2019/07/kazakhstan-https-security-certificate.html)).
+>
+> For more information, see the [§ Auditing your device's root certificate store](#auditing-your-devices-root-certificate-store) discussion section, below.
 
 ## Crafting a look-alike Web site
 
