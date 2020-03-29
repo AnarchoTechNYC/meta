@@ -45,6 +45,7 @@ In this practice lab, you will learn how Tor can maximize your privacy while usi
     1. [Browser add-ons for improved privacy](#browser-add-ons-for-improved-privacy)
     1. [Browser fingerprinting](#browser-fingerprinting)
     1. [More about SOCKS proxies](#more-about-socks-proxies)
+    1. [Verifying `.onion` TLS certificates using `MapAddress`](#verifying-onion-tls-certificates-using-mapaddress)
     1. [Additional Tor infrastructure: Directory Authorities](#additional-tor-infrastructure-directory-authorities)
 1. [Additional references](#additional-references)
 
@@ -287,6 +288,10 @@ We should pause here to make it clear that "the" Dark Web, as appears often in t
 ## More about SOCKS proxies
 
 > :construction: TK-TODO
+
+## Verifying `.onion` TLS certificates using `MapAddress`
+
+> :construction: TK-TODO: See our wiki page about [Onion services § Onion sites and HTTPS](https://github.com/AnarchoTechNYC/meta/wiki/Onion-services#onion-sites-and-https) for now.
 
 ## Additional Tor Infrastructure: Directory Authorities
 
