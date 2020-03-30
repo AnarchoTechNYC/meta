@@ -47,6 +47,7 @@ In this practice lab, you will learn how Tor can maximize your privacy while usi
     1. [More about SOCKS proxies](#more-about-socks-proxies)
     1. [Verifying `.onion` TLS certificates using `MapAddress`](#verifying-onion-tls-certificates-using-mapaddress)
     1. [Additional Tor infrastructure: Directory Authorities](#additional-tor-infrastructure-directory-authorities)
+    1. [Tor circuits to Onion services](#tor-circuits-to-onion-services)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -299,7 +300,25 @@ We should pause here to make it clear that "the" Dark Web, as appears often in t
 
 In addition to [Tor relays](#understanding-tor-circuits-and-relays), there is an additional type of Tor server needed for the Tor network to function, called a *Directory Authority*. This server is distinct from a Tor relay because its primary purpose is to provide other Tor instances with information they can use to construct a Tor circuit for their own traffic. As a Tor user, you will never need to run your own Directory Authority server, but if you want to create your own Tor network, your network will need at least on Directory Authority that you run yourself.
 
-See [Run your own Tor network](https://ritter.vg/blog-run_your_own_tor_network.html) for more information.
+See [Run your own Tor network](https://ritter.vg/blog-run_your_own_tor_network.html) for more information. Also, [quoted from the Bitcoin wiki](https://en.bitcoin.it/wiki/Tor#How_Tor_works):
+
+> To discover Tor relays, Tor uses a centralized directory server model. There are nine authoritative directory servers. To become a relay, you register with one of these. The directory servers share their data and produce a *network status consensus* document every so often containing all Tor nodes. Tor clients don't connect directly to the authoritative directory servers -- they connect to one of many *directory mirrors*, which have a copy of the network status consensus. Since there is no peer-to-peer bootstrap mechanism in Tor, the entire network can be destroyed if half of the authoritative directory servers are destroyed, and the entire network can be subverted if half of the authoritative directory servers become evil.
+
+## Tor circuits to Onion services
+
+> :construction: TK-TODO
+
+Also quoting from the Bitcoin wiki:
+
+> Hidden services allow both the sender and destination to remain anonymous. A hidden service connection is made like this:
+> 
+> 1. The destination tells several Tor relays to act as *introduction points* for the hidden service. The destination stays connected to all of these introduction points through a regular three-node Tor circuit.
+> 1. The destination registers these introduction points on a Tor DHT. The introduction points are associated with the first 16 characters of an encoded SHA-1 hash of the destination's key. This is the information in .onion addresses. The use of SHA-1 is a possible weakness.
+> 1. The sender creates a four-node Tor circuit. The fourth node is called the *rendezvous point*.
+> 1. The sender searches the DHT for the introduction points of the desired hidden service. The sender connects to one through a regular three-node Tor circuit and, through the introduction point, tells the destination about the rendezvous point he has chosen.
+> 1. The destination connects to the rendezvous point over a three-node Tor circuit. The sender and destination are now in contact over a seven-node connection.
+
+See also [the Tor Project's own description](https://2019.www.torproject.org/docs/onion-services.html.en), of course.
 
 # Additional references
 
