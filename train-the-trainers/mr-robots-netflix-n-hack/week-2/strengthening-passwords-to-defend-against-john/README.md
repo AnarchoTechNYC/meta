@@ -1000,3 +1000,5 @@ For more information:
 * [Making password complexity calculations](https://www.youtube.com/watch?v=R-UFOXDxe4w&t=1h54m10s).
 * [OSINTFramework.com](http://osintframework.com/) - Collection of open-sources records databases broken down by category.
 * [danielmiessler/SecLists](https://github.com/danielmiessler/SecLists) - Collection of multiple types of lists used during security assessments such as usernames, passwords, and more.
+* [Google Cloud Security Whitepaper: Modern password security for users](https://cloud.google.com/solutions/modern-password-security-for-users)
+* [Google Cloud Security Whitepaper: Modern password security for system designers](https://cloud.google.com/solutions/modern-password-security-for-system-designers)
