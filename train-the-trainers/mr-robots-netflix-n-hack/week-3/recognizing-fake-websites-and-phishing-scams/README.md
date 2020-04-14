@@ -292,6 +292,7 @@ Site cloning is a form of credential harvesting:
 > For more details, see [How SQRL Can Thwart Phishing Attacks](https://www.grc.com/sqrl/phishing.htm). Useful SQRL resources:
 >
 > * [SQRL Login plugin for WordPress plugin](https://wordpress.org/plugins/sqrl-login/)
+> * [Secure QR Login module for Drupal 8.x and 9.x](https://www.drupal.org/project/sqrl)
 
 ### Validate endpoint and message authenticity
 
