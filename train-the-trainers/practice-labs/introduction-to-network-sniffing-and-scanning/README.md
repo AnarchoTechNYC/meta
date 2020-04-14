@@ -1,6 +1,6 @@
 # Introduction to Network Sniffing and Scanning
 
-If we pair down digital networks to their most vital essentials, what's really happening is something like a very complicated phone call between machines (or sometimes, a machine speaking to itself). In order to better grasp what is happening within this conversation, we must first be able to hear what is being "said," and then graducally become familiar with the languages being spoken on the wire.
+If we pare down digital networks to their most vital essentials, what's really happening is something like a very complicated phone call between machines (or sometimes, a machine speaking to itself). In order to better grasp what is happening within this conversation, we must first be able to hear what is being "said," and then graducally become familiar with the languages being spoken on the wire.
 
 What follows is a collection of small exercises using a variety of commonly used, FOSS networking tools. These exercises are intended to increase one's ability to "listen in" on the conversation on a given network, and to move towards understanding what is being "said."
 
