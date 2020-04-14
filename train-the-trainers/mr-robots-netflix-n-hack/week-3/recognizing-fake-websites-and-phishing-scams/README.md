@@ -103,7 +103,7 @@ In addition to your laptop or desktop computer, you will need to acquire the fol
 * For managing the virtual machines: [VirtualBox](https://www.virtualbox.org/) version 6.1 or newer, sometimes written as *VBox*.
 * For automatically configuring virtual machine settings: [Vagrant](https://vagrantup.com/) version 2.2.7 or newer.
 
-Complete the [Introduction to Virtual Machine Management with Vagrant](../introduction-to-virtual-machine-management-with-vagrant/README.md) practice lab before this one if you do not yet have VirtualBox and Vagrant installed or are unfamiliar with how to use them.
+Complete the [Introduction to Virtual Machine Management with Vagrant](../../../practice-labs/introduction-to-virtual-machine-management-with-vagrant/README.md) practice lab before this one if you do not yet have VirtualBox and Vagrant installed or are unfamiliar with how to use them.
 
 Then, bring the virtual machine(s) for the lab online.
 
