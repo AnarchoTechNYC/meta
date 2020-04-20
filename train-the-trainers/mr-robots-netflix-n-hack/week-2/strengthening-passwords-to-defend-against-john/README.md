@@ -1002,3 +1002,4 @@ For more information:
 * [danielmiessler/SecLists](https://github.com/danielmiessler/SecLists) - Collection of multiple types of lists used during security assessments such as usernames, passwords, and more.
 * [Google Cloud Security Whitepaper: Modern password security for users](https://cloud.google.com/solutions/modern-password-security-for-users)
 * [Google Cloud Security Whitepaper: Modern password security for system designers](https://cloud.google.com/solutions/modern-password-security-for-system-designers)
+* [UseAPassphrase.com](https://www.useapassphrase.com/) - Single-page app and explainer that discusses password and passphrase entropy.
