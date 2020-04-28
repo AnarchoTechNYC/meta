@@ -57,7 +57,7 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Obtaining TLS certificates for phishing attacks](#obtaining-tls-certificates-for-phishing-attacks)
         1. [Generating your own TLS certificate](#generating-your-own-tls-certificate)
         1. [Using the Automated Certificate Management Environment (ACME)](#using-the-automated-certificate-management-environment-acme)
-        1. [Tricking a legitimiate Certificate Authority to issue you a new certificate](#tricking-a-legitimate-certificate-authority-to-issue-you-a-new-certificate)
+        1. [Tricking a legitimate Certificate Authority to issue you a new certificate](#tricking-a-legitimate-certificate-authority-to-issue-you-a-new-certificate)
         1. [Stealing authentic certificates from target sites](#stealing-authentic-certificates-from-target-sites)
     1. [Auditing your device's root certificate store](#auditing-your-devices-root-certificate-store)
     1. [Monitoring the Certificate Transparency Log (CTL) for phishing attacks](#monitoring-the-certificate-transparency-log-ctl-for-phishing-attacks)
