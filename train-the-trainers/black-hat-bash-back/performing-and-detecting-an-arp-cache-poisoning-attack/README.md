@@ -1,10 +1,12 @@
-# Introduction to Exploiting Web Applications
+# Performing and Detecting an ARP Cache Poisoning Attack
 
-According to [Douglas Crockford](https://crockford.com/), former distinguished architect of Internet behemoths PayPal and Yahoo! before that, &ldquo;The Web is the most hostile software engineering environment imaginable.&rdquo; Given that it&rsquo;s hard enough to make Web applications work in the first place, is it any surprise that so many of them can be broken, hacked, and exploited? Of course, it&rsquo;s often not good enough merely to break some system. Our task is to make the system break in *specific* ways that will be useful to us.
+Solidify your understanding of the data-link layer (OSI Layer 2) in this exercise that will walk you through the process of performing a classic ARP spoofing attack, a fundamental NetSec technique that is still used in many real-life hacking scenarios today.
 
-This exercise will introduce you to the [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org/), a free and open source Web application security scanner. We&rsquo;ll cover Web application security basics, including ZAP&rsquo;s configuration, target scoping, and more. We&rsquo;ll be targeting the [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/), an intentionally vulnerable practice target that has a slew of common Web vulnerabilities to learn about. The most common of these vulnerabilities are collectively known as the [OWASP Top Ten](https://owasp.org/www-project-top-ten/). They include SQL injection, sensitive data exposure, cross-site scripting (XSS), broken authentication and access control, and many others.
+Before there was “The Internet,” there was [Ethernet](https://simple.wikipedia.org/wiki/Ethernet). First developed in the mid 1970’s, Ethernet takes its name from the erroneous belief first postulated in the late 19<sup>th</sup> century that an omnipresent yet invisible material known as “ether” permeated everything and everyone. Today, in a kind of self-fulfilling prophecy, ethernet is the near-ubiquitous link-layer networking technology that underpins almost every modern telecommunications network.
 
-Today&rsquo;s World Wide Web has become a worldwide battleground, economically, militarily, and culturally. By knowing how the Web-based systems we all use&mdash;or even build!&mdash;can be made to fail in just the &ldquo;right&rdquo; way, we can better protect ourselves and our organizations from the constant barrage of attacks flying across the Internet. This exercise provides an opportunity to learn how to hack your own Web sites and applications before your opponents do so you can find your own vulnerabilities and shore up your own defenses before your adversaries get the chance to exploit them.
+By examining Ethernet network frames, we will see how Internet communications, such as data sent to one IP address or another, is carried from one physical device to another, thus traversing “the ether.” This process is facilitated by the [Address Resolution Protocol (ARP)](https://simple.wikipedia.org/wiki/Address_Resolution_Protocol), a simple mechanism that maps IP addresses to hardware device addresses. But ARP has a fundamental flaw: its own messages cannot be authenticated.
+
+This lack of authentication can be exploited for both legitimate and illegitmate purposes, allowing for increased resiliency, or enabling a malicious attacker to pretend to be someone that they are not. In this latter case, an attacker can perform network-based Denial-of-Service (DOS) or Machine-in-the-Middle (MITM) attacks regardless of whether or not some higher-level encryption (like Wi-Fi passwords) is used. By performing what is known as an ARP cache poisoning attack, attackers are able to masquerade as any other device on “the ethernet.” This session will demonstrate how this attack works and what you can do to detect, prevent, and remediate such attacks on your networks.
 
 # Contents
 
@@ -25,10 +27,10 @@ Today&rsquo;s World Wide Web has become a worldwide battleground, economically, 
 
 This folder contains the following files and folders:
 
-* `Blue Team/` - Git submodule that should contain the OWASP Juice Shop source code. If this directory is empty, be sure you have fetched this repository's submodule contents by running `git submodule update --init`.
+* `Blue Team/`
 * `README.md` - This file.
-* `Red Team/` - Provisioning files for the attacker machine.
-* `Vagrantfile` - The Vagrant configuration for our practice target (the &ldquo;Blue Team,&rdquo; which in this case is an [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) instance), and our attacker machine.
+* `Red Team/`
+* `Vagrantfile`
 
 # Prerequisites
 
@@ -62,7 +64,7 @@ Then, bring the virtual machine(s) for the lab online.
     vagrant up
     ```
 
-Once both the virtual machines are running, you can continue to the next step.
+Once all the virtual machines are running, you can continue to the next step.
 
 # Practice
 
@@ -71,8 +73,6 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 ## Introduction
 
 > :construction: TK-TODO
->
-> Juice shop is at http://192.168.33.10. Aim OWASP ZAP there.
 
 # Discussion
 
@@ -80,4 +80,4 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 # Additional references
 
-> :construction: TK-TODO
+* [ARP Cache Poisoning](https://www.grc.com/nat/arp.htm)
