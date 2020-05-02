@@ -4,3 +4,6 @@
 [submodule "train-the-trainers/black-hat-bash-back/CTF"]
 	path = train-the-trainers/black-hat-bash-back/CTF
 	url = https://github.com/AnarchoTechNYC/CTF.git
+[submodule "train-the-trainers/black-hat-bash-back/introduction-to-exploiting-web-applications/Blue Team"]
+	path = train-the-trainers/black-hat-bash-back/introduction-to-exploiting-web-applications/Blue Team
+	url = https://github.com/bkimminich/juice-shop.git
