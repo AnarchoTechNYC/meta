@@ -284,8 +284,9 @@ Site cloning is a form of credential harvesting:
 >
 > Note that, like a password manager and the U2F case, SQRL *practically* reduces the possibility of phishing attacks succeeding, but it is not immune from cases where the following conditions are all true:
 >
-> * DNS spoofing is in effect.
-> * Both the SQRL login agent and the login initiator (Web browser) share the same public IP address from the perspective of the targeted (innocent) Web site. In this situation, SQRL's MITM detection (same IP address check) is satisfied.
+> * DNS spoofing is in effect; this is required in order for the SQRL client to generate the correct site-specific identity to login with. Anything short of an identical domain name match will result in a failed login.
+> * Both the SQRL login agent and the login initiator (Web browser) share the same public IP address from the perspective of the targeted (innocent) Web site, such as if both the victim and attacker are located behind the same NAT router (e.g., Wi-Fi cafe) and the website being logged in to is on the public Internet. In this situation, SQRL's same IP address check is satisfied.
+> * SQRL's Client-Provided Session (CPS) is being actively intercepted. This requires the attacker to be in a privileged network position (i.e., to be an on-path attacker), such as by being the ISP itself or by performing ARP cache poisoning or another form of active traffic manipulation that redirects the victim's traffic through to the website via the attacker.
 >
 > While there are ways to arrange for this situation to occur, it is a *significantly* higher bar for an attacker to clear. Thanks to that, coupled with the ease with which SQRL can be implemented by extremely under-resourced organizations along with its strong identity protection guarantees (i.e., doing away with usernames and password pairs completely), we consider it a worthwhile anti-phishing investment.
 >
