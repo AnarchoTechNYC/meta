@@ -1003,3 +1003,4 @@ For more information:
 * [Google Cloud Security Whitepaper: Modern password security for users](https://cloud.google.com/solutions/modern-password-security-for-users)
 * [Google Cloud Security Whitepaper: Modern password security for system designers](https://cloud.google.com/solutions/modern-password-security-for-system-designers)
 * [UseAPassphrase.com](https://www.useapassphrase.com/) - Single-page app and explainer that discusses password and passphrase entropy.
+* [Firefox Monitor - Breaches](https://monitor.firefox.com/breaches) - List of data breaches in the Firefox Monitor database (based on Have I Been Pwned).
