@@ -129,7 +129,6 @@
         <USB>
           <Controllers>
             <Controller name="OHCI" type="OHCI"/>
-            <Controller name="EHCI" type="EHCI"/>
           </Controllers>
         </USB>
         <Network>
