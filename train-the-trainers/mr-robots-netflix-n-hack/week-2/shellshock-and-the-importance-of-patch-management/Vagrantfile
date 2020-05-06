@@ -1,0 +1,77 @@
+Vagrant.configure("2") do |config|
+
+  # We provide our own base box so this is a relative filesystem path.
+  config.vm.box = "shellshock.box"
+
+  # Disable the default Vagrant sync'ed folder, it is not needed.
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  # Make the Web server accessible to the host.
+  config.vm.network "forwarded_port", host: 8080, guest: 80, auto_correct: true
+  config.vm.usable_port_range = 8100..8800
+
+  config.vm.provider "virtualbox" do |v|
+    # Attach the Tiny Core Linux ISO so we can boot.
+    v.customize [
+      "storageattach", :id,
+      "--storagectl", "IDE",
+      "--type", "dvddrive",
+      "--device", "0",
+
+      # The ISO we are using requires use of secondary ("slave") port!
+      "--port", "1",
+
+      "--medium", "cve-2014-6271.iso"
+    ]
+  end
+
+  # We are expecting a login failure. Don't bother waiting.
+  config.vm.boot_timeout = 1
+
+  # Since we're expecting Vagant to be unable to communicate with the
+  # guest, we'll want to provide a friendly notice of this to the user
+  # instead of letting Vagrant spew an unexplained timeout "error."
+  #
+  # The better way to do this is to use Vagrant's own action triggers
+  # and abort cleanly. But this is only currently available behind an
+  # advanced feature flag, so we'll test for that and provide a decent
+  # fallback in the form of a simple informational message, otherwise.
+  enabled_feature_flags = ENV["VAGRANT_EXPERIMENTAL"]&.split(",")
+  info_message = <<~EOF
+    After a moment or two, point your Web browser to:
+
+        http://localhost:8080/
+
+    This will show you the expected Web site vulnerable to the
+    Shellshock (CVE-2014-6271) vulnerability.
+  EOF
+  if enabled_feature_flags&.include?("typed_triggers")
+    config.trigger.before :"Vagrant::Action::Builtin::WaitForCommunicator", type: :action do |t|
+      # Note that this is still an "experimental" feature as of Vagrant
+      # version 2.2.7 (May 2020), so it needs to be enabled with a feature
+      # flag like this:
+      #
+      #     VAGRANT_EXPERIMENTAL="typed triggers" vagrant up
+      #
+      # For more info:
+      # https://www.vagrantup.com/docs/triggers/configuration.html#trigger-types
+      t.info = info_message
+      t.abort = 0
+    end
+  else
+    config.trigger.before :up do |t|
+      t.info = <<~EOF
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        We are about to bring up the vulnerable VM. We are expecting
+        that this action will fail, but this is actually normal, so
+        don't worry about the error message raised by Vagrant.
+      EOF
+      t.info << "\n" << info_message
+    end
+  end
+
+
+end

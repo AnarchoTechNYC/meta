@@ -1,0 +1,7 @@
+{
+    "title": "Shellshock and the Importance of Patch Management",
+    "description": "A Mr. Robot's Netflix 'n' Hack practice lab for demonstrating the Shellshock (CVE-2014-6271) vulnerability.",
+    "author": "Anarcho-Tech NYC",
+    "homepage": "https://github.com/AnarchoTechNYC/meta/tree/master/train-the-trainers/mr-robots-netflix-n-hack/week-2/shellshock-and-the-importance-of-patch-management",
+    "credits": "Based on the CVE-2014-6271 exercise provided by PentesterLab.com."
+}
