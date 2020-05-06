@@ -23,6 +23,9 @@ Vagrant.configure("2") do |config|
 
       "--medium", "cve-2014-6271.iso"
     ]
+
+    # Short name to avoid VirtualBox name length error.
+    v.name = "Anarcho-Tech NYC Shellshock Lab"
   end
 
   # We are expecting a login failure. Don't bother waiting.
