@@ -107,19 +107,19 @@ A pre-built macOS version of John the Ripper is available for modern Apple's Mac
 **Do this:**
 
 1. Go to [John the Ripper's macOS community-contributed builds page](http://download.openwall.net/pub/projects/john/contrib/macosx/).
-1. Download the latest version available. (As of this writing, that is [`john-1.7.9-jumbo-7-macosx-Intel-2.zip`](http://download.openwall.net/pub/projects/john/contrib/macosx/john-1.7.9-jumbo-7-macosx-Intel-2.zip).)
+1. Download the latest version available. (As of this writing, that is [`john-1.8.0.9-jumbo-macosx-avx2.zip`](https://download.openwall.net/pub/projects/john/contrib/macosx/john-1.8.0.9-jumbo-macosx_avx2.zip).)
 1. Unzip the file. Usually, this is as simple as double-clicking on it.
     * This will produce a folder, inside of which is another folder named `run`. Inside *that* folder is a file called `john`. That file is the main John the Ripper application. Unlike a classic macOS application, this program must be run [using the Terminal](http://guides.macrumors.com/Terminal); you cannot simply double-click it. However, `john` is now successfully "installed."
 
 ## JtR installation on GNU/Linux
 
-> :construction: TK-TODO
+A pre-built version of John the Ripper is probably available from your package manager, but this version may be somewhat outdated. The recommended way to install JtR for GNU/Linux systems is to build the software from source.
 
 ### JtR installation on Debian and its derivatives
 
 There are pre-built versions of [John the Ripper available in the Debian package archive as the `john` package](https://tracker.debian.org/pkg/john). These can be installed using [`apt(1)`](https://wiki.debian.org/Apt), the default package manager on most Debian-derived systems:
 
-**Do this:**
+**Do this** to install JtR from your distribution's package repositories:
 
 1. Open your terminal application.
 1. If you are not running as a user with administrative (sometimes called "superuser" or "root") privileges, become one. For example, if your local administrator account is called `localadmin`, use [the `su(1)` command](https://en.wikipedia.org/wiki/Su_%28Unix%29) to substitute the `localadmin` user as yourself:
@@ -138,6 +138,33 @@ There are pre-built versions of [John the Ripper available in the Debian package
     ```sh
     exit
     ```
+
+Alternatively, **do this** to build JtR from source on most Debian-dervied GNU/Linux systems:
+
+```sh
+# Update your APT cache.
+sudo apt update
+
+# Install the dependencies. This includes the dependencies required for the "Jumbo" edition installation.
+sudo apt install build-essential libssl-dev libgmp-dev libpcap-dev zlib1g-dev libbz2-dev libkrb5-dev libnss3-dev
+
+# Download the JtR source code itself.
+john_version=1.9.0 # Replace this with the version of John you'd like to download.
+wget -O jtr.tar.xz https://www.openwall.com/john/k/john-${john_version}-jumbo-1.tar.xz
+
+# Uncompress the archive file.
+tar -xJvf jtr.tar.xz
+
+# Enter the directory created from the archive file.
+cd john-*
+
+# Configure, build, and install the software.
+./configure && make && make install
+```
+
+You should now have a `john` executable in the `../run` directory.
+
+See also the provisioner(s) in the [`Vagrantfile`](Vagrantfile).
 
 # Practice
 
