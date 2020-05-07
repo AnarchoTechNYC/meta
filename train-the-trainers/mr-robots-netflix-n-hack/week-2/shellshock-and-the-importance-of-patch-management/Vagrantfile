@@ -51,7 +51,7 @@ Vagrant.configure("2") do |config|
   if enabled_feature_flags&.include?("typed_triggers")
     config.trigger.before :"Vagrant::Action::Builtin::WaitForCommunicator", type: :action do |t|
       # Note that this is still an "experimental" feature as of Vagrant
-      # version 2.2.7 (May 2020), so it needs to be enabled with a feature
+      # version 2.2.8 (May 2020), so it needs to be enabled with a feature
       # flag like this:
       #
       #     VAGRANT_EXPERIMENTAL="typed triggers" vagrant up

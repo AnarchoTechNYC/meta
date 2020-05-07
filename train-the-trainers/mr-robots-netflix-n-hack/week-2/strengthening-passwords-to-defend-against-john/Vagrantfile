@@ -33,13 +33,44 @@ Vagrant.configure("2") do |config|
     # Fixup permissions.
     chown -R vagrant:vagrant ~vagrant
   EOF
-  config.vm.post_up_message = <<~EOF
-    To access the hash cracking lab environment:
+  config.vm.post_up_message = <<-EOF
+
+        ___    ____   ______                                  __  _
+       /   |  / / /  / ____/___  _________  ____  _________ _/ /_(_)___  ____  _____
+      / /| | / / /  / /   / __ \\/ ___/ __ \\/ __ \\/ ___/ __ `/ __/ / __ \\/ __ \\/ ___/
+     / ___ |/ / /  / /___/ /_/ / /  / /_/ / /_/ / /  / /_/ / /_/ / /_/ / / / (__  )
+    /_/  |_/_/_/   \\____/\\____/_/  / .___/\\____/_/   \\__,_/\\__/_/\\____/_/ /_/____/
+                                  /_/
+        ___                 ____             __                 __
+       /   |  ________     / __ )____ ______/ /_____ __________/ /____
+      / /| | / ___/ _ \\   / __  / __ `/ ___/ __/ __ `/ ___/ __  / ___/
+     / ___ |/ /  /  __/  / /_/ / /_/ (__  ) /_/ /_/ / /  / /_/ (__  )
+    /_/  |_/_/   \\___/  /_____/\\__,_/____/\\__/\\__,_/_/   \\__,_/____/
+
+    ~~~~~~~~~~~~~~~~~~~~~~~ Anarcho-Tech NYC - Hash Cracking ~~~~~~~~~~~~~~~~~~~~~~~
+
+    You now have a virtual machine with John the Ripper installed.
+    John the Ripper (also known as JtR) is a free, fast hash cracking
+    utility that can be used to "recover" passwords from their hashed
+    equivalents.
+
+    To begin, log in to the virtual machine and then run move to the
+    directory in which John the Ripper has been installed:
 
         vagrant ssh
         cd $(dirname $(which john))
 
     Then, use commands such as `john` and `hashcat` to try and crack
     the hashes in the `evilcorp-intl.com.shadow.txt` shadow file.
+
+    Please use what you learn here for the betterment of humanity. Only share what
+    you know with the people who you believe will do the same. Remember, intention
+    is not impact. Kill all Nazis, take down all corporations.
+
+        "You don't take down a conglomerate by shooting them in the heart.
+         That's the thing about conglomerates: they don't have hearts.
+         You take them down limb by limb. And as they unravel, their illusion
+         of control unravels."
+            --Mr. Robot
   EOF
 end
