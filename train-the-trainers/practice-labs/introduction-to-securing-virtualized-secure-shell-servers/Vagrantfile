@@ -18,7 +18,11 @@ Vagrant.configure("2") do |config|
     c.vm.hostname = "ssh-client"
 
     c.vm.provision "shell", inline: <<~EOF
-     apt update && apt install --yes avahi-daemon
+      apt update && apt install --yes avahi-daemon
+      cat <<ENDSCRIPT >> ~vagrant/.profile
+      # Start SSH agent.
+      [ -z "\\$SSH_AGENT_PID" ] && eval \\$(ssh-agent -s)
+      ENDSCRIPT
     EOF
 
     c.vm.post_up_message = <<~EOF
