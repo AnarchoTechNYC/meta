@@ -4,12 +4,73 @@ Vagrant.configure("2") do |config|
     c.vm.box = "centos/7"
     c.vm.network "private_network", ip: "172.16.1.111"
     c.vm.hostname = "ssh-server"
+
+    c.vm.provision "shell", inline: <<~EOF
+      yum update -y && yum install -y telnet-server avahi
+      systemctl start telnet.socket
+      systemctl start avahi-daemon.service
+    EOF
   end
 
   config.vm.define "client" do |c|
     c.vm.box = "ubuntu/bionic64"
     c.vm.network "private_network", ip: "172.16.1.222"
     c.vm.hostname = "ssh-client"
+
+    c.vm.provision "shell", inline: <<~EOF
+     apt update && apt install --yes avahi-daemon
+    EOF
+
+    c.vm.post_up_message = <<~EOF
+
+                        /¯¯\\
+                        \\__/
+                         ||
+                         ||
+                        |  |
+                        |  |
+                        |  |
+                        |  |
+                        |  |
+                        |  |
+                    .--.----.--.
+                  .-----\\__/-----.
+          ___---¯¯////¯¯|\\/|¯¯\\\\\\\\¯¯---___
+       /¯¯ __O_--////   |  |   \\\\\\\\--_O__ ¯¯\\
+      | O?¯      ¯¯¯    |  |    ¯¯¯      ¯?O |
+      |  '    _.-.      |  |      .-._    '  |
+      |O|    ?..?      ./  \\.      ?..?    |O|
+      | |     '?. .-.  | /\\ |  .-. .?'     | |
+      | ---__  ¯?__?  /|\\¯¯/|\\  ?__?¯  __--- |
+      |O     \\         ||\\/ |         /     O|
+      |       \\  /¯?_  ||   |  _?¯\\  /       |
+      |       / /    - ||   | -    \\ \\       |
+      |O   __/  | __   ||   |   __ |  \\__   O|
+      | ---     |/  -_/||   |\\_-  \\|     --- |
+      |O|            \\ ||   | /            |O|
+      \\ '              ||   |        ^~DLF ' /
+       \\O\\    _-¯?.    ||   |    .?¯-_    /O/
+        \\ \\  /  /¯¯¯?  ||   |  ?¯¯¯\\  \\  / /
+         \\O\\/   |      ||   |      |   \\/O/
+          \\     |      ||   |      |     /
+           '.O  |_     ||   |     _|  O.'
+              '._O'.__/||   |\\__.'O_.'
+                 '._ O ||   | O _.'
+                    '._||   |_.'
+                       ||   |
+                       ||   |
+                       | \\/ |
+                       |  | |
+                        \\ |/
+                         \\/
+
+      It's dangerous to go alone. Take this.
+
+      The server is at IP address 172.16.1.111. Get there safely by
+      ensuring all your communication is encrypted.
+
+      Good luck!
+    EOF
   end
 
 end
