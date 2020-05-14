@@ -26,6 +26,7 @@ In other words, you will perform a *[password cracking](https://en.wikipedia.org
     1. [Cracking hashes with brute-force](#cracking-hashes-with-brute-force)
     1. [Using a password manager](#using-a-password-manager)
 1. [Discussion](#discussion)
+    * [Identifying hash types](#identifying-hash-types)
     * [Technical errors in the Mr. Robot scene](#technical-errors-in-the-mr-robot-scene)
     * [`passwd` versus `shadow` files](#passwd-versus-shadow-files)
     * [Hash algorithms](#hash-algorithms)
@@ -287,6 +288,8 @@ Since we did not tell `john` what hashing algorithm to use, the very first thing
 > ```
 > 
 > Depending on the version and configuration of the John the Ripper software package you installed, your copy of `john` may not recognize all of these hash formats, or it may recognize even more than those shown here. Again, the important takeaway is that you need to tell `john` (or hope `john` correctly guesses) the hash algorithm to use when cracking hashes. If you don't get the hash algorithm right, you will never find a match no matter how many guesses you make.
+>
+> For some guidance on how to determine the correct hash format when `john` cannot figure it out for you, see the "[Identifying hash types](#identifying-hash-types)" discussion section.
 
 Following the hash format detection warnings, `john` produces a report about what it was able to accomplish. The relevant output snippet is as follows:
 
@@ -928,6 +931,45 @@ This isn't glamorous, and might feel clunky or awkward until you get the hang of
 Once you do get the feel for this, you can start using a "password" manager to manage many different kinds of secrets, including private notes to yourself or highly-sensitive information such as bank account numbers, Wi-Fi network passkeys, and any other secrets you need to remember.
 
 # Discussion
+
+## Identifying hash types
+
+You won't always immediately know what hashing algorithm produced a given hash output. If John the Ripper cannot determine the hash type for you, you'll have to try identifying the type of hash you're trying to crack by yourself. Guess the hash type incorrectly and you won't be able to crack the hash even if you correctly guess the plaintext password.
+
+Thankfully, there are automated utilities that will offer you fairly good hash type guesses. Of these, the most popular is the `hashid` command. To use it in the simplest of situations, you just `echo` the unknown hash to `hashid`, like this:
+
+```sh
+# Replace `${unknown_hash}` with the unknown hash itself, of course.
+echo -n "${unknown_hash}" | hashid
+```
+
+The `hashid` utility will produce a list of potentially matching hash types, sorted in order of confidence. Observe how `hashid` correctly guesses that its input in the following invocation is a SHA-1 digest:
+
+```sh
+$ echo -n "password" | shasum -a 1 | cut -d ' ' -f 1 | hashid
+Analyzing '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
+[+] SHA-1
+[+] Double SHA-1
+[+] RIPEMD-160
+[+] Haval-160
+[+] Tiger-160
+[+] HAS-160
+[+] LinkedIn
+[+] Skein-256(160)
+[+] Skein-512(160)
+```
+
+While `hashid` does a decent job a lot of the time, much of its analysis is fairly simplistic. For example, many contemporary hash algorithms produce output of a specific, fixed length. This makes deducing the hash type simple; if the message digest is a certain length, it can only have been produced by one of a select number of hash algorithms. You can refer to the [Anarcho-Tech NYC CTF Wiki page on Identifying data formats § Hashes](https://github.com/AnarchoTechNYC/CTF/wiki/Identifying-data-formats#hashes) for a table of hash types and corresponding output lengths, and you can use commands such as `hashcat --example-hashes` to get example inputs and corresponding outputs to many different hashing algorithms.
+
+However, newer hash algorithms such as SHA-3 (formerly known as the Keccak algorithm) can produce variable length output, which makes naive heuristics like digest length less useful. In these situations, automated tools like `hashid` or `john` may not be able to determine the type of a given hash, especially if the unknown hash is not [formatted with a hash string signature](#hash-string-formats). Despite this obstacle, you can often still determine the type of hash you have by inference.
+
+If `john` fails to determine the hash type and no other automated tools produce any meaningful results, ask yourself the following questions to help deduce the type of the hash:
+
+* **Where was the hash obtained from?** In reality, you are rarely given a naked hash value without any additional context. Instead, you'll often either find the hash yourself (just like Elliot did), or you'll be given some contextual information about the target. If you know where the hash came from, you can make some educated guesses about what type of hash it is. For instance, a UNIX-like or GNU/Linux Operating System user account password will almost certainly be hashed with an algorithm like `bcrypt`, not `SHA-256`, because the former is built for slowing down attackers while the latter is designed for speed and efficiency.
+* **What technology was used to generate the hash?** In the best case, you can read the source code of the system you are attacking to learn exactly how it generates hashes. Even lacking this transparency, though, you can still make some assumptions. For example, if you know that the hash was generated by a PHP-based Web application, you should immediately limit your hash type guesses to algorithms commonly used by Web application developers and also implemented by the [PHP `hash()` function](https://www.php.net/manual/function.hash.php). Similarly, different Operating Systems will use different hash algorithms; Windows systems use hash algorithms specific to their technology ([New Technology LAN Manager or NTLM](https://en.wikipedia.org/wiki/NTLM) hashes, for instance).
+* **When was the technology that generated the hash last updated?** Over time, as our understanding of cryptanalysis matures, different hash algorithms come in and fall out of favor. For example, the MD5 (Message Digest number 5) algorithm was considered very strong and thus was very popular in the early 2000's, but no contemporary system should be using that algorithm anymore. If you can figure out the timeframe of when the technology that generated the hash was last kept current, you can often scope your hash type guesses down to size. For example, attempting to crack a hash generated by a very old system by guessing that it uses a modern algorithm is clearly a waste of time.
+
+These questions are very straightforward. They're all of the standard journalistic ones: where, what, when, etcetera. By thinking critically about the problem you face, you can dramatically decrease the amount of resources (like time) you need to solve the problem at hand. This is another aspect of "making smarter guesses sooner" that is such a vital skill to have if you are to become skilled at hash cracking.
 
 ## Technical errors in the Mr. Robot scene
 

@@ -5,7 +5,8 @@ Vagrant.configure("2") do |config|
     apt update
     apt install --yes xinit openbox xterm keepassxc firefox-esr \
         build-essential libssl-dev libgmp-dev libpcap-dev \
-        zlib1g-dev libbz2-dev libkrb5-dev libnss3-dev
+        zlib1g-dev libbz2-dev libkrb5-dev libnss3-dev \
+        hashid
 
     # Build John the Ripper from source because we want the "Jumbo"
     # (community) edition, not merely the core JtR in the Debian repo.
@@ -54,13 +55,13 @@ Vagrant.configure("2") do |config|
     utility that can be used to "recover" passwords from their hashed
     equivalents.
 
-    To begin, log in to the virtual machine and then run move to the
+    To begin, first log in to the virtual machine and then go to the
     directory in which John the Ripper has been installed:
 
         vagrant ssh
         cd $(dirname $(which john))
 
-    Then, use commands such as `john` and `hashcat` to try and crack
+    Then, use commands such as `john` (or `hashcat`) to try and crack
     the hashes in the `evilcorp-intl.com.shadow.txt` shadow file.
 
     Please use what you learn here for the betterment of humanity. Only share what
