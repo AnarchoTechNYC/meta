@@ -1,8 +1,12 @@
 # Introduction to Network Sniffing and Scanning
 
-If we pare down digital networks to their most vital essentials, what's really happening is something like a very complicated phone call between machines (or sometimes, a machine speaking to itself). In order to better grasp what is happening within this conversation, we must first be able to hear what is being "said," and then graducally become familiar with the languages being spoken on the wire.
+Once upon a time, using a computer simply meant operating that one machine. Today, most uses of a computer (Web browsing, email, gaming, software development, etcetera) actually involve numerous computers cooperating with one another. This cooperation is usually made possible by connecting the computers together, creating a computer *network*.
 
-What follows is a collection of small exercises using a variety of commonly used, FOSS networking tools. These exercises are intended to increase one's ability to "listen in" on the conversation on a given network, and to move towards understanding what is being "said."
+Despite their name, computer networks are probably already a familiar concept to you, because at their most fundamental level they are analogous to the telephone system. Each device is assigned an address and, in order to communicate across the network, you &ldquo;make a call&rdquo; to that device. Telephone handsets have *telephone numbers*, and Internet-connected computers have *IP addresses*.
+
+When we pare down digital networks to their most vital essentials, what's really happening is similar to a digitized phone call between machines (or sometimes, a machine speaking to itself). Every time your computer loads a Web page, downloads a file, opens an email, or streams a video, your computer has placed one of these Internet &ldquo;phone calls&rdquo; to another computer somewhere else on the network, the other computer answered, and then the two (or more) of them began to &ldquo;speak&rdquo; to one another. This computer-to-computer &ldquo;conversation&rdquo; happens in &ldquo;languages&rdquo; called *network protocols* with names like HTTP (the HyperText Transfer Protocol, more commonly known as the Web), FTP (the File Transfer Protocol), and others, which we can learn to understand by &ldquo;listening&rdquo; to them, just as we can learn to understand a human language after some practice.
+
+In this practice lab, we&rsquo;ll learn how to eavesdrop on what our computers are saying to one another, learn just enough about several common protocols to understand what they might be saying to one another, and finally learn how to find more conversational partners by exploring the vast expanses of the network itself.
 
 # Contents
 
@@ -18,13 +22,17 @@ What follows is a collection of small exercises using a variety of commonly used
 
 When you complete this lab, you will have acquired the following capabilities:
 
-> TK-TODO
+* Create, analyze, and edit packet capture files, which represent the conversations between computers on a network.
+* Query various Regional Internet Registries (RIRs) to find information about the operators of a given network.
+* Perform host discovery and port scans in order to map network topologies and learn details about connected devices.
 
 # Bill of materials
 
 This folder contains the following files and folders:
 
 * `README.md` - This file.
+* `Vagrantfile` - The Vagrant configuration for our lab environment.
+* `provision/` - Folder that houses some artifacts for the lab environment. You can safely ignore this folder.
 
 # Prerequisites
 

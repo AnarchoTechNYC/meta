@@ -4,6 +4,9 @@ Vagrant.configure("2") do |config|
     c.vm.box = "rapid7/metasploitable3-ub1404"
     c.vm.box_version = "0.1.12-weekly"
     c.vm.network "private_network", ip: "192.168.88.10"
+    c.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nictrace2", "on", "--nictracefile2", "metasploitable-private_network.pcap"]
+    end
 
     # This box does not come with VirtualBox Guest Additions, so its
     # default synced folder will fail. Disable it.
@@ -20,11 +23,32 @@ Vagrant.configure("2") do |config|
   config.vm.define "scanner" do |c|
     c.vm.box = "debian/buster64"
     c.vm.network "private_network", ip: "192.168.88.11"
+    c.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nictrace2", "on", "--nictracefile2", "scanner-private_network.pcap"]
+    end
     c.vm.provision "shell", inline: <<~EOF
       export DEBIAN_FRONTEND=noninteractive
       echo "wireshark wireshark-common/install-setuid boolean true" | debconf-set-selections
-      apt update && apt install --yes dnsutils whois nmap tcpdump tshark
+      apt update && apt install --yes dnsutils whois nmap tcpdump tshark \
+          xorg openbox wireshark nitrogen
       usermod -a -G wireshark vagrant
+      mkdir -p ~vagrant/.config/openbox ~vagrant/.config/nitrogen
+      echo "nitrogen --restore &" > ~vagrant/.config/openbox/autostart
+      cat <<END > ~vagrant/.config/nitrogen/nitrogen.cfg
+      [nitrogen]
+      view=icon
+      recurse=true
+      sort=alpha
+      icon_caps=false
+      dirs=/vagrant;
+      END
+      cat <<END > ~vagrant/.config/nitrogen/bg-saved.cfg
+      [xin_-1]
+      file=/vagrant/provision/space-background.jpg
+      mode=5
+      bgcolor=#000000
+      END
+      chown -R vagrant:vagrant ~vagrant/
     EOF
 
     c.vm.post_up_message = <<~EOF
@@ -62,7 +86,7 @@ Vagrant.configure("2") do |config|
           vagrant ssh scanner
 
       Your scanner is equipped with several helpful utilities such as
-      `nmap`, `whois`, `traceroute`, `nc`, and more.
+      `nc`, `traceroute`, `whois`, `nmap`, `tshark`, and more.
 
       Once logged in, try scanning these demo hosts:
 
