@@ -94,6 +94,10 @@ Vagrant.configure("2") do |config|
           192.168.88.10
 
       Good luck!
+
+      Please use what you learn here for the betterment of humanity. Only share what
+      you know with the people who you believe will do the same. Remember, intention
+      is not impact. Kill all Nazis, kill all cops, especially the ones inside ourselves.
     EOF
   end
 
