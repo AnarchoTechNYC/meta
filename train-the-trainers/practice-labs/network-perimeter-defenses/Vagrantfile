@@ -1,0 +1,40 @@
+Vagrant.configure("2") do |config|
+
+  intnet_name = "netdefense"
+
+  # Windows is a huge download, so require explicit action to define
+  # and configure any Windows boxes.
+  if ENV['atc_include_windows']
+    config.vm.define "windows" do |c|
+      c.vm.box = "gusztavvargadr/windows-10"
+      c.vm.network "private_network", type: "dhcp",
+        virtualbox__intnet: intnet_name
+    end
+  end
+
+  config.vm.define "ubuntu" do |c|
+    c.vm.box = "ubuntu/bionic64"
+    c.vm.provision "shell", path: "provision/ubuntu.sh"
+    c.vm.network "private_network", type: "dhcp",
+      virtualbox__intnet: intnet_name
+    c.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--vram", "128"]
+      v.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+    end
+  end
+
+  config.vm.define "centos" do |c|
+    c.vm.box = "centos/8"
+    c.vm.network "private_network", type: "dhcp",
+      virtualbox__intnet: intnet_name
+  end
+
+  config.vm.define "freebsd" do |c|
+    c.vm.box = "freebsd/FreeBSD-12.1-STABLE"
+    c.vm.network "private_network", type: "dhcp",
+      virtualbox__intnet: intnet_name
+    c.vm.synced_folder ".", "/vagrant", disabled: true
+    c.ssh.shell = "csh -l"
+  end
+
+end
