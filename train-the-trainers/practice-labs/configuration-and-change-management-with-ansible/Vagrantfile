@@ -1,0 +1,74 @@
+Vagrant.configure("2") do |config|
+
+# TODO: We'll eventually want a couple of additional compute
+#       instances to experiment with. These will be managed
+#       either via `ansible-playbook` run on the `awx` VM at
+#       a command line or using the AWX Web dashboard itself.
+#
+#  (1..2).each do |i|
+#    config.vm.define "web#{i}" do |c|
+#      c.vm.box = "ubuntu/bionic64"
+#      c.vm.network "private_network", type: "dhcp"
+#    end
+#  end
+#
+#  config.vm.define "db1" do |c|
+#    c.vm.box = "ubuntu/bionic64"
+#    c.vm.network "private_network", type: "dhcp"
+#  end
+
+  # The Ansible controller is also where we'll install the
+  # AWX "Tower" management console.
+  config.vm.define "awx" do |c|
+    c.vm.box = "centos/8"
+    c.vm.network "private_network", type: "dhcp"
+    c.vm.network "forwarded_port", host: 8080, guest: 80, auto_correct: true
+    c.vm.provider "virtualbox" do |v|
+      # See minimum Tower requirements.
+      # https://docs.ansible.com/ansible-tower/latest/html/installandreference/requirements_refguide.html
+      v.cpus   = 2
+      v.memory = 4096
+    end
+    c.vm.provision "ansible_local" do |a|
+      a.playbook = "provision/awx.yaml"
+      a.galaxy_role_file = "provision/awx-requirements.yaml"
+    end
+    c.vm.post_up_message = <<~EOF
+
+           `                                                          `
+       `.  .`                                                        `.  ``
+        `.` .`                                                      `. `.`
+      `  `.` ``                                                    `. `.`  `
+       .` ```````                                                ``````` `.
+        `.` ``````` ``                                      `` ``````` `.`
+         `````` ``..`.`                                    `.`..`` ``````
+       ``  ````. ````````                                ```````` .````  ``
+        ``````````.```    `                            `    ```.````` ````
+          ``````` `.```  ` ``                        `` `   ``.` ```````
+          ``` `````.``   ` `-::::::::::::::::::::::::- `    ```````` ```
+           `````````..``  `-yyyysyyyysyysyysyyysyysyyy.`  ``..`````````
+              ``````````   :yy+-`-os.`o:`/+`-y-`+/`:yy-   ``````````
+             ````````````  :ys :s``y. y/ +s -ys....syy-  ````````````
+               ``````````` :yo ./``y. y/ os -yyo  syyy- ```````````
+                `.```````  :yo ./``y. y: ++ -ys..`-yyy-  ```````.`
+                 `..```.```:y/ -o``ss-.`:.`-sy. +: :yy-```.```..`
+                    `.`````-yysyyssyyysyyysyyyysyysyyy-`````.`
+                      ```.``://////////+yy+//////////:``.```
+                           ``.`.`    :/+yy+/:    `.`.``
+  
+      ~~~~~~~ Anarcho-Tech NYC - Configuration and Change Management ~~~~~~~
+
+      Your Ansible AWX controller is starting up. In about a minute or two,
+      you should be able to visit http://127.0.0.1:8080 in your Web browser
+      to access the Web dashboard. At the AWX login screen, use the default
+      administrator login credentials to begin setting up your AWX instance:
+
+          AWX username: admin
+          AWX password: password
+
+      Once logged in, use AWX to create an inventory consisting of your
+      application and supporting servers....
+    EOF
+  end
+
+end
