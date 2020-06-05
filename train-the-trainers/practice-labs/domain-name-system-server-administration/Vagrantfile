@@ -1,0 +1,6 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.provision "shell", inline: <<~EOF
+    apt update && apt install --yes bind9
+  EOF
+end
