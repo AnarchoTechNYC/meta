@@ -1,0 +1,6 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.provision "docker" do |d|
+    # No options in this block tells Vagrant simply to install Docker.
+  end
+end
