@@ -28,6 +28,7 @@ You may encounter the following icons throughout these texts:
 * :construction: (`:construction:`) is used to explicitly mark a section as incomplete, that is, one whose editors do not intend it to be the final or "published" product of their work.
 * :globe_with_meridians: (`:globe_with_meridians:`) is used to explicitly mark links that go to unaffiliated, remote destinations.
 * :memo: (`:memo:`) is used to indicate that the following text is intended as a note to fellow editors, rather than intended to be read as part of the normal flow of text by a consumer.
+* :mortar_board: (`:mortar_board`) is used to highlight and recommend particularly valuable educational resources or opportunities.
 * :warning: (`:warning:`) is used to highlight a risky or dangerous activity.
 
 These icons are sometimes used in combination for added meaning. For instance, :beginner::warning: is a "warning for beginners." 
