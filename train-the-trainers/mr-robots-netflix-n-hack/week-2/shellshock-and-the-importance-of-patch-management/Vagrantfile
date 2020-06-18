@@ -54,7 +54,7 @@ Vagrant.configure("2") do |config|
       # version 2.2.8 (May 2020), so it needs to be enabled with a feature
       # flag like this:
       #
-      #     VAGRANT_EXPERIMENTAL="typed triggers" vagrant up
+      #     VAGRANT_EXPERIMENTAL="typed_triggers" vagrant up
       #
       # For more info:
       # https://www.vagrantup.com/docs/triggers/configuration.html#trigger-types
