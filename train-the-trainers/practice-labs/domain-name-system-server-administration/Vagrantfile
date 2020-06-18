@@ -1,6 +1,16 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/bionic64"
-  config.vm.provision "shell", inline: <<~EOF
-    apt update && apt install --yes bind9
-  EOF
+
+  config.vm.define "client" do |c|
+    c.vm.box = "ubuntu/bionic64"
+    c.vm.network "private_network", type: "dhcp"
+  end
+
+  config.vm.define "server" do |c|
+    c.vm.box = "ubuntu/bionic64"
+    c.vm.network "private_network", type: "dhcp"
+    c.vm.provision "shell", inline: <<~EOF
+      apt update && apt install --yes bind9
+    EOF
+  end
+
 end
