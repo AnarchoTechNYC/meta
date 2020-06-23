@@ -27,6 +27,9 @@ Vagrant.configure("2") do |config|
     c.vm.box = "centos/8"
     c.vm.network "private_network", type: "dhcp",
       virtualbox__intnet: intnet_name
+    c.vm.provision "shell", inline: <<~EOF
+      yum install nc
+    EOF
   end
 
   config.vm.define "freebsd" do |c|
