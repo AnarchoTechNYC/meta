@@ -6,7 +6,9 @@ Vagrant.configure("2") do |config|
   # Disable the default Vagrant sync'ed folder, it is not needed.
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
-  # Make the Web server accessible to the host.
+  # Make the Web server accessible to the host via static port forward
+  # as well as a private (host-only) network for arbitrary bind shells.
+  config.vm.network "private_network", type: "dhcp"
   config.vm.network "forwarded_port", host: 8080, guest: 80, auto_correct: true
   config.vm.usable_port_range = 8100..8800
 

