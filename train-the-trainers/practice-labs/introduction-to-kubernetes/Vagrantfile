@@ -5,4 +5,44 @@ Vagrant.configure("2") do |config|
     v.memory = 4096
     v.cpus   = 2
   end
+  config.vm.post_up_message = <<~EOF
+                                      .                   .
+                                  _..-''"""\\          _.--'"""\\
+                                  |         L         |        \\
+                      _           / _.-.---.\\.        / .-.----.\\
+                    _/-|---     _/<"---'"""""\\\\`.    /-'--''"""""\\
+                   |       \\     |            L`.`-. |            L
+                   /_.-.---.L    |            \\  \\  `|            J`.
+                 _/--'""""  \\    F            \\L  \\  |             L
+                   L      `. L  J  _.---.-"""-.\\`. L_/ _.--|"""""--.\\ `.
+                   |        \\+. /-"__.--'""""   \\ `./'"---'""""""   \\`. `.
+                   F   _____ \\ `F"        `.     \\  \\                L `.
+                  /.-'"_|---'"\\ |           `    JL |                 L  `.`.
+                 <-'""         \\|    _.-.------._ A J    _.-.-----`.--|   ``.`.
+                  L         `. |/.-'"_.-`---'""\\."| /-'"---'"""""   \\`.\\.  \\ `.`.
+                  |  _.------\\.<'"""            L\\ L\\                `.`\\`. \\  `.
+             _.-'//'"--'"""   L\\|       ________\\ `.F     ___.-------._L \\ `-\\   \\`.
+            /___| F             F _.--'"_|-------L  /_.-'"_.-|-'"""""""\\  L   L   `.`.
+                | F  _.-'|"""""/'"-'"""          J <'"""                L J   |     `.`.
+                |/-'-''/|""\\ )-|\\                 F \\                   |  L .'"""`\\""-\\\\_
+                 F`-'-'-(`-')  | \\                F  \\                  |___`"""`.""`.-'"
+    ------------/        `-'---|  F               L   L             __     |"""""`-'"__________
+              .'_         |    |__L          __  J__  |    _.--'""""   `".----'".'
+             '""""""""""""|--._+--F _.-'""||"   """___/.-'"   ||-'"/""""" \\_. .'
+             J------------(___\\__/'_____.--------'-------'""""""""           /
+             `-.                                        _.__.__.__.____     J_.-._
+        .'`-._ (-`--`---.'--._`---._.-'`-._.-'_.-'``-._'               `-''-'
+
+    ~~~~~~~~~~~~~~~~~~~~~~ Anarcho-Tech NYC - Introduction to Kubernetes ~~~~~~~~~~~~~~~~~~~~~~
+
+    Your Kubernetes learning environment is ready. It is provisioned
+    with a recent version of Minikube.
+
+    Log in to your lab environment and then begin to explore Minikube
+    and the Kubernetes framework:
+
+        vagrant ssh                     # Log in to the VM.
+        minikube status                 # Ensure Minikube is running.
+        kubectl -n kube-system get pods # See Kubernetes system resources.
+  EOF
 end
