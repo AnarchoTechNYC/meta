@@ -38,6 +38,13 @@ To perform this lab, you must have:
 
 > :beginner: :computer: This exercise requires the use of a command line, or "terminal." If you don't know what that means, or if you do but you feel intimidated by that, consider going through [Tech Learning Collective&rsquo;s free, online and self-paced *Foundations: Command Line Basics* course](https://techlearningcollective.com/foundations/), spending an hour at [Apple's Terminal User Guide](https://support.apple.com/guide/terminal/) (for macOS users), [Ubuntu's Command Line for Beginners tutorial](https://ubuntu.com/tutorials/command-line-for-beginners) (for GNU/Linux users) or reviewing [Computer Hope's article, "How to use the Windows command line (DOS)"](http://www.computerhope.com/issues/chusedos.htm) (for Windows users) if you want to get started quickly. You don't need to complete the whole tutorial or article to understand this exercise, but it will dramatically improve your comprehension of this exercise's mechanics. If you want a more thorough but equally gentle introduction to the same material, consider reading (and listening to) [Taming the Terminal](https://www.bartbusschots.ie/s/blog/taming-the-terminal/).
 
+Some portions of this lab are easier to do if you also have the following optional software:
+
+* An X11 window server, such as:
+    * on a macOS host, [XQuartz](https://www.xquartz.org/).
+    * on a Microsoft Windows host, [xwin](https://x.cygwin.com/) or [VcXsrv](https://sourceforge.net/projects/vcxsrv://sourceforge.net/projects/vcxsrv/).
+    * GNU/Linux systems ship X11 support in their Desktop Environments by default.
+
 # Set up
 
 In addition to your laptop or desktop computer, you will need to acquire the following tools.

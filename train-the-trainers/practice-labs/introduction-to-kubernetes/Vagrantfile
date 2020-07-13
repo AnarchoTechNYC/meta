@@ -41,8 +41,9 @@ Vagrant.configure("2") do |config|
     Log in to your lab environment and then begin to explore Minikube
     and the Kubernetes framework:
 
-        vagrant ssh                     # Log in to the VM.
+        vagrant ssh -- -X               # Log in with X11 forwarding.
         minikube status                 # Ensure Minikube is running.
         kubectl -n kube-system get pods # See Kubernetes system resources.
+        minikube dashboard &            # Start the Web-based Dashboard.
   EOF
 end
