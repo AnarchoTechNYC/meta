@@ -29,7 +29,8 @@ Vagrant.configure("2") do |config|
     c.vm.provision "shell", inline: <<~EOF
       export DEBIAN_FRONTEND=noninteractive
       echo "wireshark wireshark-common/install-setuid boolean true" | debconf-set-selections
-      apt update && apt install --yes dnsutils whois nmap tcpdump tshark \
+      apt update && apt install --yes dnsutils whois nmap ndiff hping3 \
+          tcpdump tshark \
           xorg openbox wireshark nitrogen
       usermod -a -G wireshark vagrant
       mkdir -p ~vagrant/.config/openbox ~vagrant/.config/nitrogen
