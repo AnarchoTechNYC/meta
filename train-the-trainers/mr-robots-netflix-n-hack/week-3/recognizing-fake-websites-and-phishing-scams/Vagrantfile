@@ -1,50 +1,70 @@
 # Vagrantfile configuration for a basic phishing website demo.
 #
-# This demo uses the TrustedSec Social Engineer's Toolkit (SET)
-# tool to offer a demonstration phishing site infrastructure.
-#
 # For more information about this file, see the Vagrant docs at:
 #     https://www.vagrantup.com/docs/vagrantfile/
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/bionic64"
-  config.vm.network "public_network"
 
-  config.vm.provision "shell", path: "provision.sh"
-  config.vm.post_up_message = <<~HEREDOC
+  vm_prefix = "basic-phishing-"
+  machines  = ["blue", "red"]
 
+  # Defender. (`blue` VM)
+  config.vm.define machines[0], autostart: false do |c|
+    c.vm.box      = "ubuntu/bionic64"
+    c.vm.hostname = machines[0]
+    c.vm.network "public_network"
+    c.vm.provision "shell", inline: <<~EOF
+      apt update && apt install --yes firefox
+    EOF
+    c.vm.provider "virtualbox" do |v|
+      v.name = "#{vm_prefix}#{machines[0]}"
+    end
+  end
 
+  # Attacker. (`red` VM)
+  config.vm.define machines[1], primary: true do |c|
+    c.vm.box      = "ubuntu/bionic64"
+    c.vm.hostname = machines[1]
+    c.vm.network "public_network"
+    c.vm.provision "shell", path: "provision.sh"
+    c.vm.provider "virtualbox" do |v|
+      v.name = "#{vm_prefix}#{machines[1]}"
+    end
+    c.vm.post_up_message = <<~EOF
 
-                                   .''.
-         .''.             *''*    :_\/_:     . 
-        :_\/_:   .    .:.*_\/_*   : /\ :  .'.:.'.
-    .''.: /\ : _\(/_  ':'* /\ *  : '..'.  -=:o:=-
-   :_\/_:'.:::. /)\*''*  .|.* '.\'/.'_\(/_'.':'.'
-   : /\ : :::::  '*_\/_* | |  -= o =- /)\    '  *
-    '..'  ':::'   * /\ * |'|  .'/.\'.  '._____
-        *        __*..* |  |     :      |.   |' .---"|
-         _*   .-'   '-. |  |     .--'|  ||   | _|    |
-      .-'|  _.|  |    ||   '-__  |   |  |    ||      |
-      |' | |.    |    ||       | |   |  |    ||      |
-   ___|  '-'     '    ""       '-'   '-.'    '`      |____
-  ~~~~~~~ Anarcho-Tech NYC - Basic Phishing Website ~~~~~~
+                                     .''.
+           .''.             *''*    :_\\/_:     .
+          :_\\/_:   .    .:.*_\\/_*   : /\\ :  .'.:.'.
+      .''.: /\\ : _\\(/_  ':'* /\\ *  : '..'.  -=:o:=-
+     :_\\/_:'.:::. /)\\*''*  .|.* '.\\'/.'_\\(/_'.':'.'
+     : /\\ : :::::  '*_\\/_* | |  -= o =- /)\\    '  *
+      '..'  ':::'   * /\\ * |'|  .'/.\\'.  '._____
+          *        __*..* |  |     :      |.   |' .---"|
+           _*   .-'   '-. |  |     .--'|  ||   | _|    |
+        .-'|  _.|  |    ||   '-__  |   |  |    ||      |
+        |' | |.    |    ||       | |   |  |    ||      |
+     ___|  '-'     '    ""       '-'   '-.'    '`      |____
+    ~~~~~~~ Anarcho-Tech NYC - Basic Phishing Website ~~~~~~
 
-    You now have a virtual machine with SET installed.
-    SET is the Social Engineer's Toolkit, an open-source
-    utility that provides numerous social engineering
-    attack modules.
+      You now have a virtual machine with SET, mitmproxy, and
+      Evilginx installed.
 
-    To begin, log in to the virtual machine, and then run
-    SET from the command line with superuser privileges:
+      SET is the Social Engineer's Toolkit, an open-source
+      utility that provides numerous social engineering
+      attack modules.
 
-        vagrant ssh      # Log in to the VM.
-        cd set           # Enter the SET folder.
-        sudo ./setoolkit # Run the SET utility.
+      To begin, log in to the virtual machine, and then run
+      SET from the command line with superuser privileges:
 
-    Please use what you learn here for the betterment of humanity. Only share what
-    you know with the people who you believe will do the same. Remember, intention
-    is not impact. Kill all Nazis, kill all cops, especially the ones inside ourselves.
+          vagrant ssh      # Log in to the attacker VM.
+          cd set           # Enter the SET folder.
+          sudo ./setoolkit # Run the SET utility.
 
-    Take care. Give care. Have fun. Punch up.
-  HEREDOC
+      Please use what you learn here for the betterment of humanity. Only share what
+      you know with the people who you believe will do the same. Remember, intention
+      is not impact. Kill all Nazis, kill all cops, especially the ones inside ourselves.
+
+      Take care. Give care. Have fun. Punch up.
+    EOF
+  end
 end

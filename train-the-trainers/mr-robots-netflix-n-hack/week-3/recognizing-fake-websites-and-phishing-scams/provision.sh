@@ -36,3 +36,15 @@ cd /tmp/evilginx2
 bash /tmp/evilginx2/install.sh && chmod a+x /usr/local/bin/evilginx
 cd -
 rm -rf /tmp/evilginx2
+
+# Evilginx has its own DNS server, and it needs localhost port 53
+# available to run, so let's make it easy to get `systemd-resolved`
+# out of the way.
+mkdir -p /etc/systemd/resolved.conf.d
+cat << EOF > /etc/systemd/resolved.conf.d/99-evilginx.conf
+[Resolve]
+DNSStubListener=no
+EOF
+rm /etc/resolv.conf
+ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+systemctl restart systemd-resolved.service

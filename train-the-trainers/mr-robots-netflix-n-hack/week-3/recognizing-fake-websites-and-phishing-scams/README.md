@@ -333,6 +333,29 @@ Site cloning is a form of credential harvesting:
 >
 > Quick mentions of [Evilginx2](https://github.com/kgretzky/evilginx2), [Modlishka](https://github.com/drk1wi/Modlishka), etc. These are reverse proxies that do not require phishing pages to be crafted as look-alike sites through mirroring, site cloning, or manual editing. Rather, they act as application-level ("layer 7") shims that translate domain names, DNS queries, and more originally destined to the original site into requests for resources at the fraudulent phishing domain.
 
+Some notes for Evilginx setup follow.
+
+Defender setup:
+
+1. Set the defender's DNS server to include the IP address of the attacker.
+    1. In `/etc/systemd/resolve.conf`, find the `DNS=` line and append the attacker's IP address.
+    1. Restart the `systemd-resolved` service:
+        ```sh
+        sudo systemctl restart systemd-resolved.service
+        ```
+1. Remember, Evilginx won't respond to HTTP queries until its phishlets and lures are properly configured, enabled, and not hidden.
+1. To use the graphical Firefox Web browser, make sure X11 is available over the SSH connection:
+    ```sh
+    vagrant ssh blue -- -X
+    ```
+
+Attacker setup:
+
+1. Launch Evilginx in developer mode so TLS certificates are self-signed rather than requested from the Let's Encrypt CA:
+    ```sh
+    sudo evilginx -developer
+    ```
+
 ## Web address (URL) obfuscation techniques
 
 > :construction: TK-TODO
