@@ -63,7 +63,7 @@ In this exercise we will create a fake version of a popular website's login page
     1. [Monitoring the Certificate Transparency Log (CTL) for phishing attacks](#monitoring-the-certificate-transparency-log-ctl-for-phishing-attacks)
     1. [Command and Control (C2) infrastructures for large-scale phishing campaigns](#command-and-control-c2-infrastructures-for-large-scale-phishing-campaigns)
     1. [Insufficient defensive measures](#insufficient-defensive-measures)
-        1. [Two-factor authentication (2FA)](#two-factor-authentication-2fa)
+        1. [Two-step authentication (2SA) versus two-factor authentication (2FA)](#two-step-authentication-2sa-versus-two-factor-authentication-2fa)
         1. [Web server security headers](#web-server-security-headers)
 1. [Additional references](#additional-references)
 
@@ -208,7 +208,7 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 ### Using a reverse proxy
 
-There is one other popular, more modern method you can use to create your look-alike Web site that deserves a mention: using a reverse proxy. Although we won't spend too much time exploring this method, it's important to be aware that specialized reverse proxies can be used in phishing attacks because they are capable of defeating common forms of two-factor authentication (2FA). Instead of simply intercepting your user name and password, these tools intercept both your username/password pair *and* the additional, secondary one-time password sent to you via text message or generated using a 2FA app such as Google Athenticator or Authy when you try to log in.
+There is one other popular, more modern method you can use to create your look-alike Web site that deserves a mention: using a reverse proxy. Although we won't spend too much time exploring this method, it's important to be aware that specialized reverse proxies can be used in phishing attacks because they are capable of defeating common forms of two-factor authentication (2FA) or, more accurately, two-*step* authentication (2SA). Instead of simply intercepting your user name and password, these tools intercept both your username/password pair *and* the additional, secondary one-time password sent to you via text message or generated using an authenticator app such as Google Athenticator or Authy when you try to log in.
 
 This set of attacker tools are no more difficult to use than the ones we'll be using in this exercise, but they do often require a little bit of extra infrastructure setup, which is why we'll leave using them as an exercise to the reader. For more information on using reverse proxies to mount phishing attacks, refer to the [Reverse proxies useful for phishing attacks](#reverse-proxies-useful-for-phishing-attacks) discussion section, below. Similarly, refer to the [Insufficient defensive measures: Two-factor authentication (2FA)](#two-factor-authentication-2fa) discussion section for more information on how two-factor authentication works and why it won't stop these more sophisticated phishing attacks using specialized reverse proxy frameworks.
 
@@ -426,13 +426,23 @@ Attacker setup:
 
 > :construction: TK-TODO
 
-## Two-factor authentication (2FA)
+## Two-step authentication (2SA) versus two-factor authentication (2FA)
 
-> :construction: TK-TODO
->
-> A lot of people think enabling 2FA (like a text message with a login code, a TOTP-based authenticator such as Google Authenticator or Authy) is enough to stop phishing but, while this does raise the bar for attackers, there is nothing inherent in 2FA that addresses phishing in the first place. Automated phishing tools like [Modlishka](https://github.com/drk1wi/Modlishka) simply intercept the one-time password as the user enters it, same as they do with the user's own password.
->
-> See, for example [Google: Phishing Attacks That Can Beat Two-Factor Are on the Rise](https://www.pcmag.com/news/google-phishing-attacks-that-can-beat-two-factor-are-on-the-rise).
+Logging in to a service such as one offered by a Web site is important because it allows the service to identify and recognize you as distinct from someone else who also uses the service. Being able to identify one user from another is part of what makes privacy possible. Imagine a webmail provider that showed everyone who used it the same inbox because there was no difference between a logged in ("authenticated") user and logged out ("unauthenticated") one!
+
+So *authentication* is the process of logging in, such as supplying a username and password to a login form. An authentication *factor*, however, describes what it is you use to prove your identity to the service, and thus authenticate yourself to it. There are three different authentication factors that a service might ask for:
+
+* Something you know. Assuming that you and the service share a secret, then for as long as no other users learn this secret, your knowledge of it can provide evidence that you are who you say you are. The most common form of "something you know" authentication factor is a password.
+* Something you have. Assuming that there is only one object in the world with a certain characteristic, then if you can show evidence that you have this object in your posession, the service can be confident that you are who you say you are. Common examples of a "something you have" authentication factor is a hardware security key, personalized ID badge, and so on.
+* Something you are. Assuming that it remains difficult for others to replicate details about your physical body, such as your genome, iris, physical fingerprints, gait, voiceprint, and so on, then checking for these biometrics can provide evidence that you are, well, you. Note that not all biometrics are equally strong, and emerging technology such as deepfakes makes it possible to more perfectly generate audio that matches someone else's voice.
+
+Most authentication schemes today use only one of these three factors when asking for you to prove your identity as you're logging in. As you know, most only ever ask for a password. But it's possible for a given authentication system to be designed in such a way that it would require more than one of these factors to be satisfied before a login attempt is validated. Perhaps the system asks you for a password *and* asks you to press a button on your hardware security key while it is plugged into your laptop. Such systems are called two- or multi-factor authentication systems, or 2FA or MFA for short. Even more security-conscious systems can choose to require all three factors.
+
+An authentication factor, however, should not be confused with an authentication *step*. Where an authentication factor describes the kind of evidence you're providing to prove your identity, an authentication step is simply a discrete act of providing some authenticating information of any kind. Password screens common on the Web are frequently one-factor *and* one-step authentication systems. Most 2FA login systems are two-factor and two-step systems; the first step is a password (the first factor) and the second step is the hardware security key (the second factor).
+
+But there are also many Web sites that offer two-step, one-factor authentication login systems. A common example is a one-time use login code such as those provided via SMS text message, or a Time-based One Time Password (TOTP) based authenticator app like Google Authenticator or Authy. While these two-step systems do raise the bar for attackers, there is nothing inherent in two-step authentication (2SA) that addresses phishing in the first place.
+
+Automated phishing tools like [Modlishka](https://github.com/drk1wi/Modlishka) and [Evilginx](https://github.com/kgretzky/evilginx2) simply intercept the one-time password as the user enters it, same as they do with the user's own password. This is possible precisely because both the first step and the second step of the authentication process use the same factor, something you know, whether it be a password, or a one-time code, rather than two true factors. Nevertheless, such systems are often marketed as or reported to incorrectly be two-factor logins. See, for example [Google: Phishing Attacks That Can Beat Two-Factor Are on the Rise](https://www.pcmag.com/news/google-phishing-attacks-that-can-beat-two-factor-are-on-the-rise).
 
 ## Web server security headers
 
