@@ -74,7 +74,7 @@ Some preliminary concepts listed in order of age and thus, portability:
 1. [Linux kernel namespaces](https://en.wikipedia.org/wiki/Linux_namespaces#Namespace_kinds). This is Linux-specific, of course.
 1. Linux kernel control groups (`cgroup`s), i.e., `cgroups(7)`. Technically optional, but used everywhere for many good reasons. This, too, is specific to Linux.
 
-`chroot`'ing a process means giving that process a view of the filesystem hierarchy such that a chosen directory is its own root directory. Outside of that process, the filesystem still has its original, real root directory. To make a super basic `chroot` environment on either macOS or Linux, a helper script called `[makechroot.sh](scripts/makechroot.sh)` is provided.
+`chroot`'ing a process means giving that process a view of the filesystem hierarchy such that a chosen directory is its own root directory. Outside of that process, the filesystem still has its original, real root directory. To make a super basic `chroot` environment on either macOS or Linux, a helper script called [`makechroot.sh`](scripts/makechroot.sh) is provided.
 
 # Additional references
 
