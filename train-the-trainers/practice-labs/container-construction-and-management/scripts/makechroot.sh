@@ -11,13 +11,16 @@ programs=(
     cp
     rm
     touch
+    mount
+    umount
+    ps    # Intended for the Linux /proc demo.
 )
 
 # We'll not only need those programs, but their dependencies, too.
 declare ldd_cmd ldd_args dep_pattern
 if [ "$(which ldd)" ]; then # Linux has shared objects.
     ldd_cmd="ldd"
-    dep_pattern="/lib.*\\.[0-9]"
+    dep_pattern="(/usr)?/lib.*\\.[[:digit:]]+"
 elif [ "$(which otool)" ]; then # The `otool` command is a macOS-ism.
     ldd_cmd="otool"
     ldd_args="-L" # It takes an argument.
@@ -41,7 +44,7 @@ copy_deps_deep () {
 
     find . -xdev | sort > "$before" # Snapshot filesystem start state.
 
-    local deps="$($ldd_cmd $ldd_args "$file" | grep -o "$dep_pattern")"
+    local deps="$($ldd_cmd $ldd_args "$file" | grep -oE "$dep_pattern")"
     for dep in $deps; do
         mkdir -p $(dirname $dep | sed -e 's/^\///')
         cp -n "$dep" $(echo $dep | sed -e 's/^\///')
@@ -74,7 +77,7 @@ for program in "${programs[@]}"; do
     mkdir -p "$basedir" && cp -v "$(which "$program")" "$basedir/${program##/*}"
 
     echo "Copying $program dependencies ..."
-    deps="$($ldd_cmd $ldd_args $(which "$program") | grep -o "$dep_pattern")"
+    deps="$($ldd_cmd $ldd_args $(which "$program") | grep -oE "$dep_pattern")"
     for dep in $deps; do
         mkdir -p $(dirname $dep | sed -e 's/^\///')
         cp -n "$dep" $(echo $dep | sed -e 's/^\///')

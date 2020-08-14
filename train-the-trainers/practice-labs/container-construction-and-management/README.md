@@ -76,6 +76,34 @@ Some preliminary concepts listed in order of age and thus, portability:
 
 `chroot`'ing a process means giving that process a view of the filesystem hierarchy such that a chosen directory is its own root directory. Outside of that process, the filesystem still has its original, real root directory. To make a super basic `chroot` environment on either macOS or Linux, a helper script called [`makechroot.sh`](scripts/makechroot.sh) is provided.
 
+These three concepts work together to create a so-called "container," but can be used independently as well. For instance, simply creating a `chroot` environment does not inherently isolate a process from the rest of the system. In this example, we run a chroot'ed Bash shell, but then are still able to mount `/proc`:
+
+1. Log in to the Linux virtual machine, if you haven't already:
+    ```sh
+    vagrant ssh
+    ```
+1. Run the `makechroot.sh` helper script to create a new `chroot` environment:
+    ```sh
+    /vagrant/scripts/makechroot.sh
+    ```
+1. Enter the `chroot` environment as instructed by the helper script. The command will be something like:
+    ```sh
+    sudo chroot chroot-example* /bin/bash
+    ```
+1. Explore the `chroot` environment; note the "new root directory". The "isolation," however, is *only* related to the filesystem.
+1. Try getting a process listing by using the `ps` command. The command will fail with an error like `Error, do this: mount -t proc proc /proc` because the Linux `ps` command expects to have access to the `[procfs](https://en.wikipedia.org/wiki/Procfs)` pseudo-filesystem mounted at `/proc`.
+1. Create the `/proc` directory:
+    ```sh
+    mkdir /proc
+    ```
+1. Mount the `proc` filesystem:
+    ```sh
+    mount -t proc proc /proc
+    ```
+1. This causes the kernel to populate the `/proc` directory with information about the system's running processes
+    * Browse the `/proc` filesystem hierarchy to see information about processes, including those that are outside of the `chroot`'ed environment.
+    * The `ps` command now also works; notice, however, that the PID values are very high numbers. This is because we are still using the same `pid` Linux kernel namespace as is being used outside of the `chroot` environment.
+
 # Additional references
 
 > :construction: TK-TODO
