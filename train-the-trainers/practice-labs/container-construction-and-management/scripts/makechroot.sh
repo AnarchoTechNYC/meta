@@ -50,8 +50,8 @@ copy_deps_deep () {
     find . -xdev | sort > "$after" # Snapshot filsystem end state.
 
     # Compare filesystem differences.
-    lines=$(diff -daU 0 "$before" "$after" | grep -vE '^(@@|\+\+\+|---)')
-    x="$?" # Retain the exit status of the `grep` command.
+    local lines=$(diff -daU 0 "$before" "$after" | grep -vE '^(@@|\+\+\+|---)')
+    local x="$?" # Retain the exit status of the `grep` command.
 
     rm -f "$before" "$after" # Clean up the temporary files.
 
@@ -69,7 +69,7 @@ copy_deps_deep () {
 }
 
 for program in "${programs[@]}"; do
-    echo -n "Copying $program ..."
+    echo -n "Copying $program ... "
     basedir=$(dirname $(which "$program") | sed -e 's/^\///')
     mkdir -p "$basedir" && cp -v "$(which "$program")" "$basedir/${program##/*}"
 
@@ -82,6 +82,7 @@ for program in "${programs[@]}"; do
     done
 done
 
+echo
 echo "Done! New root is: $newroot"
 echo
 echo "To start a shell in the chroot environment, invoke the command:"
