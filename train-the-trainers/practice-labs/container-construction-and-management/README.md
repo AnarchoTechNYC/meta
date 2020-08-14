@@ -91,7 +91,7 @@ These three concepts work together to create a so-called "container," but can be
     sudo chroot chroot-example* /bin/bash
     ```
 1. Explore the `chroot` environment; note the "new root directory". The "isolation," however, is *only* related to the filesystem.
-1. Try getting a process listing by using the `ps` command. The command will fail with an error like `Error, do this: mount -t proc proc /proc` because the Linux `ps` command expects to have access to the `[procfs](https://en.wikipedia.org/wiki/Procfs)` pseudo-filesystem mounted at `/proc`.
+1. Try getting a process listing by using the `ps` command. The command will fail with an error like `Error, do this: mount -t proc proc /proc` because the Linux `ps` command expects to have access to the [`procfs`](https://en.wikipedia.org/wiki/Procfs) pseudo-filesystem mounted at `/proc`.
 1. Create the `/proc` directory:
     ```sh
     mkdir /proc
