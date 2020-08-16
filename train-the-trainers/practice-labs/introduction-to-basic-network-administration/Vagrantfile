@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "ubuntu" do |c|
     c.vm.box = "ubuntu/bionic64"
-    c.vm.network "private_network", type: "dhcp", virtualbox__intnet: "testnet""
+    c.vm.network "private_network", type: "dhcp", virtualbox__intnet: "testnet"
   end
 
 end

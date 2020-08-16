@@ -24,6 +24,7 @@ In this starter lab, you will get up and running with virtual machines using the
     1. [Destroying the virtual machine](#removing-the-virtual-machine)
 1. [Discussion](#discussion)
     1. [Vagrant multi-machine](#vagrant-multi-machine)
+    1. [VirtualBox linked clones](#virtualbox-linked-clones)
     1. [VirtualBox networking modes](#virtualbox-networking-modes)
 1. [Additional references](#additional-references)
 
@@ -294,6 +295,27 @@ end
 ```
 
 Note that at the inner-most block, the `config` object is referenced by the shorter `c` variable, as per normal Ruby scoping and variable assignment rules.
+
+> :bulb: If you are creating more than one machine from the same Vagrant base box, some providers such as VirtualBox can use a single VM disk image as the base for each of them, considerably reducing the total amount of hard disk space you need to get up and running. This feature is known as linked clones; see the [VirtualBox linked clones](#virtualbox-linked-clones) section for more details.
+
+## VirtualBox linked clones
+
+> :construction: TK-TODO
+
+```ruby
+# Create three Ubuntu Linux virtual machines, but based on a single
+# disk image. This saves considerable disk space (about 2GB)!
+(1..3).each do |i|
+  config.vm.define "vm#{i}" do |c|
+    c.vm.box = "ubuntu/bionic64"
+    v.vm.provider "virtualbox" do |vb|
+      vb.linked_clone = true
+    end
+  end
+end
+```
+
+Refer to [Vagrant's official VirtualBox provider documentation for more information on using linked clones](https://www.vagrantup.com/docs/providers/virtualbox/configuration.html#linked-clones) as well as the [Clonig Virtual Machines section of the VirtualBox manual](https://www.virtualbox.org/manual/UserManual.html#clone).
 
 ## VirtualBox networking modes
 

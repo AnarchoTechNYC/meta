@@ -9,12 +9,18 @@ Vagrant.configure("2") do |config|
 #    config.vm.define "web#{i}" do |c|
 #      c.vm.box = "ubuntu/bionic64"
 #      c.vm.network "private_network", type: "dhcp"
+#      c.vm.provider "virtualbox" do |vb|
+#        vb.linked_clone = true
+#      end
 #    end
 #  end
 #
 #  config.vm.define "db1" do |c|
 #    c.vm.box = "ubuntu/bionic64"
 #    c.vm.network "private_network", type: "dhcp"
+#      c.vm.provider "virtualbox" do |vb|
+#        vb.linked_clone = true
+#      end
 #  end
 
   # The Ansible controller is also where we'll install the
