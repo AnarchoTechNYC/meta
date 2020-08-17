@@ -24,5 +24,10 @@
 # commit them into this repository. They are therefor ignored here.
 .vagrant
 
+# For the HashiCorp Terraform lab.
+.terraform
+*.tfstate
+*.tfstate.backup
+
 # Numerous processes may create log files. We don't care about these.
 *.log
