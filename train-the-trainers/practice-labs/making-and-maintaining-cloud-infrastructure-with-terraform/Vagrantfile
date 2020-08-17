@@ -1,13 +1,83 @@
 Vagrant.configure("2") do |config|
 
+  # Simple single-node Proxmox VE server.
+  config.vm.define "server" do |c|
+    c.vm.box = "anarchotechnyc/proxmox-ve"
+    c.vm.network "private_network", ip: "10.10.10.2"
+    c.vm.provider "virtualbox" do |vb|
+      vb.linked_clone = true
+      vb.memory = 4096
+      vb.cpus = 4
+      vb.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
+    end
+    c.vm.provision "shell", path: "provision/server.sh"
+  end
+
+  # TODO: Set up another multi-node cluster option.
+  #       This multi-node cluster should not start by default.
+  #       (Use `autostart: false` for that.)
+  # See
+  # https://www.vagrantup.com/docs/multi-machine#autostart-machines
+
   config.vm.define "client" do |c|
     c.vm.box = "ubuntu/bionic64"
     c.vm.provision "shell", path: "provision/client.sh"
+    c.vm.network "private_network", ip: "10.10.10.22"
     c.vm.provider "virtualbox" do |vb|
       vb.linked_clone = true
     end
-  end
+    c.vm.post_up_message = <<~EOF
+       .      .      .      .      .      .      .      .      .      .      .
+      .                               .       .       .       .       .       .
+         .        .        .        .        .        .        .        .        .
+           .         .         .        _......____._        .         .
+         .          .          . ..--'"" .           """"""---...          .
+                         _...--""        ................       `-.              .
+                      .-'        ...:'::::;:::%:.::::::_;;:...     `-.
+                   .-'       ..::::'''''   _...---'"""":::+;_::.      `.      .
+        .        .' .    ..::::'      _.-""               :::)::.       `.
+               .      ..;:::'     _.-'         .             f::'::    o  _
+              /     .:::%'  .  .-"                        .-.  ::;;:.   /" "x
+        .   .'  ""::.::'    .-"     _.--'"""-.           (   )  ::.::  |_.-' |
+           .'    ::;:'    .'     .-" .d@@b.   \\    .    . `-'   ::%::   \\_ _/    .
+          .'    :,::'    /   . _'    8@@@@8   j      .-'       :::::      " o
+          | .  :.%:' .  j     (_)    `@@@P'  .'   .-"         ::.::    .  f
+          |    ::::     (        -..____...-'  .-"          .::::'       /
+      .   |    `:`::    `.                ..--'        .  .::'::   .    /
+          j     `:::::    `-._____...---""             .::%:::'       .'  .
+           \\      ::.:%..             .       .    ...:,::::'       .'
+       .    \\       `:::`:..                ....::::.::::'       .-'          .
+             \\    .   ``:::%::`::.......:::::%::.::::''       .-'
+            . `.        . ``::::::%::::.::;;:::::'''      _.-'          .
+        .       `-..     .    .   ````'''''         . _.-'     .          .
+               .    ""--...____    .   ______......--' .         .         .
+        .        .        .    """"""""     .        .        .        .        .
+       .       .       .       .       .       .       .       .       .
+           .      .      .      .      .      .      .      .      .      .      .
 
-  # TODO: Set up the Proxmox cluster itself, as well.
+      ~~~~~~~~~~~ Anarcho-Tech NYC - Cloud Infrastructure with Terraform ~~~~~~~~~~~
+
+      Your lab environment should now contain an example Proxmox VE datacenter, that
+      can be via the GUI Web console at https://10.10.10.2:8006 (though you may need
+      to click through the TLS certificate warning).
+
+      To log in to the Proxmox VE datacenter GUI Web console, use these credentials:
+
+        Proxmox VE username  : root
+        Proxmox VE password  : vagrant
+        Proxmox VE auth realm: pam
+
+      Once logged in, have a look around. Then, use Terraform to describe how you'd
+      like your infrastructure set up, rather than relying on the GUI Web console.
+
+      Terraform is pre-installed on your "client" computer. To log in to the client:
+
+          vagrant ssh client # Log in to the client.
+          cd lab/terraform   # Go to the lab folder.
+          terraform init     # Initialize Terraform.
+
+      Good luck!
+    EOF
+  end
 
 end
