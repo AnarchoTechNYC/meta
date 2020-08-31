@@ -22,7 +22,7 @@ This folder contains the following files and folders:
 
 * `README.md` - This file.
 * `Vagrantfile` - The Vagrant configuration for our lab environment.
-* `provision.sh` - Script that assists in bringing up the lab environment.
+* `provision/` - Folder containing provisioning script(s) assisting in bringing up the lab environment.
 
 # Prerequisites
 
