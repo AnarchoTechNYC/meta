@@ -1,0 +1,28 @@
+---
+- name: Deploy Kubernetes cluster node.
+  hosts: all
+  become: true
+
+  vars:
+      kubernetes_version: "1.19"
+      kubernetes_allow_pods_on_master: true
+
+  roles:
+      - geerlingguy.docker
+      - geerlingguy.kubernetes
+
+  tasks:
+      - name: Configure kubectl for vagrant user.
+        become_user: vagrant
+        block:
+          - name: Ensure .kube directory exists.
+            file:
+                path: ~/.kube
+                state: directory
+                mode: 0755
+          - name: Symlink the kubectl admin.conf to ~/.kube/conf.
+            file:
+                src: /etc/kubernetes/admin.conf
+                dest: ~/.kube/config
+                state: link
+                mode: 0644

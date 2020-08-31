@@ -26,3 +26,8 @@
 
 # Numerous processes may create log files. We don't care about these.
 *.log
+
+# In a number of Vagrant provisioning scenarios, we use pre-defined
+# Ansible roles that are defined externally. These are downloaded on-
+# demand, and so are not needed in this repository itself.
+**/provision/roles

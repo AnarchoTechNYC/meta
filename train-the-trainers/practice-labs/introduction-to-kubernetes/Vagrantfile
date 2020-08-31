@@ -5,12 +5,10 @@ Vagrant.configure("2") do |config|
   config.vm.provision "minikube", type: "shell", path: "provision/minikube.sh"
 
   # Optionally, allow manual provisioning with `kubeadm` as well.
-  config.vm.provision "manual-cluster", run: "never", type: "shell", path: "provision/manual-cluster.sh", args: [
-    "10.244.0.0/16", # Kubernetes pod network CIDR IP address range.
-
-    # CNI plugin YAML manifest URL.
-    "https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
-  ]
+  config.vm.provision "manual-cluster", run: "never", type: "ansible_local" do |a|
+    a.playbook = "provision/playbook.yaml"
+    a.galaxy_role_file = "provision/requirements.yaml"
+  end
 
   config.vm.provider "virtualbox" do |v|
     v.memory = 4096
