@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-terraform_version="0.13.0"
+terraform_version="0.13.2"
 tprovider_version="0.3.0"
 
 apt update && apt install --yes unzip

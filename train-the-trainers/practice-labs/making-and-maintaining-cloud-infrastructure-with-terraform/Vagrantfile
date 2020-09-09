@@ -57,8 +57,8 @@ Vagrant.configure("2") do |config|
 
       ~~~~~~~~~~~ Anarcho-Tech NYC - Cloud Infrastructure with Terraform ~~~~~~~~~~~
 
-      Your lab environment should now contain an example Proxmox VE datacenter, that
-      can be via the GUI Web console at https://10.10.10.2:8006 (though you may need
+      Your lab environment should contain an example Proxmox VE datacenter, which is
+      accessible via Web GUI console at https://10.10.10.2:8006 (though you may need
       to click through the TLS certificate warning).
 
       To log in to the Proxmox VE datacenter GUI Web console, use these credentials:

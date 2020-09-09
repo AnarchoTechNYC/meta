@@ -26,6 +26,7 @@ This folder contains the following files and folders:
 * `Vagrantfile` - The Vagrant configuration for our virtual private cloud.
 * `provision/` - Folder for files used for creating the lab.
 * `terraform/` - Starter material of Terraform code for use in the lab.
+* `terraform-complete/` - Complete example of a Terraform configuration.
 
 # Prerequisites
 

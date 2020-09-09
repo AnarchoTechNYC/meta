@@ -17,6 +17,9 @@
 # See https://en.wikipedia.org/wiki/.DS_Store for more info.
 .DS_Store
 
+# Numerous processes may create log files. We don't care about these.
+*.log
+
 # We maintain several Vagrant projects as practice labs or other
 # instructional material. When a Vagrant project is started, a folder
 # named `.vagrant` is created to store metadata associated with that
@@ -24,10 +27,13 @@
 # commit them into this repository. They are therefor ignored here.
 .vagrant
 
-# Numerous processes may create log files. We don't care about these.
-*.log
-
 # In a number of Vagrant provisioning scenarios, we use pre-defined
 # Ansible roles that are defined externally. These are downloaded on-
 # demand, and so are not needed in this repository itself.
 **/provision/roles
+
+# Terraform's state files contain sensitive information and are never
+# really meant to be committed to a version control repository.
+.terraform
+*.tfstate
+*.tfstate.backup
