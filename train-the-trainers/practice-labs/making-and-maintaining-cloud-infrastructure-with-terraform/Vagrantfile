@@ -3,14 +3,20 @@ Vagrant.configure("2") do |config|
   # Simple single-node Proxmox VE server.
   config.vm.define "server" do |c|
     c.vm.box = "anarchotechnyc/proxmox-ve"
-    c.vm.network "private_network", ip: "10.10.10.2"
+
     c.vm.provider "virtualbox" do |vb|
       vb.linked_clone = true
       vb.memory = 4096
       vb.cpus = 4
       vb.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
     end
-    c.vm.provision "shell", path: "provision/server.sh"
+
+    ip_addr = "10.10.10.2"
+    c.vm.network "forwarded_port", host: 8006, guest: 8006
+    c.vm.network "private_network", ip: ip_addr, auto_config: false
+
+    c.vm.provision "shell", path: "provision/server.sh",
+      args: ip_addr
   end
 
   # TODO: Set up another multi-node cluster option.
@@ -21,11 +27,11 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "client" do |c|
     c.vm.box = "ubuntu/bionic64"
-    c.vm.provision "shell", path: "provision/client.sh"
-    c.vm.network "private_network", ip: "10.10.10.22"
     c.vm.provider "virtualbox" do |vb|
       vb.linked_clone = true
     end
+    c.vm.network "private_network", ip: "10.10.10.20"
+    c.vm.provision "shell", path: "provision/client.sh"
     c.vm.post_up_message = <<~EOF
        .      .      .      .      .      .      .      .      .      .      .
       .                               .       .       .       .       .       .
@@ -58,17 +64,17 @@ Vagrant.configure("2") do |config|
       ~~~~~~~~~~~ Anarcho-Tech NYC - Cloud Infrastructure with Terraform ~~~~~~~~~~~
 
       Your lab environment should contain an example Proxmox VE datacenter, which is
-      accessible via Web GUI console at https://10.10.10.2:8006 (though you may need
+      accessible via Web GUI console at https://localhost:8006/ (though you may need
       to click through the TLS certificate warning).
 
-      To log in to the Proxmox VE datacenter GUI Web console, use these credentials:
+      To log in to the Proxmox VE datacenter Web GUI console, use these credentials:
 
         Proxmox VE username  : root
         Proxmox VE password  : vagrant
         Proxmox VE auth realm: pam
 
       Once logged in, have a look around. Then, use Terraform to describe how you'd
-      like your infrastructure set up, rather than relying on the GUI Web console.
+      like your infrastructure set up, rather than relying on the Web GUI console.
 
       Terraform is pre-installed on your "client" computer. To log in to the client:
 

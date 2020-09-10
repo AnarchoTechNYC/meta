@@ -24,7 +24,8 @@ resource "proxmox_virtual_environment_vm" "testvm" {
   # We'll be on the safe side and make sure they're set.
   pool_id = proxmox_virtual_environment_pool.test_pool.id
   name    = "testvm"
-  vm_id   = 105 # This must be unique, so it'd make a good Terraform Module.
+  # Proxmox provider earlier than 0.4.0 required the `vm_id`.
+  #vm_id   = 105 # This must be unique, so it'd make a good Terraform Module.
 
   disk {
     file_id = proxmox_virtual_environment_file.ubuntu_cloud_image.id

@@ -3,7 +3,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "localhost.localdomain/danitso/proxmox"
-      version = "0.3.0"
+      version = ">= 0.3.0"
     }
   }
 }
