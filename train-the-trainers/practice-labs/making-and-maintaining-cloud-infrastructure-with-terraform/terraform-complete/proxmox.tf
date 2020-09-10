@@ -34,8 +34,13 @@ resource "proxmox_virtual_environment_vm" "testvm" {
   # Attach a NIC and a serial device with default settings.
   # These are both required for Cloud-Init support. See:
   #     https://pve.proxmox.com/wiki/Cloud-Init_Support
-  network_device {}
+  network_device {} # This will be bridged to interface `vmbr0`.
   serial_device {}
+
+  # Add a second NIC with a statically-configured IP address.
+  network_device {
+    bridge = "vmbr1"
+  }
 
   # We have to supply some basic Cloud-Init parameters so cloud-init
   # knows what to do with itself.
@@ -43,6 +48,11 @@ resource "proxmox_virtual_environment_vm" "testvm" {
     ip_config {
       ipv4 {
         address = "dhcp"
+      }
+    }
+    ip_config {
+      ipv4 {
+        address = "10.10.10.50/24"
       }
     }
     user_account {

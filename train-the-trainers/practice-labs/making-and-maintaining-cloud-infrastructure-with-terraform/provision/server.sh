@@ -31,16 +31,24 @@ auto lo
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet dhcp
+iface eth0 inet manual
+
+auto vmbr0
+iface vmbr0 inet dhcp
+    bridge-ports eth0
+    bridge-stp off
+    bridge-fd 0
+#DHCP to Internet
 
 auto eth1
 iface eth1 inet manual
 
-auto vmbr0
-iface vmbr0 inet static
+auto vmbr1
+iface vmbr1 inet static
     address $ip_addr/24
     bridge-ports eth1
     bridge-stp off
     bridge-fd 0
+#Static IPs to hostonly network
 EOF
-ifup eth1 vmbr0
+ifup eth0 vmbr0 eth1 vmbr1
