@@ -70,13 +70,13 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 Some preliminary concepts listed in order of age and thus, portability:
 
-1. Changed root directory, i.e., `chroot(8)` - notably, basically any \*nix system will support this.
-1. [Linux kernel namespaces](https://en.wikipedia.org/wiki/Linux_namespaces#Namespace_kinds). This is Linux-specific, of course.
-1. Linux kernel control groups (`cgroup`s), i.e., `cgroups(7)`. Technically optional, but used everywhere for many good reasons. This, too, is specific to Linux.
+1. Changed root directory, i.e., `chroot(8)` - notably, basically any \*nix system will support this. This ensures a contained process (i.e., a "container") only has access to files in its container.
+1. [Linux kernel namespaces](https://en.wikipedia.org/wiki/Linux_namespaces#Namespace_kinds). This is Linux-specific, of course. This feature controls what other types of objects (other processes, network interfaces, and so on) the contained process can see.
+1. Linux kernel control groups (`cgroup`s), i.e., `cgroups(7)`. Also Linux-specific, and technically optional, but used everywhere for many good reasons. This feature limits the amount or type of resources (memory, CPU, etc.) that a contained process can use.
 
 `chroot`'ing a process means giving that process a view of the filesystem hierarchy such that a chosen directory is its own root directory. Outside of that process, the filesystem still has its original, real root directory. To make a super basic `chroot` environment on either macOS or Linux, a helper script called [`makechroot.sh`](scripts/makechroot.sh) is provided.
 
-These three concepts work together to create a so-called "container," but can be used independently as well. For instance, simply creating a `chroot` environment does not inherently isolate a process from the rest of the system. In this example, we run a chroot'ed Bash shell, but then are still able to mount `/proc`:
+These three concepts work together to create a so-called "container," but can be used independently as well. For instance, simply creating a `chroot` environment does not inherently isolate a process from the rest of the system. In this example, we run a `chroot`'ed Bash shell, but then are still able to mount `/proc`:
 
 1. Log in to the Linux virtual machine, if you haven't already:
     ```sh
@@ -103,6 +103,51 @@ These three concepts work together to create a so-called "container," but can be
 1. This causes the kernel to populate the `/proc` directory with information about the system's running processes
     * Browse the `/proc` filesystem hierarchy to see information about processes, including those that are outside of the `chroot`'ed environment.
     * The `ps` command now also works; notice, however, that the PID values are very high numbers. This is because we are still using the same `pid` Linux kernel namespace as is being used outside of the `chroot` environment.
+
+So a `chroot` filesystem itself is not sufficient to create what we think of today as a container. To move towards "full containerization," we'll need to limit what the processes with the `chroot`'ed filesystem can see. For this, we turn to namespaces. Namespaces act like groups for certain types of system objects, such as processes.
+
+As you may know, processes on Linux each have a process identifier number, or PID. Every PID is also associated with a PID Namespace, which determines what other processes are visible to it. Only PIDs in the same namespace, or in namespaces descended from their own, can see that the other exists. Like processes, namespaces themselves also have ID numbers and parent ID numbers, creating a namespace tree. The `lsns(8)` command lists namespaces. Run `sudo lsns` to see the `root` user's view of existing namespaces:
+
+```sh
+vagrant@ubuntu-bionic:~$ sudo lsns
+        NS TYPE   NPROCS   PID USER            COMMAND
+4026531835 cgroup     99     1 root            /sbin/init
+4026531836 pid        99     1 root            /sbin/init
+4026531837 user       99     1 root            /sbin/init
+4026531838 uts        99     1 root            /sbin/init
+4026531839 ipc        99     1 root            /sbin/init
+4026531840 mnt        95     1 root            /sbin/init
+4026531861 mnt         1    19 root            kdevtmpfs
+4026531993 net        99     1 root            /sbin/init
+4026532158 mnt         1   433 root            /lib/systemd/systemd-udevd
+4026532160 mnt         1   638 systemd-network /lib/systemd/systemd-networkd
+4026532161 mnt         1   653 systemd-resolve /lib/systemd/systemd-resolved
+```
+
+You can use `lsns`'s `-t` option to filter the list of namespaces reported to the type of namespace you're interested in. For instance, to view only PID namespaces:
+
+```sh
+vagrant@ubuntu-bionic:~$ sudo lsns -t pid
+        NS TYPE NPROCS PID USER COMMAND
+4026531836 pid      99   1 root /sbin/init
+```
+
+When a Linux system starts, it begins with only one PID namespace. All other PID namespaces are descended from this so-called *root PID namespace* or the *initial PID namespace*. This means any process running in the root PID namespace can see all the processes on the entire system, regardless of their own PID namespace.
+
+Let's limit what other processes our minimally contained process can see. To do this we need to run a command within a new PID namespace, rather than having it share the root PID namespace. We use the `unshare(1)` command to do this.
+
+```sh
+sudo unshare --pid --fork /bin/bash
+```
+
+The above command runs copy the `bash` shell in a new process (i.e., we `--fork`ed) in a new, unshared PID namespace. This will bring you to a new root shell. Run `lsns -t pid` again and you should now see two rather than only one PID namespace:
+
+```sh
+root@ubuntu-bionic:/vagrant# lsns -t pid
+        NS TYPE NPROCS   PID USER COMMAND
+4026531836 pid      97     1 root /sbin/init
+4026532175 pid       2  5576 root /bin/bash
+```
 
 # Additional references
 

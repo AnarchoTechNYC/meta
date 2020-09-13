@@ -1,8 +1,14 @@
 #!/bin/bash
+#
 # Quick 'n' dirty script to make a chroot environment.
+#
+# Usage:
+#
+#     ./makechroot.sh
 
 # List of programs to include in the chroot environment.
 programs=(
+    sh
     bash
     which
     ls
@@ -13,7 +19,8 @@ programs=(
     touch
     mount
     umount
-    ps    # Intended for the Linux /proc demo.
+    sleep
+    ps
 )
 
 # We'll not only need those programs, but their dependencies, too.
