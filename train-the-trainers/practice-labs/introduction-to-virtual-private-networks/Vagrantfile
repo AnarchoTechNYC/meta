@@ -1,0 +1,17 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.linked_clone = true
+  end
+
+  config.vm.provision "shell", path: "provision/install-openvpn.sh"
+
+  config.vm.define "server" do |c|
+    c.vm.network "private_network", ip: "172.22.33.2"
+  end
+
+  config.vm.define "client" do |c|
+    c.vm.network "private_network", ip: "172.22.33.3"
+  end
+end
