@@ -769,7 +769,7 @@ sudo ip tuntap add mode tun name tun0
 sudo ip address add 10.1.1.2/30 dev tun0
 
 # The `-w` option requests that traffic sent to `tun` device `0` (i.e., `tun0`)
-on the client be forwarded to `tun` device `0` (i.e., `tun0`) on the server.
+# on the client be forwarded to `tun` device `0` (i.e., `tun0`) on the server.
 ssh -f -w 0:0 user@server true
 ```
 
