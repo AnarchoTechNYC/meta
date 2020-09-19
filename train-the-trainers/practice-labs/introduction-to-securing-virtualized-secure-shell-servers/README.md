@@ -31,7 +31,9 @@ This workshop presents a brief crash course in configuring and hardening SSH. By
         1. [SSH `keyboard-interactive` authentication](#ssh-keyboard-interactive-authentication)
     1. [Requiring multiple SSH authentication methods](#requiring-multiple-ssh-authentication-methods)
     1. [Auditing your SSH configuration using `ssh-audit.py`](#auditing-your-ssh-configuration-using-ssh-auditpy)
-    1. [Creating a VPN-like experience over SSH with `sshuttle`](#creating-a-vpn-like-experience-over-ssh-with-sshuttle)
+    1. [Using SSH to create Virtual Private Networks (VPNs)](#using-ssh-to-create-virtual-private-networks-vpns)
+        1. [SSH-based Virtual Private Networks with OpenSSH](#ssh-based-virtual-private-networks-with-openssh)
+        1. [Transparent proxy VPN using SSH with `sshuttle`](#transparent-proxy-vpn-using-ssh-with-sshuttle)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -738,7 +740,42 @@ To learn more, [Tech Learning Collective provides an interactive sample SSH cert
 >
 > ![Screenshot of ssh-audit.py audit results.](https://cloud.githubusercontent.com/assets/7356025/19233757/3e09b168-8ef0-11e6-91b4-e880bacd0b8a.png)
 
-## Creating a VPN-like experience over SSH with `sshuttle`
+## Using SSH to create VPNs
+
+Since SSH provides for strong confidentiality and integrity guarantees, it can be used to create ad-hoc Virtual Private Networks when used in conjunction with other Operating System features such as `tap`/`tun` devices or a kernel's packet routing/filtering tables. This section offers a brief discussion of these use cases and capabilities.
+
+### SSH-based Virtual Private Networks with OpenSSH
+
+Since OpenSSH 4.3, released on February 1<sup>st</sup> 2006, you can use a UNIX-like Operating System's support for `tap` (OSI Layer 2) or `tun` (OSI Layer 3) pseudo-devices in conjunction with SSH to directly implement VPNs.
+
+For example, to create a simple point-to-point VPN connection that forwards IP (OSI Layer 3) packets through the VPN tunnel, you need to first ensure this feature is enabled on the OpenSSH server itself, then create a `tun` device on the SSH server, and give that `tun` device an IP address:
+
+```sh
+# Ensure the `PermitTunnel` SSH configuration option is set to `yes`.
+sudo $EDITOR /etc/ssh/sshd_config # Make the configuration change.
+sudo systemctl reload sshd        # Reload the SSH daemon.
+
+# Create a tun device named `tun0`.
+sudo ip tuntap add mode tun name tun0
+
+# Give the server's tunnel endpoint an IP address.
+sudo ip address add 10.1.1.1/30 dev tun0
+```
+
+Then, on the client, create its `tun` device, give it an IP address, and then initiate an SSH connection while passing the `-w` option to link the two devices as a VPN tunnel:
+
+```sh
+sudo ip tuntap add mode tun name tun0
+sudo ip address add 10.1.1.1/30 dev tun0
+
+# The `-w` option requests that traffic sent to `tun` device `0` (i.e., `tun0`)
+on the client be forwarded to `tun` device `0` (i.e., `tun0`) on the server.
+ssh -f -w 0:0 user@server true
+```
+
+After this `ssh` command is run on the client, `ssh` will background itself and your prompt will return. You can now access the server at its tunnel IP address of `10.1.1.1`, and any traffic sent to that IP will be transparently forwarded through the SSH-based VPN tunnel. For more information, see the "SSH-BASED VIRTUAL PRIVATE NETWORKS" section in the `ssh(1)` manual page and [the `README.tun` file in the OpenSSH source code](https://github.com/openssh/openssh-portable/blob/master/README.tun).  
+
+### Transparent proxy VPN using SSH with `sshuttle`
 
 > :construction: TK-TODO
 >
