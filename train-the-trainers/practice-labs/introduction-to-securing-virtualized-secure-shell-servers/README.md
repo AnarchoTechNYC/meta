@@ -740,7 +740,7 @@ To learn more, [Tech Learning Collective provides an interactive sample SSH cert
 >
 > ![Screenshot of ssh-audit.py audit results.](https://cloud.githubusercontent.com/assets/7356025/19233757/3e09b168-8ef0-11e6-91b4-e880bacd0b8a.png)
 
-## Using SSH to create VPNs
+## Using SSH to create Virtual Private Networks (VPNs)
 
 Since SSH provides for strong confidentiality and integrity guarantees, it can be used to create ad-hoc Virtual Private Networks when used in conjunction with other Operating System features such as `tap`/`tun` devices or a kernel's packet routing/filtering tables. This section offers a brief discussion of these use cases and capabilities.
 
@@ -766,7 +766,7 @@ Then, on the client, create its `tun` device, give it an IP address, and then in
 
 ```sh
 sudo ip tuntap add mode tun name tun0
-sudo ip address add 10.1.1.1/30 dev tun0
+sudo ip address add 10.1.1.2/30 dev tun0
 
 # The `-w` option requests that traffic sent to `tun` device `0` (i.e., `tun0`)
 on the client be forwarded to `tun` device `0` (i.e., `tun0`) on the server.
