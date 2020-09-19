@@ -13,8 +13,8 @@
 # attack tools are included to support various sections of this lab's
 # "Discussion" sections.
 
-apt update
-apt install --yes python3 python3-pip python3-venv unzip \
+apt-get update
+apt-get install --yes python3 python3-pip python3-venv unzip \
     xfce4 firefox \
     ettercap-graphical
 

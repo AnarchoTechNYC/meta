@@ -8,8 +8,8 @@ systemctl disable motd-news.service # the service. Belt 'n' suspenders.
 
 # Set up the base system.
 export DEBIAN_FRONTEND=noninteractive
-apt update && apt upgrade --yes
-apt install --yes finger links talk talkd tree
+apt-get update && apt-get upgrade --yes
+apt-get install --yes finger links talk talkd tree
 
 # Restrict the `talk` and `ntalk` services in `inetd.conf` so that
 # the `talkd` process can only respond to requests from localhost.

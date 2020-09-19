@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt update && apt install --yes nftables \
+apt-get update && apt-get install --yes nftables \
     lightdm xfce4 xfce4-terminal firefox gufw
 
 # PolicyKit looks in the `sudo` group for privileged users,

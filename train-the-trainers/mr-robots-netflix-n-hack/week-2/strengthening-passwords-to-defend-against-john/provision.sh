@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Install dependencies and extra utilities.
-apt update && \
-    apt install --yes xinit openbox xterm keepassxc firefox-esr \
+apt-get update && \
+    apt-get install --yes xinit openbox xterm keepassxc firefox-esr \
         build-essential libssl-dev libgmp-dev libpcap-dev \
         zlib1g-dev libbz2-dev libkrb5-dev libnss3-dev \
         hashid hashcat
