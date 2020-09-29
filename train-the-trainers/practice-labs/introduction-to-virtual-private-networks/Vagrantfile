@@ -49,6 +49,26 @@ Vagrant.configure("2") do |config|
                       II          IIIIIIIIIIIIII          II
                                   IIIIIIIIIIIIII
                                   IIIIIIIIIIIIII
+
+      ~~~~~~~~~~~~ Anarcho-Tech NYC - Virtual Private Networking ~~~~~~~~~~~
+
+      Your lab environment with OpenVPN installed is now ready. There are
+      client and server OpenVPN configurations available for you to explore
+      at `/etc/openvpn/{client,server}` on all the machines in the lab.
+
+      Log in to the machine that will become your VPN server with:
+
+          vagrant ssh server
+
+      Then explore the OpenVPN configurations, as well as the systemd units
+      installed by the OpenVPN packages, to connect the server with one or
+      more client machines (`vagrant ssh client`) over the VPN tunnel.
+
+      Good luck!
+
+      Please use what you learn here for the betterment of humanity. Only share what
+      you know with the people who you believe will do the same. Remember, intention
+      is not impact. Kill all Nazis, kill all cops, especially the ones inside ourselves.
     EOF
   end
 end

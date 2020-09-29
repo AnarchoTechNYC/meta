@@ -109,16 +109,9 @@ First, understand the basics of an OpenVPN server.
     ```sh
     ls /etc/openvpn/{client,server}
     ```
-    ```
-    /etc/openvpn/client:
-    p2p-client.conf
-
-    /etc/openvpn/server:
-    p2p-server.conf
-    ```
-    Have a look at [the example `p2p-server.conf` configuration file](provision/p2p-server.conf) more closely to know what to expect when you use it.
+    Have a look at one of the examples, such as [the example `p2p-server.conf` configuration file](provision/p2p-server.conf), more closely to know what to expect when you use it:
     1. The `dev` directive maps to the `--dev` command line option. It's being passed the value `tun`, indicating automatic creation of a `tun` typed network device.
-    1. The `topology` directive maps to the `--topology` command line option. It's being passed the value `p2p`, indicating to OpenVPN that we'd like to create a point-to-point network, i.e., a network consisting of exactly two endpoints, which is one server and one client. (Don't confuse this with [PPTP, the Point-to-Point Tunneling Protocol](https://en.wikipedia.org/wiki/Point-to-Point_Tunneling_Protocol), which is an entirely different VPN technology.) Since this configuration defines the network topology itself, it is going to act as the server.
+    1. The `topology` directive maps to the `--topology` command line option. It's being passed the value `p2p`, indicating to OpenVPN that we'd like to create a point-to-point network, i.e., a network consisting of exactly two endpoints, which is one server and one client. (Don't confuse this with [PPTP, the Point-to-Point Tunneling Protocol](https://en.wikipedia.org/wiki/Point-to-Point_Tunneling_Protocol), which is an entirely different VPN technology. Note also that this mode is not compatible with Windows clients and is typically used to connect the gateways of two disparate networks, such as a company's remote office branches or large campuses where one part of the network is physically separated from the main campus network. Use the similar [`subnet-server.conf` example](provision/subnet-server.conf) for Windows clients.) Since this configuration does not specify a `remote` directive (equivalent to the `--remote` command line option), it is going to act as the server.
     1. The `ifconfig` directive maps to the `--ifconfig` command line option. (This is not the same as the `ifconfig(8)` command line utility of the same name.) The `--ifconfig` option offers a way to configure the interface OpenVPN will be using, which in this case is the `tun` device selected earlier. It's being passed two IP addresses as values, the first one for this machine and the second one for the IP address to assign the connecting client endpoint.
 1. Given the systemd configuration observed earlier, the server can thus be started like so:
     ```sh
