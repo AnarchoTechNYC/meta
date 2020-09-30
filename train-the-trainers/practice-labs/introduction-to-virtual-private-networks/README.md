@@ -149,32 +149,114 @@ Now we can look more closey at an OpenVPN client.
 
 Despite having created a virtual network, very little about this set up can be said to be private. That is, it is more of a "virtual network" rather than a Virtual *Private* Network.
 
-That's because, so far, the tunnelled network connection remains unprotected: there is no confidentiality or integrity guarantee available to the traffic because no encryption cipher is being used to encrypt the traffic and no Hashed Message Authentication Code (HMAC) is used to authenticate the packets as they arrive. Moreover, no user authentication is being performed, meaning anyone who can reach the OpenVPN server is able to connect to it without identifying who they are, and vice versa for the client, which cannot authenticate the server.
+That's because, so far, the tunnelled network connection remains unprotected: there is no confidentiality or integrity guarantee available to the traffic because no encryption cipher is being used to encrypt the traffic and no Hashed Message Authentication Code (HMAC) is used to authenticate the packets as they arrive. Moreover, no user authentication is being performed, meaning anyone who can reach the OpenVPN server is able to connect to it without identifying who they are, and vice versa for the client, which cannot authenticate the server. To confirm these weaknesses, one merely needs to snoop on the VPN tunnel traffic.
 
-To fix these issues, we need to select and use OpenVPN's cryptographic options.
+**Do this** with the point-to-point VPN established earlier still connected:
 
-1. OpenVPN does not, itself, perform any cryptographic functions. Instead, every installation of OpenVPN is built with support for one or more cryptographic *engines*. The most popular of these is Free Software [OpenSSL](https://www.openssl.org/) project. Find out which crypto engines your OpenVPN instance supports with the `--show-engines` option:
+1. Log in to the VPN server.
     ```sh
-    openvpn --show-engines
+    vagrant ssh server
     ```
-    ```
-    OpenSSL Crypto Engines
-
-    Intel RDRAND engine [rdrand]
-    Dynamic engine loading support [dynamic]
-    ```
-    If your installation supports multiple crypto engines you can explicitly choose one over another with the `--engine` option, although it's usually best to let the software pick for you.
-1. You'll need to pick cryptographic algorithms more often you'll need to pick a crypto engine explicitly. Additional options that begin with `--show-*` are available to list out what algorithms are available to your OpenVPN instance:
+1. Set up a simple TCP server using the `nc` utility so that we can send some traffic across the tunnel:
     ```sh
-    # Show available data channel transport encryption ciphers.
-    openvpn --show-ciphers # (Use the `--cipher` option to apply one.)
-
-    # Show available data channel traffic authentication (HMAC) algorithms.
-    openvpn --show-digests # (Use the `--auth` option to apply one.)
-
-    # Show available control channel encryption and traffic authentication schemes.
-    openvpn --show-tls # (Use the `--tls-cipher` option to apply one.)
+    nc -l 10.8.0.1 -p 9999 # Where 10.8.0.1 is the VPN's IP address.
     ```
+1. In another terminal window, log in to the VPN client.
+    ```sh
+    vagrant ssh client
+    ```
+1. Begin eavesdropping on the VPN tunnel traffic by capturing packets on the interface outside of the tunnel:
+    ```sh
+    sudo tcpdump -i enp0s8 -X
+    ```
+1. In yet another terminal window, log back into the VPN client and connect to the simple TCP server:
+    ```sh
+    nc 10.8.0.1 9999
+    ```
+1. Now send any message from either the server to the client or from the client to the server and observe that the plain text is clearly visible in the terminal window running `tcpdump`.
+
+To fix these issues, we need make use of OpenVPN's cryptographic capabilities.
+
+OpenVPN does not, itself, perform any cryptographic functions. Instead, every installation of OpenVPN is built with support for one or more cryptographic *engines*. The most popular of these is the [OpenSSL](https://www.openssl.org/) project, the longstanding de facto standard implementation of many cryptographic routines. Find out which crypto engines your OpenVPN instance supports with the `--show-engines` option:
+
+```sh
+openvpn --show-engines
+```
+```
+OpenSSL Crypto Engines
+
+Intel RDRAND engine [rdrand]
+Dynamic engine loading support [dynamic]
+```
+
+If your installation supports multiple crypto engines you can explicitly choose one over another with the `--engine` option, although it's usually best to let the software pick for you.
+
+You'll need to pick cryptographic algorithms more often you'll need to pick a crypto engine explicitly. Additional options that begin with `--show-*` are available to list out what algorithms are available to your OpenVPN instance:
+
+```sh
+# Show available data channel transport encryption ciphers.
+openvpn --show-ciphers # (Use the `--cipher` option to apply one.)
+
+# Show available data channel traffic authentication (HMAC) algorithms.
+openvpn --show-digests # (Use the `--auth` option to apply one.)
+
+# Show available control channel encryption and traffic authentication schemes.
+openvpn --show-tls # (Use the `--tls-cipher` option to apply one.)
+```
+
+Each of the cryptographic algorithms requires the use of a cryptographic primitive known as a *key* that is used to derive the output of the cryptographic engine's calculations. OpenVPN has two cryptographic operating modes. While both modes require keys, the two modes differ in a number of ways, such as how those keys should be generated:
+
+* OpenVPN's *static key mode* is the simpler of the two modes.
+    * Beyond being simpler, one of its major benefits is that a properly configured OpenVPN tunnel operating in static key mode cannot be identified as an OpenVPN tunnel because fingerprintable actions such as key negotiation, handshaking, and so on are performed by the VPN operators at each side of the tunnel, before the VPN tunnel is established, allowing the wire protocol to omit these details.
+    * Unfortunately, this also means OpenVPN's static key mode does not currently implement perfect forward secrecy; if the pre-shared, static key is ever compromised, an attacker who has recorded past VPN traffic can decrypt the entire conversation.
+    * Another downside is that this mode only supports point-to-point connections (one server, one client). For these reasons, static key mode is most useful for ad-hoc, point-to-point links where a pre-existing secure channel between endpoints is already available.
+* OpenVPN's *TLS mode* is more flexible and thus more complex but, when configured correctly, arguably more secure.
+    * In TLS mode, OpenVPN creates a control channel and a separate data channel for each VPN connection, allowing the client and server to negotiate cryptographic details over the control channel while implementing security enhancements such as perfect forward secrecy over the data channel.
+    * The major drawback to TLS mode is the fact that it requires a pre-existing public key infrastructure (PKI) for the server and client to authenticate their TLS certificates against. To help administrators create and maintain their PKI, the OpenVPN project maintains a subproject called Easy RSA that provides simple utilities to generate, administer, and eventually revoke TLS certificates for use in an OpenVPN PKI.
+    * Since both client and server authentication is verified using each endpoint's TLS certificate, this mode supports a theoretically unlimited number of clients per server (capped, of course, by the VPN's own network topology and physical resource limits).
+
+**Do this** to protect your VPN with a secret, static key:
+
+1. Generate an OpenVPN static key that both sides of the VPN tunnel can use:
+    ```sh
+    openvpn --genkey --secret /vagrant/myovpn.key
+    ```
+    > :beginner: Since our lab environment shares the `/vagrant` directory across all machines in the lab, it is a "secure" channel. In the real world, you might have to safely copy your newly generated static key file to the other end of the VPN connection in some other way, such as via SSH using `scp(1)`. Refer to [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md) for more information about administering and using SSH for secure remote administration.
+1. Stop the OpenVPN processes on each side of the tunnel to bring it down.
+    ```sh
+    # On the server:
+    sudo systemctl stop openvpn-server@p2p-server
+
+    # On the client:
+    sudo systemctl stop openvpn-client@p2p-client
+    ```
+1. Add the following configuration directive to both the server's `p2p-server.conf` and the client's `p2p-client.conf` OpenVPN configuration files:
+    ```
+    secret /vagrant/myovpn.key
+    ```
+    The `secret` directive is equivalent to the `--secret` command line option.
+1. Bring both ends of the VPN tunnel back up:
+    ```sh
+    # On the server:
+    sudo systemctl start openvpn-server@p2p-server
+
+    # On the client:
+    sudo systemctl start openvpn-client@p2p-client
+    ```
+1. Repeat the exercise with the simple TCP server, above, to confirm that your tunnel is now encrypted. You can also observe a clear difference by also capturing traffic from inside the VPN tunnel itself:
+    ```sh
+    sudo tcpdump -i tun0 -X # Where `tun0` is the VPN tunnel's interface.
+    ```
+    Note that while the traffic is visible in plaintext when you view it from inside the tunnel, it is visible only as ciphertext when you view it from outside the tunnel. This is the primary way VPNs offer data confidentiality to their users.
+
+By configuring the VPN tunnel with a static key, your OpenVPN configuration now provides the two critical security properties of confidentiality and integrity for any traffic that travels inside the tunnel. No outside observer can eavesdrop on the contents of the conection and, moreover, they can also not distinguish the tunnelled traffic as being an OpenVPN connection in the first place because it merely looks like completely random data. However, should your static key ever be compromised (stolen by a hacker, leaked to an adversary, etcetera), any previously-recorded traffic that traversed this tunnel will be visible unless it is itself an encrypted protocol, such as HTTPS or SSH traffic that travelled across the VPN tunnel.
+
+> :bulb: As an added security measure, you can supply a `key-direction` directive (or its equivalent `--key-direction` command line option) to each of the configuration files. Without this option, OpenVPN's static key mode uses the same key bidirectionally; the server uses the same key to encrypt traffic as the client does, and vice versa. In other words, there are only two keys in use: one for traffic encryption and another for packet authentication. By adding `key-direction 0` to the server and `key-direction 1` to the client (note the complementary option arguments), the server and client will use two different encryption keys based on whether they are currently receiving or sending traffic. That is, there will be a total of four keys in use. This provides slightly better security guarantees because:
+>
+> * a compromise of one direction's keys will only result in the traffic flowing in that one direction becoming visible, and
+> * certain kinds of Denial of Service (DoS) and replay attacks become more difficult for attackers to mount.
+>
+> When using a static key, always consider specifying the `key-direction` to enhance the security of the OpenVPN tunnel. It is easy to do and adds no computing overhead or network latency to the VPN connection, so it's hard to imagine a scenario in which one wouldn't want to take advantage of the benefits this option offers.
 
 # Discussion
 
