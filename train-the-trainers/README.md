@@ -16,7 +16,7 @@ This directory contains the following subprojects:
 
 * [Black Hat Bash Back](black-hat-bash-back/) - Stand-alone exercises focusing on "the three D's" of computer network operations: degrade, disrupt, and deceive.
 * [Blue Feather Book](blue-feather-book/) - TK-TODO
-* [Mr. Robot's Netflix 'n' Hack](mr-robots-netflix-n-hack/) - Cybersecurity exercises and suggested demos that you can use to supplement "Mr. Robot's Netflix 'n' Hack" events, now part of [Tech Learning Collective's SEC101 course](https://techlearningcollective.com/courses/sec101/).
+* [Mr. Robot's Netflix 'n' Hack](mr-robots-netflix-n-hack/) - Cybersecurity exercises and suggested demos that you can use to supplement "Mr. Robot's Netflix 'n' Hack" events, now part of [Tech Learning Collective's SEC101 course](https://techlearningcollective.com/courses/sec101).
 * [Practice Labs](practice-labs/) - Stand-alone workshop materials focusing on hands-on experience and skill building for foundational topics or subjects not yet grouped into another project.
 
 ## Getting started

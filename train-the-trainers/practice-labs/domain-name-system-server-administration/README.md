@@ -131,7 +131,7 @@ Some notes for a basic outline:
         Confusingly, note that the zone data file uses a different syntax:
 
         * In BIND's zone data files, semicolons no longer denote the end of a statement but the start of a comment.
-        * Block statements do not exist, and each RR is expected to be written on one line. The above snippet shows two RRs, one of type `SOA` and the other of type `NS`. The `SOA` RR is extended across multiple lines by the use of parenthesis (instead of bracesa,)  grouping lines into the same RR.
+        * Block statements do not exist, and each RR is expected to be written on one line. The above snippet shows two RRs, one of type `SOA` and the other of type `NS`. The `SOA` RR is extended across multiple lines by the use of parenthesis (instead of braces), grouping lines into the same RR.
 
         See [BIND 9 Configuration Reference § Zone File](https://bind9.readthedocs.io/en/latest/reference.html#zone-file) for details.
 
