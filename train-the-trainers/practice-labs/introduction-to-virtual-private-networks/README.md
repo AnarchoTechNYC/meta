@@ -11,7 +11,7 @@
 1. [Practice](#practice)
     1. [Cryptography](#cryptography)
     1. [Routing](#routing)
-    1. [Simple production site-to-site VPN](#simple-production-site-to-sitevpn)
+    1. [Simple production site-to-site VPN](#simple-production-site-to-site-vpn)
         1. [Restricting VPN access by network address](#restricting-vpn-access-by-network-address)
         1. [Dropping privileges after connecting](#dropping-privileges-after-connecting)
         1. [Dealing with fascist firewalls](#dealing-with-fascist-firewalls)
