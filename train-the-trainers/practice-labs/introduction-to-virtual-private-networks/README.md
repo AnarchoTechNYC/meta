@@ -361,15 +361,11 @@ sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
 
 > :bulb: The `--port` option can also be set as a second argument to the `--remote` option. The above invocation could also have used `--remote 172.22.33.3 443`
 
-> :bulb: This may still not be enough in some circumstances, because HTTP is traditionally carried by TCP, while OpenVPN uses UDP by default. More recently, newer versions of HTTP, namely HTTP/3, use UDP by default, but it's still common for firewalls to expect only TCP traffic over port 443.
+> :bulb: This may still not be enough in some circumstances, because HTTP is traditionally carried by TCP, while OpenVPN uses UDP by default. More recently, newer versions of HTTP, namely HTTP/3, use UDP by default, but it's still common for firewalls to expect only TCP traffic over port 443. Fortunately, OpenVPN can use either UDP or TCP, as well. You can specify which (Layer 4) transport protocol you'd like OpenVPN to use for your tunnel with the `proto` configuration directive (or `--proto` command line option).
 >
-> Fortunately, OpenVPN can use either UDP or TCP, as well. You can specify which transport (Layer 4) protocol you'd like OpenVPN to use for your tunnel with the `proto` configuration directive (or `--proto` command line option).
+> Depending on what you are using your VPN tunnel for, making the tunnel with TCP instead of OpenVPN's default UDP may negatively impact the VPN's performance. This is because when TCP is tunneled over an underlying, but unreliable, TCP connection (a "TCP-over-TCP" scenario), packet loss on the underlying connection will trigger twice the retransmissions than normal as both the outer and the inner data streams each resend the lost packets independently of one another. Still, `--proto tcp` is occasionally very handy.
 >
-> Depending on what you are trying to use your VPN tunnel for, using TCP instead of OpenVPN's default UDP for may negatively impact the performance of the VPN. This is because TCP is tunneled over an underlying, but unreliable, TCP connection (a "TCP-over-TCP" scenario), packet loss on the underlying connection will trigger twice the retransmissions as the outer and the inner data streams try to recover the lost packets.
->
-> Still, `--proto tcp` is occasionally very handy.
->
-> Like the `--port` option, you can also specify `--proto` as part of the `--remote` option by supplying a third argument. To switch the tunnel from UDP to TCP, you could therefore also have used `--remote 172.22.33.3 443 tcp`. This is the most "HTTPS-like" OpenVPN tunnel you can make.
+> As with the `--port` option, you can also specify the value for `--proto` as part of the `--remote` option by supplying a third argument. To switch the tunnel from UDP to TCP, you could therefore also have invoked OpenVPN with `--remote 172.22.33.3 443 tcp`. This is the most "HTTPS-like" OpenVPN tunnel you can make.
 
 Once you have a connection established, however, you may find that the connection is lost every so often unless you are actively using the tunnel. This can happen when a stateful firewall places a time limit on an idle connection in the `ESTABLISHED` state. Since most Web traffic is bursty (load a page, then disconnect; then load a page a few minutes later, then disconnect again) while VPN traffic isn't (traffic flows only if you use the tunnel), you can easily find yourself disconnected annoyingly often.
 
