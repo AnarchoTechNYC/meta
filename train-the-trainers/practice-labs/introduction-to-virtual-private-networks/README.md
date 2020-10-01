@@ -9,6 +9,8 @@
 1. [Prerequisites](#prerequisites)
 1. [Set up](#set-up)
 1. [Practice](#practice)
+    1. [Cryptography](#cryptography)
+    1. [Routing](#routing)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -177,6 +179,8 @@ That's because, so far, the tunnelled network connection remains unprotected: th
 
 To fix these issues, we need make use of OpenVPN's cryptographic capabilities.
 
+## Cryptography
+
 OpenVPN does not, itself, perform any cryptographic functions. Instead, every installation of OpenVPN is built with support for one or more cryptographic *engines*. The most popular of these is the [OpenSSL](https://www.openssl.org/) project, the longstanding de facto standard implementation of many cryptographic routines. Find out which crypto engines your OpenVPN instance supports with the `--show-engines` option:
 
 ```sh
@@ -258,11 +262,40 @@ By configuring the VPN tunnel with a static key, your OpenVPN configuration now 
 >
 > When using a static key, always consider specifying the `key-direction` to enhance the security of the OpenVPN tunnel. It is easy to do and adds no computing overhead or network latency to the VPN connection, so it's hard to imagine a scenario in which one wouldn't want to take advantage of the benefits this option offers.
 
-> :bulb: With your OpenVPN tunnel now configured to source its cryptographic keys from the static key file generated earlier, another way to increase the security of the tunnel is to explicitly choose the cryptographic algorithms that the tunnel will use. If you omit these, OpenVPN's defaults will be used. These aren't particularly bad choices, but they can be better.
->
-> For example, the default packet authentication (HMAC) algorithm is `SHA1`, which as of 2017 has been susceptible to a chosen prefix collision attack, and has continued to show increasing frailty under cryptanalytic pressures. Use the `auth` configuration directive (or the `--auth` command line option) to choose a stronger algorithm, such as `SHA512`. Remember, you can invoke OpenVPN with `openvpn --show-digests` to see a list of all the HMAC algorithms supported by your OpenVPN installation. Also remember that you must apply the same cryptographic algorithm configuration to both the server and the client of the VPN tunnel in order for the traffic to successfully transit the tunnel.
->
-> Similarly, the default data encryption cipher is Blowfish in cipher block chaining mode (`BF-CBC`), but this is no longer generally recommended for production use. Use the `cipher` configuration directive (or `--cipher` command line option) to choose a stronger data encryption algorithm. Invoked with `openvpn --show-ciphers`, OpenVPN will show you a list of data encryption algorithms it supports. We recommend you use the strongest available to you, which is `AES-256-CBC` when OpenVPN is operating in static key mode, and `AES-256-GCM` when operating in TLS mode. As with the HMAC algorithm you use, this configuration must be applied to both the client and the server endpoints of the VPN tunnel.
+With your OpenVPN tunnel now configured to source its cryptographic keys from the static key file generated earlier, it's worth considering ways to increase the security of the tunnel itself. One way to do this is to explicitly choose the cryptographic algorithms that the tunnel will use. If you omit these, OpenVPN will fall back to its default choices. These are fine for most casual uses, but they can be better, and should definitely be strengthened for any sensitive applications.
+
+For example, the default packet authentication (HMAC) algorithm is [`SHA1`, which as of 2017 has been susceptible to a chosen prefix collision attack](https://shattered.io/), and has continued to show increasing frailty under cryptanalytic pressures. Use the `auth` configuration directive (or the `--auth` command line option) to choose a stronger algorithm, such as `SHA512`. Remember, you can invoke OpenVPN with `openvpn --show-digests` to see a list of all the HMAC algorithms supported by your OpenVPN installation. Also remember that you must apply the same cryptographic algorithm configuration to both the server and the client of the VPN tunnel in order for the traffic to successfully transit the tunnel.
+
+Similarly, the default data encryption cipher is Blowfish in cipher block chaining mode (`BF-CBC`), but this is no longer generally recommended for production use. Use the `cipher` configuration directive (or `--cipher` command line option) to choose a stronger data encryption algorithm. Invoked with `openvpn --show-ciphers`, OpenVPN will show you a list of data encryption algorithms it supports. We recommend you use the strongest available to you, which is `AES-256-CBC` when OpenVPN is operating in static key mode, and `AES-256-GCM` when operating in TLS mode. As with the HMAC algorithm you use, this configuration must be applied to both the client and the server endpoints of the VPN tunnel.
+
+Regardless of what choice you ultimately make here, remember to return in the future and audit your prior choices to stay current with the state of the art in cryptanalytic techniques. Since changing a given algorithm is usually a simple matter of replacing a line or two in a configuration file (on both the server and any connecting clients), and restarting the VPN software, you can easily work this into any patch management routines you have already automated. (You have [automated patch management](../../mr-robots-netflix-n-hack/week-2/shellshock-and-the-importance-of-patch-management/README.md), haven't you?)
+
+## Routing
+
+With the two VPN endpoints now securely connected, you might imagine that any traffic received by one is visible to the other, but this isn't how OpenVPN works. In fact, OpenVPN is not responsible for anything other than the single virtual network connection between the connecting endpoints. In order for a computer other than the endpoint itself to be able to reach the far side of the VPN tunnel, the VPN endpoint(s) must be able and willing to route traffic just as any other typical router might.
+
+This is usually not something most VPN end users need concern themselves with because, to connect to the VPN server in the first place, clients are given a configuration file that supplies appropriate routing information by their VPN administrator. OpenVPN also has the capability to dynamically push routes from the server to the connecting client, which it will then faithfully add to the local system's routing tables.
+
+In the case of the simple point-to-point VPN tunnel established earlier, these routes were automatically added to the system routing tables on both the VPN server and the VPN client. For example, to view the route from the client to the server, use the following command on the VPN client:
+
+```sh
+ip route show to 10.8.0.1/24
+```
+```
+10.8.0.0/24 dev tun0 proto kernel scope link src 10.8.0.2
+```
+
+Removing this route (using `sudo ip route del 10.8.0.0/24`) will cause applications attempting to send traffic across the tunnel from the client to server to fail, even though the VPN tunnel is alive and well. That's because the VPN itself is simply a virtual ("overlay") network. Once established, it's up to the Operating System's kernel, not OpenVPN, to determine which traffic should actually transit the VPN tunnel. For that, a correct route must be present.
+
+If you deleted the route to see what would happen, you can re-add it as you might expect:
+
+```sh
+sudo ip route add 10.8.0.0/24 dev tun0
+```
+
+Once added, bidirectional connectivity between the endpoints is restored. You can once again `ping` the other end of the tunnel, for example.
+
+The fact that OpenVPN is not itself responsible for routing decisions is among the most confusing aspect of VPN use for most new users. Although OpenVPN can be instructed to make changes to a system's routing table by adding the `route` configuration directive to its configuration file (or the equivalent `--route` command line option to the program's invocation), all this does is inform OpenVPN that it should execute the appropriate command to edit the routing tables on the underlying system (usually `ip route` on modern GNU/Linux devices, `route add` on BSD systems, and `route ADD` on Windows computers).
 
 # Discussion
 
