@@ -11,6 +11,10 @@
 1. [Practice](#practice)
     1. [Cryptography](#cryptography)
     1. [Routing](#routing)
+    1. [Simple production site-to-site VPN](#simple-production-site-to-sitevpn)
+        1. [Restricting VPN access by network address](#restricting-vpn-access-by-network-address)
+        1. [Dropping privileges after connecting](#dropping-privileges-after-connecting)
+        1. [Dealing with fascist firewalls](#dealing-with-fascist-firewalls)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -293,9 +297,87 @@ If you deleted the route to see what would happen, you can re-add it as you migh
 sudo ip route add 10.8.0.0/24 dev tun0
 ```
 
-Once added, bidirectional connectivity between the endpoints is restored. You can once again `ping` the other end of the tunnel, for example.
+Once the route is added, bidirectional connectivity between the endpoints is restored. You can once again `ping` the other end of the tunnel, for example.
 
-The fact that OpenVPN is not itself responsible for routing decisions is among the most confusing aspect of VPN use for most new users. Although OpenVPN can be instructed to make changes to a system's routing table by adding the `route` configuration directive to its configuration file (or the equivalent `--route` command line option to the program's invocation), all this does is inform OpenVPN that it should execute the appropriate command to edit the routing tables on the underlying system (usually `ip route` on modern GNU/Linux devices, `route add` on BSD systems, and `route ADD` on Windows computers).
+The fact that OpenVPN is not itself responsible for routing decisions is among the most confusing aspect of VPN use for most new users. Although OpenVPN can be instructed to make changes to a system's routing table by adding the `route` configuration directive to its configuration file (or the equivalent `--route` command line option to the program's invocation), all this does is inform OpenVPN that it should execute the equivalent actions for whatever appropriate command is used to edit the routing tables on the underlying system (usually `ip route` on modern GNU/Linux devices, `route add` on BSD systems, and `route ADD` on Windows computers). Likewise, when the OpenVPN process finishes, it removes the routes from the system's routing tables to clean up after itself in the same way (`ip route del`, `route delete`, etcetera).
+
+> :construction: TK-TODO: Add another device and configure routing appropriately to permit it access to the VPN tunnel without itself being a VPN client. (I.e., a service behind the OpenVPN server, or a workstation that accesses such a service via the OpenVPN client as a gateway.)
+
+## Simple production site-to-site VPN
+
+With the above routes applied, our simple point-to-point VPN tunnel can now serve as a bridge between physically separate networks. This common scenario is often also called a "site-to-site VPN," because each endpoint connected to the VPN tunnel serves as a gateway routing traffic between two geographically disparate sites administered by the same organization. For example, perhaps the VPN server is running at Headquarters, while a satellite, secondary, or branch office or campus connects to the main network via the VPN.
+
+One of the benefits of the above design is that users located in the satellite office or secondary campus don't need to be aware of the VPN's existence at all. From their perspective, the services running at Headquarters are simply available to them because they seem to be "directly" connected to them via their local network connection. They don't even have to install any VPN software; everything "just works."
+
+While the above configurations would work, they are a little sparse. For a better production setup, you'll want to make some additional tweaks to further harden security and improve the VPN's reliability.
+
+### Restricting VPN access by network address
+
+Implementing a site-to-site VPN like this can be made even safer by using the `remote` configuration directive on the server as well as the client. When used on the client, the `remote` option causes the VPN client to attempt a connection with the computer located at the IP address or hostname given. When used on the server, the `remote` option causes the VPN server to reject connections that aren't coming from a specific IP address or hostname; for an OpenVPN server, `remote` acts as a filter.
+
+For example, to implement the point-to-point VPN we've established earlier, use the following command on the server:
+
+```sh
+sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
+    --remote 172.22.33.3 --secret /vagrant/myovpn.key --key-direction 0
+```
+
+And use this command on the client:
+
+```sh
+sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.2 10.8.0.1 \
+    --remote 172.22.33.2 --secret /vagrant/myovpn.key --key-direction 1
+```
+
+Notice that the `--remote` option's argument has been flipped from the server to the client, just like the `--ifconfig` and `--key-direction` arguments have been. The client will attempt a connection to the server, and the server will reject connections *unless* that connection's incoming packet headers claim to originate at the client's IP address. Note that since source IP addresses can be easily spoofed, OpenVPN will still enforce packet authentication via the chosen HMAC algorithm; this is simply a defense-in-depth measure.
+
+This kind of restriction is, of course, mostly useful when you already know the IP addresses of each endpoint, such as is the case in a larger site-to-site VPN deployment.
+
+### Dropping privileges after connecting
+
+In order to change the system's routing tables, create or modify interfaces, and so on, OpenVPN needs privileged access. That's why OpenVPN typically runs as the `root` user on UNIX-like systems, at least initially. Once these modifications have been made, though, there isn't any need for the `openvpn` process to retain these enhanced privileges, so OpenVPN can also relinquish them voluntarily by switching to a different effective user and group ID by using the `user` and `group` configuration directives (or the equivalent `--user` and `--group` command line options).
+
+Changing to an unprivileged user protects the VPN endpoint from attack against the VPN tunnel itself by limiting the potential damage an attacker can do if a vulnerability in the OpenVPN codebase itself is exploited. Most GNU/Linux systems have a designated user (`nobody`) and group (`nobody` or `nogroup`) with no special privileges for exactly this reason. It's almost always a good idea to use these options to further secure your VPN system.
+
+> :bulb: In some more complex setups, such as when a client needs to dynamically recreate an interface after the first is already established, dropping privileges this way can cause connection problems. In these situations, the `persist-tun` and `persist-key` options can help. They instruct OpenVPN to reuse the existing `tun` device (instead of closing and reopening it) or keying material (instead of re-reading the file from disk, which should probably be readable only by the `root` user) whenever the tunnel is restarted.
+
+### Dealing with fascist firewalls
+
+A properly secured site will most likely be protected by a firewall whose job it is to monitor incoming and, possibly, outgoing traffic. Strict firewalls will also intentionally block or reset connections that have been idle for some period of time. Since a VPN tunnel is designed to hide its traffic from outside observers, including firewalls, VPN connections are themselves sometimes also blocked.
+
+In order to pass through or maintain a VPN tunnel across these strict firewalls, you may need to configure your endpoints to deal with them.
+
+When a firewall simply outright blocks the default OpenVPN port (`1194`), you can instruct your OpenVPN endpoints to use other, permitted ports instead. The most common of these is port 443, the default port for HTTPS traffic. Since firewalls already expect to be unable to inspect encrypted Web traffic, and an OpenVPN tunnel operating in static key mode cannot be identified as such, using port 443 is a simple way to establish a VPN connection across an otherwise fascist firewall.
+
+The `port` option (`--port` on the command line) is a shorthand option that simultaneously sets the `lport` (local port) and `rport` (remote port) options. Invoke OpenVPN with `--port 443` on both the client and the server to have both sides of the connection attempt to disguise themselves as encrypted Web traffic instead of OpenVPN traffic.
+
+On the server:
+
+```sh
+sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
+    --remote 172.22.33.3 --port 443 \
+    --secret /vagrant/myovpn.key --key-direction 0
+```
+
+> :bulb: The `--port` option can also be set as a second argument to the `--remote` option. The above invocation could also have used `--remote 172.22.33.3 443`
+
+> :bulb: This may still not be enough in some circumstances, because HTTP is traditionally carried by TCP, while OpenVPN uses UDP by default. More recently, newer versions of HTTP, namely HTTP/3, use UDP by default, but it's still common for firewalls to expect only TCP traffic over port 443.
+>
+> Fortunately, OpenVPN can use either UDP or TCP, as well. You can specify which transport (Layer 4) protocol you'd like OpenVPN to use for your tunnel with the `proto` configuration directive (or `--proto` command line option).
+>
+> Depending on what you are trying to use your VPN tunnel for, using TCP instead of OpenVPN's default UDP for may negatively impact the performance of the VPN. This is because TCP is tunneled over an underlying, but unreliable, TCP connection (a "TCP-over-TCP" scenario), packet loss on the underlying connection will trigger twice the retransmissions as the outer and the inner data streams try to recover the lost packets.
+>
+> Still, `--proto tcp` is occasionally very handy.
+>
+> Like the `--port` option, you can also specify `--proto` as part of the `--remote` option by supplying a third argument. To switch the tunnel from UDP to TCP, you could therefore also have used `--remote 172.22.33.3 443 tcp`. This is the most "HTTPS-like" OpenVPN tunnel you can make.
+
+Once you have a connection established, however, you may find that the connection is lost every so often unless you are actively using the tunnel. This can happen when a stateful firewall places a time limit on an idle connection in the `ESTABLISHED` state. Since most Web traffic is bursty (load a page, then disconnect; then load a page a few minutes later, then disconnect again) while VPN traffic isn't (traffic flows only if you use the tunnel), you can easily find yourself disconnected annoyingly often.
+
+The easiest way to deal with this is to use the `keepalive` configuration directive (`--keepalive` on the command line). This is a shorthand for the `--ping` and `--ping-restart` options, so it takes two arguments, one for each. For example `--keepalive 10 60` sets `--ping 10` and `--ping-restart 60`.
+
+The `--ping 10` option sends a simple heartbeat-like message across the tunnel every ten seconds. This helps ensure otherwise "idle" connections are viewed as active by intermediary devices like firewalls. Meanwhile, `--ping-restart 60` instructs OpenVPN to restart the tunnel if 60 seconds pass without receiving a ping from the other side of the tunnel.
+
+You can set both options to sensible values on both the server and the client by using the `--keepalive` option on the server only, but there's no harm in using `--keepalive` on both the server's and the client's configuration. When set on the server, using `--keepalive` doubles the value for `--ping-restart` in order to ensure the client will restart before the server does.
 
 # Discussion
 
