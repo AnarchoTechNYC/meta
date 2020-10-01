@@ -405,7 +405,7 @@ secret /vagrant/myovpn.key 0
 keepalive 10 60
 ```
 
-With the above configuration file written to, for example, `/etc/openvpn/server/p2p-server-prod.conf`, the tunnel can be started with a much simply invocation:
+With the above configuration file written to, for example, `/etc/openvpn/server/p2p-server-prod.conf`, the tunnel can be started with a much simpler invocation:
 
 ```sh
 sudo openvpn --config /etc/openvpn/server/p2p-server-prod.conf
