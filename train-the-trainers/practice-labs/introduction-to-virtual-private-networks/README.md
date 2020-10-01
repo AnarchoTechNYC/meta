@@ -258,6 +258,12 @@ By configuring the VPN tunnel with a static key, your OpenVPN configuration now 
 >
 > When using a static key, always consider specifying the `key-direction` to enhance the security of the OpenVPN tunnel. It is easy to do and adds no computing overhead or network latency to the VPN connection, so it's hard to imagine a scenario in which one wouldn't want to take advantage of the benefits this option offers.
 
+> :bulb: With your OpenVPN tunnel now configured to source its cryptographic keys from the static key file generated earlier, another way to increase the security of the tunnel is to explicitly choose the cryptographic algorithms that the tunnel will use. If you omit these, OpenVPN's defaults will be used. These aren't particularly bad choices, but they can be better.
+>
+> For example, the default packet authentication (HMAC) algorithm is `SHA1`, which as of 2017 has been susceptible to a chosen prefix collision attack, and has continued to show increasing frailty under cryptanalytic pressures. Use the `auth` configuration directive (or the `--auth` command line option) to choose a stronger algorithm, such as `SHA512`. Remember, you can invoke OpenVPN with `openvpn --show-digests` to see a list of all the HMAC algorithms supported by your OpenVPN installation. Also remember that you must apply the same cryptographic algorithm configuration to both the server and the client of the VPN tunnel in order for the traffic to successfully transit the tunnel.
+>
+> Similarly, the default data encryption cipher is Blowfish in cipher block chaining mode (`BF-CBC`), but this is no longer generally recommended for production use. Use the `cipher` configuration directive (or `--ciphers` command line option) to choose a stronger data encryption algorithm. Invoked with `openvpn --show-ciphers`, OpenVPN will show you a list of data encryption algorithms it supports. We recommend you use the strongest available to you, which is `AES-256-CBC` when OpenVPN is operating in static key mode, and `AES-256-GCM` when operating in TLS mode. As with the HMAC algorithm you use, this configuration must be applied to both the client and the server endpoints of the VPN tunnel.
+
 # Discussion
 
 > :construction: TK-TODO
