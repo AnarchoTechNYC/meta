@@ -265,6 +265,8 @@ By configuring the VPN tunnel with a static key, your OpenVPN configuration now 
 > * certain kinds of Denial of Service (DoS) and replay attacks become more difficult for attackers to mount.
 >
 > When using a static key, always consider specifying the `key-direction` to enhance the security of the OpenVPN tunnel. It is easy to do and adds no computing overhead or network latency to the VPN connection, so it's hard to imagine a scenario in which one wouldn't want to take advantage of the benefits this option offers.
+>
+> Finally, note that the value of the `--key-direction` option can also be supplied as a second argument to the `--secret` option discussed earlier. In other words, `--secret /vagrant/myovpn.key 0` is equivalent to `--secret /vagrant/myovpn.key --key-direction 0`.
 
 With your OpenVPN tunnel now configured to source its cryptographic keys from the static key file generated earlier, it's worth considering ways to increase the security of the tunnel itself. One way to do this is to explicitly choose the cryptographic algorithms that the tunnel will use. If you omit these, OpenVPN will fall back to its default choices. These are fine for most casual uses, but they can be better, and should definitely be strengthened for any sensitive applications.
 
@@ -359,6 +361,14 @@ sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
     --secret /vagrant/myovpn.key --key-direction 0
 ```
 
+And its complementary invocation, on the client:
+
+```sh
+sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.2 10.8.0.1 \
+    --remote 172.22.33.2 --port 443 \
+    --secret /vagrant/myovpn.key --key-direction 0
+```
+
 > :bulb: The `--port` option can also be set as a second argument to the `--remote` option. The above invocation could also have used `--remote 172.22.33.3 443`
 
 > :bulb: This may still not be enough in some circumstances, because HTTP is traditionally carried by TCP, while OpenVPN uses UDP by default. More recently, newer versions of HTTP, namely HTTP/3, use UDP by default, but it's still common for firewalls to expect only TCP traffic over port 443. Fortunately, OpenVPN can use either UDP or TCP, as well. You can specify which (Layer 4) transport protocol you'd like OpenVPN to use for your tunnel with the `proto` configuration directive (or `--proto` command line option).
@@ -374,6 +384,34 @@ The easiest way to deal with this is to use the `keepalive` configuration direct
 The `--ping 10` option sends a simple heartbeat-like message across the tunnel every ten seconds. This helps ensure otherwise "idle" connections are viewed as active by intermediary devices like firewalls. Meanwhile, `--ping-restart 60` instructs OpenVPN to restart the tunnel if 60 seconds pass without receiving a ping from the other side of the tunnel.
 
 You can set both options to sensible values on both the server and the client by using the `--keepalive` option on the server only, but there's no harm in using `--keepalive` on both the server's and the client's configuration. When set on the server, using `--keepalive` doubles the value for `--ping-restart` in order to ensure the client will restart before the server does.
+
+Putting it all together, the server's invocation is now:
+
+```sh
+sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
+    --remote 172.22.33.3 --port 443 \
+    --secret /vagrant/myovpn.key --key-direction 0 \
+    --keepalive 10 60
+```
+
+As you can see, invoking OpenVPN only with command line options can get unwieldy. Thankfully, moving these options into a configuration file is very simple:
+
+```
+dev tun
+topology p2p
+ifconfig 10.8.0.1 10.8.0.2
+remote 172.22.33.3 443
+secret /vagrant/myovpn.key 0
+keepalive 10 60
+```
+
+With the above configuration file written to, for example, `/etc/openvpn/server/p2p-server-prod.conf`, the tunnel can be started with a much simply invocation:
+
+```sh
+sudo openvpn --config /etc/openvpn/server/p2p-server-prod.conf
+```
+
+The client's invocation can (and, probably should) be similarly simplified.
 
 # Discussion
 
