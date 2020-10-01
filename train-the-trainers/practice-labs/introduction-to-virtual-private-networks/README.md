@@ -421,4 +421,4 @@ The client's invocation can (and, probably should) be similarly simplified.
 
 # Additional references
 
-> :construction: TK-TODO
+* [Gibson Research's OpenVPN Step-By-Step "HowTo" Guide](https://www.grc.com/vpn/vpn.htm)
