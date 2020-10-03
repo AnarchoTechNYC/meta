@@ -1,15 +1,14 @@
 Vagrant.configure("2") do |config|
 
-  # Two simple example VMs is all we need to start.
-  lab_vms = ["client", "server"]
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "private_network", type: "dhcp"
+  config.vm.provider "virtualbox" do |vb|
+    vb.linked_clone = true
+  end
 
+  lab_vms = ["client", "server"]
   lab_vms.each do |m|
     config.vm.define m do |c|
-      c.vm.box = "ubuntu/bionic64"
-      c.vm.network "private_network", type: "dhcp"
-      c.vm.provider "virtualbox" do |vb|
-        vb.linked_clone = true # Same base box, so save disk space.
-      end
     end
   end
 
