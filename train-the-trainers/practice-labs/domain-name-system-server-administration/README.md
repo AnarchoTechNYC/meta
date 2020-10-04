@@ -168,7 +168,7 @@ Some notes for a basic outline:
         When you're done editing, remember to check your work with `named-checkzone example /etc/bind/db.example`.
     1. Finally, tell `named` to reload the zone data we just edited by using the remote name daemon controller, `rndc`:
         ```sh
-        sudo rdnc reconfig
+        sudo rndc reconfig
         ```
     1. Now we can query this server for the `example.` domain:
         ```sh
