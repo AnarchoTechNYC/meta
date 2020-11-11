@@ -456,6 +456,7 @@ Automated phishing tools like [Modlishka](https://github.com/drk1wi/Modlishka) a
 
 # Additional references
 
+* [Recognize and avoid phishing messages, phony support calls, and other scams - Apple Support](https://support.apple.com/en-us/HT204759) - Apple, Inc's recommendations for users on macOS and Apple-branded systems for how to reduce the impact of phishing attacks may have on you. 
 * According to [Phishing.org](https://phishing.org), the term "phishing" been in use since approximately 1996.
 * In 2019, according to [Software-As-A-Service provider Retrust](https://retruster.com/blog/2019-phishing-and-email-fraud-statistics.html), phishing attempts have grown 65% in the last year, and account for a whopping 90% of all reported data breaches, while 76% of businesses reported being a victim of a phishing attack in the last year.
 * Business Email Compromise (BEC) scams cost over $12 billion dollars in business losses [according to the FBI](https://www.pymnts.com/news/b2b-payments/2018/fbi-business-email-scam-fraud-phishing/). As for phishing websites, Webroot reports that [nearly 1.5m new phishing sites are created each month](https://www.webroot.com/us/en/about/press-room/releases/nearly-15-million-new-phishing-sites).
