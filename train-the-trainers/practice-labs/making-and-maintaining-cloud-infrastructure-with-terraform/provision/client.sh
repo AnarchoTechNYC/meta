@@ -42,8 +42,8 @@ if [ "latest" == "$tprovider_version" ]; then
     new_version="$(grep TerraformProviderVersion proxmoxtf/version.go | grep -o -e '[0-9]\.[0-9]\.[0-9]')"
     make init
     make build
-    install -D -o vagrant -g vagrant bin/terraform-provider-proxmox_v${new_version}* \
-        ~vagrant/.terraform.d/plugins/localhost.localdomain/$vend/"$(echo -n $repo | rev | cut -d '-' -f 1 | rev)"/$new_version/$(uname -s | tr '[A-Z]' '[a-z]')_$(dpkg --print-architecture)/${repo}_v$new_version
+    install -D -o vagrant -g vagrant cache/plugins/registry.terraform.io/${vend}/proxmox/${new_version}/$(uname -s | tr '[A-Z]' '[a-z]')_$(dpkg --print-architecture)/terraform-provider-proxmox_v${new_version}* \
+        ~vagrant/.terraform.d/plugins/localhost.localdomain/$vend/proxmox/$new_version/$(uname -s | tr '[A-Z]' '[a-z]')_$(dpkg --print-architecture)/${repo}_v$new_version
 else
     # We've asked for a specific Proxmox provider version.
     url="https://github.com/$vend/$repo/releases/download/$tprovider_version/${repo}_v${tprovider_version}-custom_$(uname -s | tr '[A-Z]' '[a-z]')_$(dpkg --print-architecture).zip"

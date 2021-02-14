@@ -28,7 +28,8 @@ resource "proxmox_virtual_environment_vm" "testvm" {
   #vm_id   = 105 # This must be unique, so it'd make a good Terraform Module.
 
   disk {
-    file_id = proxmox_virtual_environment_file.ubuntu_cloud_image.id
+    file_id   = proxmox_virtual_environment_file.ubuntu_cloud_image.id
+    interface = "scsi0"
   }
 
   # Attach a NIC and a serial device with default settings.
@@ -60,7 +61,7 @@ resource "proxmox_virtual_environment_vm" "testvm" {
       password = "ubuntu"
       # Keys are preferred over `password`, for obvious reasons.
       keys = [
-        "${trimspace(tls_private_key.testvm_key.public_key_openssh)}",
+        trimspace(tls_private_key.testvm_key.public_key_openssh),
       ]
     }
   }
