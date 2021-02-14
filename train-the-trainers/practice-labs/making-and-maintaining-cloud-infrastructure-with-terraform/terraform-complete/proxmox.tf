@@ -12,24 +12,21 @@ resource "proxmox_virtual_environment_file" "ubuntu_cloud_image" {
 
 resource "proxmox_virtual_environment_vm" "testvm" {
   node_name = data.proxmox_virtual_environment_nodes.pve_nodes.names[0]
+  pool_id = proxmox_virtual_environment_pool.test_pool.id
 
-  # These three arguments are marked "optional" in the Provider docs,
+  # These two arguments are marked "optional" in the Provider docs,
   # but several bugs crop up if we don't include them. See:
   #
-  #     https://github.com/danitso/terraform-provider-proxmox/issues/40
-  #     https://github.com/danitso/terraform-provider-proxmox/issues/41
   #     https://github.com/danitso/terraform-provider-proxmox/issues/42
   #     https://github.com/danitso/terraform-provider-proxmox/issues/43
   #
-  # We'll be on the safe side and make sure they're set.
-  pool_id = proxmox_virtual_environment_pool.test_pool.id
-  name    = "testvm"
-  # Proxmox provider earlier than 0.4.0 required the `vm_id`.
+  name = "testvm"
   #vm_id   = 105 # This must be unique, so it'd make a good Terraform Module.
 
   disk {
     file_id   = proxmox_virtual_environment_file.ubuntu_cloud_image.id
     interface = "scsi0"
+    #size      = 3 # Three gigabytes.
   }
 
   # Attach a NIC and a serial device with default settings.
