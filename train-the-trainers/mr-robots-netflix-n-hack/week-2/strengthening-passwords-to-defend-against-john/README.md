@@ -913,8 +913,9 @@ This simple separation between an easier-to-remember password used to "unlock" y
 **Do this:**
 
 1. Choose one or two low-priority (unimportant) online accounts that you have. These will be the first accounts whose passwords you will reset to much stronger ones. Use low-priority accounts so you can practice using the password manager before relying on it for your high-priority accounts.
-1. Search the Internet for a guide to using the password manager of your choice. Here are recommended guides for KeePassXC and LastPass:
+1. Search the Internet for a guide to using the password manager of your choice. Here are recommended guides for KeePassXC, Bitwarden, and LastPass:
     * [KeePassXC for Beginners](https://medium.com/%40mshelton/keypass-for-beginners-dc8adfcdad54)
+    * [Bitwarden: Setup and How To For Beginners](https://passwordbits.com/bitwarden-howto/)
     * [LastPass User Manual: Getting Started with LastPass](https://helpdesk.lastpass.com/)
 1. Follow the guide. :) Be certain that you also:
     1. Generate a strong, randomized, unique password for your online service account using your password manager of choice.
