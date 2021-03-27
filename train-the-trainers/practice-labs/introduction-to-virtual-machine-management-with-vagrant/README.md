@@ -150,7 +150,7 @@ config.vm.network "private_network", type: "dhcp", virtualbox__intnet: "testnet"
 
 > :beginner: While the `testnet` (part of the `virtualbox__intnet` keyword argument) is arbitrary—it merely needs to be the same for both machines—the `type: "dhcp"` keyword argument is not. It refers to the [Dynamic Host Configuration Protocol](https://simple.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol). DHCP is a way that network administrators can automatically inform machines joining their network what networking parameters they should use in order to have access to network services, not least of which is access to the Internet. You may not have heard about it before, but you probably use DHCP every time you connect to a Wi-Fi network. To learn more about what DHCP is and how it works, complete the [Introduction to Basic Network Administration](../introduction-to-basic-network-administration/README.md) practice lab.
 
-Each of machine that you want to attach to the same virtual network must have this same line, and by including this same line in all machine configurations, they will all be attached to the same virtual network.
+Each of the machines that you want to attach to the same virtual network must have this same line, and by including this same line in all machine configurations, they will all be attached to the same virtual network.
 
 **Do this**:
 
@@ -315,7 +315,7 @@ Note that at the inner-most block, the `config` object is referenced by the shor
 end
 ```
 
-Refer to [Vagrant's official VirtualBox provider documentation for more information on using linked clones](https://www.vagrantup.com/docs/providers/virtualbox/configuration.html#linked-clones) as well as the [Clonig Virtual Machines section of the VirtualBox manual](https://www.virtualbox.org/manual/UserManual.html#clone).
+Refer to [Vagrant's official VirtualBox provider documentation for more information on using linked clones](https://www.vagrantup.com/docs/providers/virtualbox/configuration.html#linked-clones) as well as the [Cloning Virtual Machines section of the VirtualBox manual](https://www.virtualbox.org/manual/UserManual.html#clone).
 
 ## VirtualBox networking modes
 
@@ -329,7 +329,7 @@ Virtual networks, just like physical networks, can be constructed in a number of
 └----------┘      └----------┘      └----------┘
 ```
 
-Network topologies therefore describe the shape of a given network and the *path* a given message (called a "packet" in network engineering lingo) must take to get from one device to another. This topology, in which all devices are connected in a straight line, is called a [*bus network*](https://simple.wikipedia.org/wiki/Bus_network), and it is one of the simplest possible networks you can create. You could think of network engineering a bit like a "connect the dots" game, where the devices are the dots (sometimes also called "nodes" or "hosts") and the physical (or, in our case, virtual) network cabling are the lines connecting them.
+Network topologies therefore describe the shape of a given network and the *path* a given message (called a "packet" in network engineering lingo) must take to get from one device to another. This topology, in which all devices are connected in a straight line, is called a *line network*, and is the most rudimentary shape a network can take since it merely involves linearly daisy chaining one device to the next in series. Another example of a daisy chain is a [*bus network*](https://simple.wikipedia.org/wiki/Bus_network), in which each device is connected to a single, shared network cable (or "backbone"). You could think of network engineering a bit like a "connect the dots" game, where the devices are the dots (sometimes also called "nodes" or "hosts") and the physical (or, in our case, virtual) network cabling are the lines connecting them.
 
 VirtualBox provides several facilities for designing a network topology in whatever shape you like. Of these, VirtualBox's *networking modes* is the feature you'll use to connect a virtual machine to the network. Each of a virtual machine's network adapters can be configured in one (and only one) of these networking modes at a time. You can use either the [VirtualBox Manager graphical application](https://www.virtualbox.org/manual/ch01.html#idm272) or [the `VBoxManage(1)` command line utility](https://www.virtualbox.org/manual/ch08.html), installed along with the main VirtualBox hypervisor itself, to set any of a given virtual machine's available network adapters to the desired VirtualBox networking mode, as shown in the screenshot below:
 
