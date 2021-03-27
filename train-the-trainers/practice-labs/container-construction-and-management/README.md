@@ -149,6 +149,49 @@ root@ubuntu-bionic:/vagrant# lsns -t pid
 4026532175 pid       2  5576 root /bin/bash
 ```
 
+Lastly, for cgroups, we'll create our own without any additional tooling to understand what they do and how we can interact with them from a very low level.
+
+1. First, as `root`, create a new directory hierarchy to house our new cgroup interface. Each cgroup controller is responsible for a different aspect of system resources, so perhaps `/my_cgroups/cpu` is a good filesystem path to co-mount the `cpu` and `cpuacct` (CPU accounting) cgroup controller interfaces:
+    ```sh
+    mkdir -p /my_cgroups/cpu
+    ```
+1. Next, mount the controller interfaces into that directory:
+    ```sh
+    mount -t cgroup -o cpu,cpuacct cgroup /my_cgroups/cpu
+    ```
+    Note that the `cgroup` argument in the above `mount` command is somewhat arbitrary, as cgroups don't actually use any physical device.
+
+    Notice also that the directory has been populated by the two controllers with a view of the Linux kernel's relevant control group data:
+    ```sh
+    ls /my_cgroups/cpu
+    ```
+    On a system with systemd running, you probably have several directories ending in `.slice`, which are the cgroups underlying the named systemd Slice Units.
+1. To make a new control group of our own, we merely need to create a directory for it. The name of the directory becomes the name of the new control group. For example, to create a group named `testgroup`:
+    ```sh
+    mkdir /my_cgroups/cpu/testgroup
+    ```
+    Notice that, as before, the cgroup controllers have populated the new control group's directory with the default values, represented as simple files:
+    ```sh
+    ls /my_cgroups/cpu/testgroup
+    ```
+1. Now we can set various values by writing data to the relevant file. For example, to set the relative CPU shares available for allocation by processes in this cgroup, we can write a value to the `cpu.shares` file:
+    ```sh
+    echo "256" > /my_cgroups/cpu/testgroup/cpu.shares
+    ```
+   This won't have any effect until we add some existing process to the new group, of course.
+1. In a new tab or SSH connection, generate some test load on the system, for example with the following command:
+    ```sh
+    cat /dev/urandom
+    ```
+1. While the above load-generating command is running, observe that the unconstrained process eats up as much CPU time as it can by monitoring the system with a utility such as `top(1)`.
+1. Write the PID of the load-generating command into the control group's `tasks` file:
+    ```sh
+    echo "$SOME_PID_TO_CONSTRAIN" > /my_cgroups/cpu/testgroup/tasks
+    ```
+1. Observe the system again with a utility such as `top(1)` and notice that the process is now constrained in direct proportion to the value written to its control group's `cpu.shares` file.
+
+The above demonstrates a very manual way of interfacing with Linux kernel control groups. More sophisticated tooling exists, including the systemd Slice facilities (and its suite of commands such as `systemd-cgls` to list control groups, and `systemd-cgtop` to monitor control group resource usage), and of course fully fledged container porcelain like Docker. This is how control groups make up the foundation of Kubernetes Pod resource requests and limits, too.
+
 # Additional references
 
 > :construction: TK-TODO
