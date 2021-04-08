@@ -3,6 +3,7 @@
 terraform_version="0.14.6"
 tprovider_version="latest" # Or a specific version in SemVer format.
 golang_version="1.15.8"
+terragrunt_version="v0.28.18"
 
 apt-get update && apt-get install --yes unzip
 
@@ -10,9 +11,14 @@ cd "${TMPDIR:-/tmp}"
 
 # Install Terraform.
 url="https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_$(uname -s | tr '[A-Z]' '[a-z]')_$(dpkg --print-architecture).zip"
-curl -sLO $url
+curl -sLO "$url"
 unzip -o "$(basename "$url")"
 install terraform /usr/local/bin
+
+# Install Terragrunt.
+url="https://github.com/gruntwork-io/terragrunt/releases/download/${terragrunt_version}/terragrunt_$(uname -s | tr '[A-Z]' '[a-z]')_$(dpkg --print-architecture)"
+curl -sLO "$url"
+install "terragrunt_$(uname -s | tr '[A-Z]' '[a-z]')_$(dpkg --print-architecture)" /usr/local/bin/terragrunt
 
 # Install a Proxmox provider for Terraform.
 vend="danitso"
