@@ -227,7 +227,7 @@ Each of the cryptographic algorithms requires the use of a cryptographic primiti
 
 1. Generate an OpenVPN static key that both sides of the VPN tunnel can use:
     ```sh
-    openvpn --genkey --secret /vagrant/myovpn.key
+    openvpn --genkey secret /vagrant/myovpn.key
     ```
     > :beginner: Since our lab environment shares the `/vagrant` directory across all machines in the lab, it is a "secure" channel. In the real world, you might have to safely copy your newly generated static key file to the other end of the VPN connection in some other way, such as via SSH using `scp(1)`. Refer to [Introduction to Securing (Virtualized) Secure Shell Servers](../introduction-to-securing-virtualized-secure-shell-servers/README.md) for more information about administering and using SSH for secure remote administration.
 1. Stop the OpenVPN processes on each side of the tunnel to bring it down.
