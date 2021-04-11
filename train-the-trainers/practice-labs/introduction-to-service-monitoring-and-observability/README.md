@@ -54,12 +54,12 @@ Then, bring the virtual machines for the lab online.
 
 **Do this:**
 
-1. Boot both virtual machines needed for the lab:
+1. Boot the virtual machines needed for the lab:
     ```sh
     vagrant up
     ```
 
-Once both the virtual machines are running, you can continue to the next step.
+Once the virtual machines are running, you can continue to the next step.
 
 # Practice
 
