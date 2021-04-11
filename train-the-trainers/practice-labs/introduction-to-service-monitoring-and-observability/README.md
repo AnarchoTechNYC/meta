@@ -78,8 +78,9 @@ In brief:
     ```sh
     sudo systemctl stop node_exporter.service
     ```
-1. Then watch as the Alertmanager notices the downed service (in `http://localhost:9093`).
-1. In a minute or so, it will send an email to our test SMTP server ([MailHog](https://github.com/mailhog/MailHog)) running at `http://localhost:8025`.
+1. Then watch as Prometheus notices the downed service (in `http://localhost:9090/alerts`).
+1. When the alert is in its `FIRING` state, Prometheus will push the alert to Alertmanager (in `http://localhost:9093`).
+1. When Alertmanager receives the alert, it will send an email to the lab's test mail server ([MailHog](https://github.com/mailhog/MailHog)), whose inbox you can view at `http://localhost:8025` to confirm the alert triggered a notification email.
 
 # Discussion
 
