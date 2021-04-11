@@ -1,0 +1,13 @@
+[Unit]
+Description=Prometheus Metrics Server
+Documentation=https://prometheus.io/docs/
+
+[Service]
+User=prometheus
+Group=nogroup
+ExecStart=/usr/local/sbin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/srv/prometheus/data
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

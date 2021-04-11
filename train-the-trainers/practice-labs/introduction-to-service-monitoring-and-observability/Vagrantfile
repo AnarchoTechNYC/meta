@@ -1,0 +1,21 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+
+  # Forward Prometheus Web UI port.
+  config.vm.network "forwarded_port", guest: 9090, host: 9090,
+    auto_correct: true
+
+  # Forward Alertmanager UI port.
+  config.vm.network "forwarded_port", guest: 9093, host: 9093,
+    auto_correct: true
+
+  # Forward MailHog Web UI port.
+  config.vm.network "forwarded_port", guest: 8025, host: 8025,
+    auto_correct: true
+
+  config.vm.provision "shell", path: "provision/provision.sh"
+
+  config.vm.post_up_message = <<~EOF
+    TODO
+  EOF
+end

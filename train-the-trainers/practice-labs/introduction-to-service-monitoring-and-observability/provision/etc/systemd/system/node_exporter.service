@@ -1,0 +1,12 @@
+[Unit]
+Description=Prometheus Node Exporter Agent
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+
+[Service]
+User=prometheus
+Group=nogroup
+ExecStart=/usr/local/sbin/node_exporter
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

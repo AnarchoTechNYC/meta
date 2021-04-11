@@ -1,0 +1,11 @@
+global:
+  smtp_smarthost: 'localhost:1025'
+  smtp_from: 'prometheus@localhost'
+
+route:
+  receiver: example-email
+receivers:
+- name: example-email
+  email_configs:
+  - to: admins@example.invalid
+    require_tls: false

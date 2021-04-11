@@ -1,0 +1,12 @@
+[Unit]
+Description=Prometheus Alertmanager
+Documentation=https://prometheus.io/docs/alerting/latest/alertmanager/
+
+[Service]
+User=prometheus
+Group=nogroup
+ExecStart=/usr/local/sbin/alertmanager --config.file="/etc/prometheus/alertmanager.yml" --storage.path="/var/local/lib/prometheus/alertmanager/data"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
