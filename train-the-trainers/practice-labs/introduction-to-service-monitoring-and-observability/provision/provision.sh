@@ -24,6 +24,7 @@ install_tool () {
 
     mkdir -p /etc/prometheus
     mkdir -p /var/local/lib/prometheus/alertmanager
+    chown -R prometheus:nogroup /var/local/lib/prometheus
 
     echo -n "Installing $tool version $version ..."
 
