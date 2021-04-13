@@ -70,4 +70,11 @@ Vagrant.configure("2") do |config|
           minikube dashboard &            # Start the Web-based Dashboard.
     EOF
   end
+
+  config.vm.post_up_message << <<~EOF
+
+    Please use what you learn here for the betterment of humanity. Only share what
+    you know with the people who you believe will do the same. Remember, intention
+    is not impact. Kill all Nazis, kill all cops, especially the ones inside ourselves.
+  EOF
 end
