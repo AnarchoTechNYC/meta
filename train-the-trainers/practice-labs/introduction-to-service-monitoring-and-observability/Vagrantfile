@@ -13,6 +13,10 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 8025, host: 8025,
     auto_correct: true
 
+  # Forward Grafana server Web UI port.
+  config.vm.network "forwarded_port", guest: 3000, host: 3000,
+    auto_correct: true
+
   config.vm.provision "shell", path: "provision/provision.sh"
 
   config.vm.post_up_message = <<~EOF

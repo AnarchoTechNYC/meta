@@ -1,12 +1,13 @@
 #!/bin/bash
 
+# Initialize prometheus tool install requests.
 declare -A prometheus_tool_versions=(
     ['prometheus']='2.26.0'
     ['alertmanager']='0.21.0'
     ['node_exporter']='1.1.2'
 )
 
-download_tarball () {
+download_prometheus_tarball () {
     local tool="$1"
     local version="$2"
     local url="https://github.com/prometheus/${tool}/releases/download/v${version}/${tool}-${version}.linux-amd64.tar.gz"
@@ -18,7 +19,7 @@ download_tarball () {
     fi
 }
 
-install_tool () {
+install_prometheus_tool () {
     local tool="$1"
     local version="$2"
 
@@ -71,9 +72,20 @@ WantedBy=multi-user.target
 EOF
 }
 
+setup_grafana () {
+    apt-get update
+    apt-get --yes install apt-transport-https software-properties-common
+    curl -sL --output - https://packages.grafana.com/gpg.key | apt-key add -
+    echo "deb https://packages.grafana.com/oss/deb stable main" \
+        > /etc/apt/sources.list.d/grafana.list
+    apt-get update
+    apt-get --yes install grafana
+}
+
 main () {
-    # Give us a test SMTP server to use.
+    # Install supporting software.
     setup_mailhog
+    setup_grafana
 
     # Set up system user for Prometheus binaries to run under.
     adduser --system --home /srv/prometheus --shell /usr/sbin/nologin prometheus
@@ -82,15 +94,22 @@ main () {
     cd "${TMPDIR:-/tmp}"
     for tool in "${!prometheus_tool_versions[@]}"; do
         local v="${prometheus_tool_versions[$tool]}"
-        download_tarball "$tool" "$v"
-        install_tool "$tool" "$v"
+        download_prometheus_tarball "$tool" "$v"
+        install_prometheus_tool "$tool" "$v"
     done
     cd -
 
     # Enable and start default system services.
+    local services=(
+        "prometheus.service"
+        "node_exporter.service"
+        "alertmanager.service"
+        "mailhog.service"
+        "grafana-server.service"
+    )
     systemctl daemon-reload
-    systemctl enable prometheus.service node_exporter.service alertmanager.service mailhog.service
-    systemctl start prometheus.service node_exporter.service alertmanager.service mailhog.service
+    systemctl enable ${services[@]}
+    systemctl start ${services[@]}
 
     # Copy example configuration files into place.
     cp /vagrant/provision/etc/prometheus/* /etc/prometheus/
