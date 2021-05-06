@@ -46,4 +46,5 @@ sudo --login -u vagrant minikube start \
     || cat /tmp/minikube-start.log
 
 # Download some workshop materials.
-[ -d kubernetes-in-action-2nd-edition ] || sudo --login -u vagrant git clone https://github.com/luksa/kubernetes-in-action-2nd-edition.git
+[ -d ~vagrant/kubernetes-in-action-2nd-edition ] \
+    || sudo --login -u vagrant git clone https://github.com/luksa/kubernetes-in-action-2nd-edition.git
