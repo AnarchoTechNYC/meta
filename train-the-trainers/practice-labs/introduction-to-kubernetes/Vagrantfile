@@ -1,8 +1,12 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
 
   # Provision with Minikube for learning, by default.
   config.vm.provision "minikube", type: "shell", path: "provision/minikube.sh"
+  config.vm.network "forwarded_port", host: "8443", guest: "8443"
 
   # Optionally, allow manual provisioning with `kubeadm` as well.
   config.vm.provision "manual-cluster", run: "never", type: "ansible_local" do |a|
@@ -64,10 +68,9 @@ Vagrant.configure("2") do |config|
       Log in to your lab environment and then begin to explore Minikube
       and the Kubernetes framework:
 
-          vagrant ssh -- -X               # Log in with X11 forwarding.
+          vagrant ssh                     # Log in.
           minikube status                 # Ensure Minikube is running.
           kubectl -n kube-system get pods # See Kubernetes system resources.
-          minikube dashboard &            # Start the Web-based Dashboard.
     EOF
   end
 
