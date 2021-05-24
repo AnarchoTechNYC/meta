@@ -25,8 +25,8 @@ Vagrant.configure("2") do |config|
     To begin, first log in to the virtual machine and then go to the
     directory in which John the Ripper has been installed:
 
-        vagrant ssh
-        cd $(dirname $(which john))
+        vagrant ssh                 # Log in to the virtual machine.
+        cd $(dirname $(which john)) # Go to `john`'s own directory.
 
     Then, use commands such as `john` (or `hashcat`) to try and crack
     the hashes in the `evilcorp-intl.com.shadow.txt` shadow file.
