@@ -42,19 +42,16 @@ Vagrant.configure("2") do |config|
 
     Explore the Web interfaces at the following addresses:
 
-        http://localhost:9090/ # Prometheus
-        http://localhost:9093/ # Alertmanager
-        http://localhost:3000/ # Grafana.
+        http://localhost:9090/ # Prometheus (no login)
+        http://localhost:9093/ # Alertmanager (no login)
+        http://localhost:3000/ # Grafana (admin:admin)
+        http://localhost:8025/ # Mailhog (no login)
 
     Once you're familiar with the Web interface, log in to the lab to
     explore the configuration of these components:
 
         vagrant ssh        # Log in.
         cd /etc/prometheus # Explore component configs.
-
-    For viewing email alerts, Mailhog is available at:
-
-        http://localhost:8025/
 
     Please use what you learn here for the betterment of humanity. Only share what
     you know with the people who you believe will do the same. Remember, intention

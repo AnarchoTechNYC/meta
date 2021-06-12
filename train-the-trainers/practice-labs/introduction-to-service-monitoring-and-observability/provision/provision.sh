@@ -2,8 +2,8 @@
 
 # Initialize prometheus tool install requests.
 declare -A prometheus_tool_versions=(
-    ['prometheus']='2.26.0'
-    ['alertmanager']='0.21.0'
+    ['prometheus']='2.27.1'
+    ['alertmanager']='0.22.2'
     ['node_exporter']='1.1.2'
 )
 
