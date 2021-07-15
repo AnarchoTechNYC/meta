@@ -180,4 +180,4 @@ Some notes for a basic outline:
 
 # Additional references
 
-> :construction: TK-TODO
+* [IETF 108: Technology Deep Dive on DNS](https://www.youtube.com/watch?v=DV0q9s94RL8)
