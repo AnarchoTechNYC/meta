@@ -76,6 +76,8 @@ Once the virtual machine is running, you can continue to the next step.
 
 In brief:
 
+> :bulb::beginner: For interaction with a Kubernetes cluster, this workshop uses the Kubernetes project's own CLI utility, `kubectl`. However, there are popular GUI and TUI interfaces as well. For example, [Lens](https://k8slens.dev/) is an open source Kubernetes GUI client that is very useful for point-and-click browsing, and [K9s ("Canines," pronounced "kay-nines")](https://github.com/derailed/k9s) is a highly customizable open source Kubernetes TUI (textual user interface) client reminiscent of the [Vim](https://www.vim.org/) text editor. You can use any of `kubectl`, Lens, or K9s with the practice lab environment by loading the lab environment's [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file.
+
 1. Explore the cluster a bit. For example, look at a list of all the Nodes:
     ```sh
     kubectl get nodes

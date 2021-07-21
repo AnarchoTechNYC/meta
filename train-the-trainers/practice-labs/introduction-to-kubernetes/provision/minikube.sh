@@ -48,7 +48,7 @@ sudo --login -u vagrant minikube start \
     || cat /tmp/minikube-start.log
 
 # Expose Minikube's `.kube/config` to the host as new Kubeconfig file,
-# enabling the Vagrant host to use its own `kubectl` or Lens as well.
+# enabling the Vagrant host to use its own `kubectl`/Lens/`k9s` as well.
 host_kubeconfig="/vagrant/kubeconfig-minikube.yaml"
 cp ~vagrant/.kube/config $host_kubeconfig
 kubectl --kubeconfig $host_kubeconfig config unset clusters.minikube.certificate-authority
