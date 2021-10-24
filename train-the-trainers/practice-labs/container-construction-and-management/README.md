@@ -174,21 +174,30 @@ Lastly, for cgroups, we'll create our own without any additional tooling to unde
     ```sh
     ls /my_cgroups/cpu/testgroup
     ```
-1. Now we can set various values by writing data to the relevant file. For example, to set the relative CPU shares available for allocation by processes in this cgroup, we can write a value to the `cpu.shares` file:
+1. Resources in control groups are constrained by the limits set in their parent cgroup, along with those resources offered to their sibling cgroups or the rest of the system. To see this in action, we'll need some sibling groups:
     ```sh
-    echo "256" > /my_cgroups/cpu/testgroup/cpu.shares
+    mkdir /my_cgroups/cpu/testgroup{2,3}
     ```
-   This won't have any effect until we add some existing process to the new group, of course.
+1. Now we can set various values by writing data to the relevant file. For example, to set the relative CPU shares available for allocation by processes in these cgroups, we can write a value to their `cpu.shares` files:
+    ```sh
+    echo "2048" > /my_cgroups/cpu/testgroup/cpu.shares
+    echo "768" > /my_cgroups/cpu/testgroup2/cpu.shares
+    echo "256" > /my_cgroups/cpu/testgroup3/cpu.shares
+    ```
+   None of this will have any effect until we add some existing process to the new cgroups, of course.
 1. In a new tab or SSH connection, generate some test load on the system, for example with the following command:
     ```sh
     cat /dev/urandom
     ```
 1. While the above load-generating command is running, observe that the unconstrained process eats up as much CPU time as it can by monitoring the system with a utility such as `top(1)`.
-1. Write the PID of the load-generating command into the control group's `tasks` file:
+1. Repeat the process by starting a second load-generating command and notice the even distribution between processes, as no process is constrained by a cgroup.
+1. Write the PIDs of the load-generating commands into their respective cgroup's `tasks` file:
     ```sh
-    echo "$SOME_PID_TO_CONSTRAIN" > /my_cgroups/cpu/testgroup/tasks
+    echo "$A_PID_TO_CONSTRAIN" > /my_cgroups/cpu/testgroup/tasks
+    echo "$B_PID_TO_CONSTRAIN" > /my_cgroups/cpu/testgroup2/tasks
+    echo "$C_PID_TO_CONSTRAIN" > /my_cgroups/cpu/testgroup3/tasks
     ```
-1. Observe the system again with a utility such as `top(1)` and notice that the process is now constrained in direct proportion to the value written to its control group's `cpu.shares` file.
+1. Observe the system again with a utility such as `top(1)` and notice that the processes are now constrained in direct proportion to the value written to their control group's `cpu.shares` file relative to each other.
 
 The above demonstrates a very manual way of interfacing with Linux kernel control groups. More sophisticated tooling exists, including the systemd Slice facilities (and its suite of commands such as `systemd-cgls` to list control groups, and `systemd-cgtop` to monitor control group resource usage), and of course fully fledged container porcelain like Docker. This is how control groups make up the foundation of Kubernetes Pod resource requests and limits, too.
 
