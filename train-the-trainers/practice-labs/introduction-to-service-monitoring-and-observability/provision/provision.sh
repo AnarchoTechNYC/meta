@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/bash -
 
 # Initialize prometheus tool install requests.
 declare -A prometheus_tool_versions=(
-    ['prometheus']='2.27.1'
-    ['alertmanager']='0.22.2'
-    ['node_exporter']='1.1.2'
+    ['prometheus']='2.30.3'
+    ['alertmanager']='0.23.0'
+    ['node_exporter']='1.2.2'
 )
 
 download_prometheus_tarball () {
