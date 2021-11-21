@@ -140,10 +140,10 @@ First, understand the basics of an OpenVPN server.
     ```
     ```
     3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-        inet 172.22.33.2/24 brd 172.22.33.255 scope global enp0s8
+        inet 192.168.62.2/24 brd 192.168.62.255 scope global enp0s8
            valid_lft forever preferred_lft forever
     ```
-    The VPN server's own IP address is `172.22.33.2/24`. Note that this IP address is in a completely different network than the IP address assigned to the virtual network's own interface.
+    The VPN server's own IP address is `192.168.62.2/24`. Note that this IP address is in a completely different network than the IP address assigned to the virtual network's own interface.
 
 Now we can look more closey at an OpenVPN client.
 
@@ -321,14 +321,14 @@ For example, to implement the point-to-point VPN we've established earlier, use 
 
 ```sh
 sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
-    --remote 172.22.33.3 --secret /vagrant/myovpn.key --key-direction 0
+    --remote 192.168.62.3 --secret /vagrant/myovpn.key --key-direction 0
 ```
 
 And use this command on the client:
 
 ```sh
 sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.2 10.8.0.1 \
-    --remote 172.22.33.2 --secret /vagrant/myovpn.key --key-direction 1
+    --remote 192.168.62.2 --secret /vagrant/myovpn.key --key-direction 1
 ```
 
 Notice that the `--remote` option's argument has been flipped from the server to the client, just like the `--ifconfig` and `--key-direction` arguments have been. The client will attempt a connection to the server, and the server will reject connections *unless* that connection's incoming packet headers claim to originate at the client's IP address. Note that since source IP addresses can be easily spoofed, OpenVPN will still enforce packet authentication via the chosen HMAC algorithm; this is simply a defense-in-depth measure.
@@ -357,7 +357,7 @@ On the server:
 
 ```sh
 sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
-    --remote 172.22.33.3 --port 443 \
+    --remote 192.168.62.3 --port 443 \
     --secret /vagrant/myovpn.key --key-direction 0
 ```
 
@@ -365,17 +365,17 @@ And its complementary invocation, on the client:
 
 ```sh
 sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.2 10.8.0.1 \
-    --remote 172.22.33.2 --port 443 \
+    --remote 192.168.62.2 --port 443 \
     --secret /vagrant/myovpn.key --key-direction 0
 ```
 
-> :bulb: The `--port` option can also be set as a second argument to the `--remote` option. The above invocation could also have used `--remote 172.22.33.3 443`
+> :bulb: The `--port` option can also be set as a second argument to the `--remote` option. The above invocation could also have used `--remote 192.168.62.3 443`
 
 This may still not be enough in some circumstances, because HTTP(S) is traditionally carried by TCP on Layer 4, while OpenVPN uses UDP by default. More recently, HTTP/3 will use UDP by default but it's still common for firewalls to expect only TCP traffic over port 443. Fortunately, OpenVPN can use either UDP or TCP, as well. You can specify which (Layer 4) transport protocol you'd like OpenVPN to use for your tunnel with the `proto` configuration directive (or `--proto` command line option).
 
 When using TCP to build a VPN tunnel, one side (the server) must be configured with `--proto tcp-server` while the other side must be configured with `--proto tcp-client`. Setting `tcp-server` instructs OpenVPN to listen for incoming TCP connections on the given (local) port, while `tcp-client` instructs OpenVPN to send TCP SYN (synchronize) packets to the server to initiate the traditional TCP three-way handshake.
 
-> :bulb: As with the `--port` option, you can also specify the value for `--proto` as part of the `--remote` option by supplying a third argument. To switch the tunnel from UDP to TCP, you could therefore also have invoked OpenVPN with `--remote 172.22.33.3 443 tcp-server`. This is the most "HTTPS-like" OpenVPN tunnel you can make.
+> :bulb: As with the `--port` option, you can also specify the value for `--proto` as part of the `--remote` option by supplying a third argument. To switch the tunnel from UDP to TCP, you could therefore also have invoked OpenVPN with `--remote 192.168.62.3 443 tcp-server`. This is the most "HTTPS-like" OpenVPN tunnel you can make.
 
 > :bulb::warning: Depending on what you are using your VPN tunnel for, making the tunnel with TCP instead of OpenVPN's default UDP may [negatively impact the VPN's performance](https://openvpn.net/faq/what-is-tcp-meltdown/). This is because when TCP is tunneled over an underlying, but unreliable, TCP connection ([a "TCP-over-TCP" scenario](http://sites.inka.de/bigred/devel/tcp-tcp.html)), packet loss on the underlying connection will trigger twice the retransmissions than normal as both the outer and the inner data streams each resend the lost packets independently of one another. Still, `--proto tcp` is occasionally very handy.
 
@@ -391,7 +391,7 @@ Putting it all together, the server's invocation is now:
 
 ```sh
 sudo openvpn --dev tun --topology p2p --ifconfig 10.8.0.1 10.8.0.2 \
-    --remote 172.22.33.3 --port 443 \
+    --remote 192.168.62.3 --port 443 \
     --secret /vagrant/myovpn.key --key-direction 0 \
     --keepalive 10 60
 ```
@@ -402,7 +402,7 @@ As you can see, invoking OpenVPN only with command line options can get unwieldy
 dev tun
 topology p2p
 ifconfig 10.8.0.1 10.8.0.2
-remote 172.22.33.3 443
+remote 192.168.62.3 443
 secret /vagrant/myovpn.key 0
 keepalive 10 60
 ```

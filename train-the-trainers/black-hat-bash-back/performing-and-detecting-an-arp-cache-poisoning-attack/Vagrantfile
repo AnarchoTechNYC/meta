@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
     c.vm.box = "ubuntu/bionic64"
     c.vm.hostname = "red"
     c.vm.network "private_network",
-      ip: "172.22.33.55",
+      ip: "192.168.61.55",
       netmask: "255.255.255.0",
       :mac => "080027000055"
     c.vm.provision "Debian base", type: "shell", inline: debian_script
@@ -61,7 +61,7 @@ Vagrant.configure("2") do |config|
     c.vm.box = "ubuntu/bionic64"
     c.vm.hostname = "blue-desktop"
     c.vm.network "private_network",
-      ip: "172.22.33.50",
+      ip: "192.168.61.50",
       netmask: "255.255.255.0",
       :mac => "080027000050"
     c.vm.provision "Debian base", type: "shell", inline: debian_script
@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
     c.vm.box = "centos/7"
     c.vm.hostname = "blue-server"
     c.vm.network "private_network",
-      ip: "172.22.33.10",
+      ip: "192.168.61.10",
       netmask: "255.255.255.0",
       :mac => "080027000010"
     c.vm.provision "shell", inline: "mkdir -p /srv/www && chown vagrant:vagrant /srv/www"

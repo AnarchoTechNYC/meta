@@ -220,12 +220,12 @@ Now you can see how host keys are used as SSH's mechanism for identifying server
 1. From your host machine, access a command line of your Ubuntu Bionic virtual machine. You can do this through the VirtualBox Manager graphical application or by invoking the `vagrant ssh client`.
 1. Use `ssh` to start a connection to the SSH server using its IP address:
     ```sh
-    vagrant@ssh-client:~$ ssh 172.16.1.111
-    The authenticity of host '172.16.1.111 (172.16.1.111)' can't be established.
+    vagrant@ssh-client:~$ ssh 192.168.59.111
+    The authenticity of host '192.168.59.111 (192.168.59.111)' can't be established.
     ECDSA key fingerprint is SHA256:bC7KnOz29hPzOtCHTI5faWHfOh7Hw2LmS13UWuZQsO0.
     Are you sure you want to continue connecting (yes/no)?
     ```
-    Before you do anything else, take a moment to read the output here carefully. You are once again confronted with the message, "`The authenticity of host '172.16.1.111 (172.16.1.111)' can't be established.`" Following that, you see the fingerprint of one of the server's host keys (the ECDSA one, in this case). This fingerprint uniquely identifies the machine to which you are connecting. Notice that even though the IP address of the host is different this time than last time (where it was `localhost (::1)`), the fingerprint is the same. Again, IP addresses are addresses, not server identities. Always use the server's key fingerprint to ensure you are connecting to the endpoint you intend.
+    Before you do anything else, take a moment to read the output here carefully. You are once again confronted with the message, "`The authenticity of host '192.168.59.111 (192.168.59.111)' can't be established.`" Following that, you see the fingerprint of one of the server's host keys (the ECDSA one, in this case). This fingerprint uniquely identifies the machine to which you are connecting. Notice that even though the IP address of the host is different this time than last time (where it was `localhost (::1)`), the fingerprint is the same. Again, IP addresses are addresses, not server identities. Always use the server's key fingerprint to ensure you are connecting to the endpoint you intend.
 1. Type `no` and then press the `Return` or `Enter` keys to abort your connection.
 
 Don't worry, we'll connect again in just a moment. Before we do, though, we need to become familiar with a few important files that your SSH client uses regularly. These are all located in your user account's home folder, inside a hidden folder called `.ssh`. Let's have a look inside it.
@@ -249,14 +249,14 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
     > :beginner: The `authorized_keys` file is discussed in [the "Basic SSH authentication methods" section](#basic-ssh-authentication-methods), so ignore it for now. This file exists because it was created by the creator of the Vagrant box. It's what allows you to use the `vagrant ssh` command successfully. In a brand-new machine that you build from scratch, you may need to make this file yourself. That's not difficult but, again, is discussed later.
 1. Make another connection to the CentOS 7 SSH server. After double-checking that the fingerprint is correct, type `yes` when prompted to continue the connection. The complete output might look something like this:
     ```sh
-    vagrant@ssh-client:~$ ssh 172.16.1.111
-    The authenticity of host '172.16.1.111 (172.16.1.111)' can't be established.
+    vagrant@ssh-client:~$ ssh 192.168.59.111
+    The authenticity of host '192.168.59.111 (192.168.59.111)' can't be established.
     ECDSA key fingerprint is SHA256:bC7KnOz29hPzOtCHTI5faWHfOh7Hw2LmS13UWuZQsO0.
     Are you sure you want to continue connecting (yes/no)? yes
-    Warning: Permanently added '172.16.1.111' (ECDSA) to the list of known hosts.
+    Warning: Permanently added '192.168.59.111' (ECDSA) to the list of known hosts.
     Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
     ```
-    This was *not* a successful login (as shown by the line starting with "`Permission denied`"), but that's to be expected at this time. The important thing to note is the `Warning` informing you that the `ECDSA` key fingerprint for the server at `172.16.1.111` was added to the list of known hosts.
+    This was *not* a successful login (as shown by the line starting with "`Permission denied`"), but that's to be expected at this time. The important thing to note is the `Warning` informing you that the `ECDSA` key fingerprint for the server at `192.168.59.111` was added to the list of known hosts.
 1. List the contents of your `.ssh` directory again. This time, you will see a second file, called `known_hosts`:
     ```sh
     vagrant@ssh-client:~$ ls .ssh/
@@ -264,7 +264,7 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
     ```
 1. Make another connection to the CentOS SSH server again. This time, notice that we are not presented with the key fingerprint as we have been before:
     ```sh
-    vagrant@ssh-client:~$ ssh 172.16.1.111
+    vagrant@ssh-client:~$ ssh 192.168.59.111
     Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
     ```
     The reason, as you may have guessed, is because the key fingerprint is now stored in the `known_hosts` file, which (unsurprisingly) contains a list of all the hosts (servers) known to the SSH client. In other words, it's a list of the addresses of non-strangers, along with information about what the servers at that address should look like (i.e., their key fingerprint).
@@ -280,7 +280,7 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
     Notice again that the fingerprint shown matches that of the fingerprint first presented to you when you connected to the server.
 1. Have one final look at the file, but this time adding the `-F` option, which finds a specific host in the file:
     ```sh
-    ssh-keygen -l -f ~/.ssh/known_hosts -F 172.16.1.111
+    ssh-keygen -l -f ~/.ssh/known_hosts -F 192.168.59.111
     ```
     This is the most human-readable output, as it displays the SSH server's address and fingerprint in the same manner as when you are using the `ssh` client program itself. All of these formats are equivalent, it's just a matter of presenting the data therein in one way or another. The point here is to illustrate that once you make a connection to a server, your SSH client program remembers this fact by writing a new line with the relevant details into the `known_hosts` file.
     > :bulb: In older versions of SSH, the `known_hosts` file listed the addresses of remote servers in cleartext. Newer versions of SSH (such as those used in this lab) no longer default to this behavior, which is why the host address portion of a `known_hosts` file is obscured. As long as your SSH client programs support it, you can immediately improve the security of your `known_hosts` file by hashing all the addresses with `ssh-keygen`'s `-H` option:
@@ -296,8 +296,8 @@ Don't worry, we'll connect again in just a moment. Before we do, though, we need
     > :beginner: Should you ever want to remove an SSH server from the list of known hosts, you can do so with `ssh-keygen`'s `-R` option:
     >
     > ```sh
-    > # Remove host 172.16.1.111.
-    > ssh-keygen -R 172.16.1.111 -f ~/.ssh/known_hosts
+    > # Remove host 192.168.59.111.
+    > ssh-keygen -R 192.168.59.111 -f ~/.ssh/known_hosts
     > rm -i ~/.ssh/known_hosts.old # Optionally, remove the backup file `ssh-keygen` made.
     > ```
     >
@@ -326,7 +326,7 @@ We can watch this process take place in real time by starting an SSH connection 
 
 1. Start an SSH connection to your CentOS server with the client's verbosity turned up to level 2:
     ```sh
-    ssh -vv 172.16.1.111
+    ssh -vv 192.168.59.111
     ```
     > :beginner: There's going to be a *lot* of output from this command. This is all intended to help you troubleshoot problems, although here we're using it to show you some of how SSH works "under the hood." If you ever do run into a problem, though, you can use this technique to get a lot more information about what might be going wrong with the connection you're trying to make.
     >
@@ -334,7 +334,7 @@ We can watch this process take place in real time by starting an SSH connection 
     >
     > When started this way, most lines of output will be labelled with the debugging level that the message on the remainder of the line is associated with. In other words, lines that begin with `debug1: ` will be printed when you run `ssh -v`, whereas lines that begin with `debug2: ` will only be printed when you run `ssh -vv` (or `ssh -vvv` and so on).
     >
-    > If you're comfortable on a command line, you can use this fact to quickly filter the output to show you just what you're interested in. For example, [`ssh -vv 172.16.1.111 2>&1 | grep debug2`](https://explainshell.com/explain?cmd=ssh+-vv+172.16.1.111+2%3E%261+%7C+grep+debug2) will only show you the level 2 debugging output.
+    > If you're comfortable on a command line, you can use this fact to quickly filter the output to show you just what you're interested in. For example, [`ssh -vv 192.168.59.111 2>&1 | grep debug2`](https://explainshell.com/explain?cmd=ssh+-vv+192.168.59.111+2%3E%261+%7C+grep+debug2) will only show you the level 2 debugging output.
 
 Rather than dissect this output line by line, let's focus on just a few of the more important messages. The very first line will look like something like this:
 
@@ -369,10 +369,10 @@ debug1: /etc/ssh/ssh_config line 19: Applying options for *
 
 We could open the `/etc/ssh/ssh_config` file and sure enough, on line 19, we would find some configuration directives. Let's skip this for now, though, as we'll have plenty of time to examine the configuration file soon enough.
 
-Just a few lines later, we can see that `ssh` reports it is connecting to the server at the address we gave it, and that the connection succeeds ("`Connection established.`"). Right after that, `ssh` tries loading its own identity files, its *client [host] keys*, but finds that none exist ("`No such file or directory`"). This isn't an error, exactly, since none exist because we haven't created any yet. Finally, we see the beginning of an authentication attempt as `ssh` reports it is `Authenticating to 172.16.1.111:22 as 'vagrant'`. Here's that chunk of the output in full:
+Just a few lines later, we can see that `ssh` reports it is connecting to the server at the address we gave it, and that the connection succeeds ("`Connection established.`"). Right after that, `ssh` tries loading its own identity files, its *client [host] keys*, but finds that none exist ("`No such file or directory`"). This isn't an error, exactly, since none exist because we haven't created any yet. Finally, we see the beginning of an authentication attempt as `ssh` reports it is `Authenticating to 192.168.59.111:22 as 'vagrant'`. Here's that chunk of the output in full:
 
 ```
-debug1: Connecting to 172.16.1.111 [172.16.1.111] port 22.
+debug1: Connecting to 192.168.59.111 [192.168.59.111] port 22.
 debug1: Connection established.
 debug1: key_load_public: No such file or directory
 debug1: identity file /home/vagrant/.ssh/id_rsa type -1
@@ -395,7 +395,7 @@ debug1: Local version string SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.4
 debug1: Remote protocol version 2.0, remote software version OpenSSH_7.4
 debug1: match: OpenSSH_7.4 pat OpenSSH* compat 0x04000000
 debug2: fd 3 setting O_NONBLOCK
-debug1: Authenticating to 172.16.1.111:22 as 'vagrant'
+debug1: Authenticating to 192.168.59.111:22 as 'vagrant'
 debug1: SSH2_MSG_KEXINIT sent
 debug1: SSH2_MSG_KEXINIT received
 ```
@@ -498,7 +498,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
 
 1. First, remove the SSH client's knowledge of any previous connections by deleting the SSH server's host key from your `known_hosts` file:
     ```sh
-    ssh-keygen -R 172.16.1.111
+    ssh-keygen -R 192.168.59.111
     ```
 1. Next, list the host key algorithms available to you: 
     ```sh
@@ -508,7 +508,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
     > :beginner: The differences between the `ssh-ed25519` and `ssh-ed25519-cert-v01@openssh.com` values relate to the use of SSH certificates instead of plain SSH keys. In this introductory lab, we won't be using SSH certificates at all, but you can learn more about the distinction between plain SSH keys and SSH certificates in the [SSH certificates versus SSH keys](#ssh-certificates-versus-ssh-keys) discussion section.
 1. Finally, make a connection to your SSH server using the `ssh-ed25519` host key algorithm by specifying `-o "HostKeyAlgorithms ssh-ed25519"` as part of the `ssh` client invocation:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.111
+    ssh -o "HostKeyAlgorithms ssh-ed25519" 192.168.59.111
     ```
 
     > :beginner: SSH configuration options can include an equals sign (`=`) between the configuration directive's name and its value. For example, `-o HostKeyAlgorithms=ssh-ed25519` is equivalent to `-o "HostKeyAlgorithms ssh-ed25519"`. In this guide, the latter (space-separated) style is used as it matches exactly the syntax used in the SSH configuration files themselves.
@@ -517,7 +517,7 @@ Let's try using the Ed25519 algorithm for exchanging host keys with our SSH serv
 1. Abort the connection by typing `no` and pressing the `Return` or `Enter` key.
 1. Connect to the SSH server again, but this time ask for level 2 debugging output:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" -vv 172.16.1.111 
+    ssh -o "HostKeyAlgorithms ssh-ed25519" -vv 192.168.59.111 
     ```
 1. Find the client's `KEXINIT proposal` again, and notice that this time the `host key algorithms` line contains one and only one option. The output will include a snippet like this:
     ```
@@ -541,16 +541,16 @@ When the public key does not match the expected fingerprint, we experience a *ho
 
 1. Remove any prior host key fingerprints saved in your `known_hosts` file for the SSH server:
     ```sh
-    ssh-keygen -R 172.16.1.111
+    ssh-keygen -R 192.168.59.111
     ```
 1. Make a connection to the SSH server as normal, and approve the connection to save the server's ECDSA fingerprint in your `known_hosts` file:
     ```sh
-    ssh 172.16.1.111
+    ssh 192.168.59.111
     ```
     Answer `yes` at the SSH connection prompt.
 1. Make a second connection to the SSH server, but this time use the `ssh-ed25519` host key algorithm to induce the SSH server to provide a different key than it did the last time you connected:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" 172.16.1.111
+    ssh -o "HostKeyAlgorithms ssh-ed25519" 192.168.59.111
     ```
     > :beginner: This is going to produce a scary-looking warning message. Don't panic! We did this intentionally, and the warning is designed to sound alarms.
 
@@ -569,12 +569,12 @@ Please contact your system administrator.
 Add correct host key in /home/vagrant/.ssh/known_hosts to get rid of this message.
 Offending ECDSA key in /home/vagrant/.ssh/known_hosts:1
   remove with:
-  ssh-keygen -f "/home/vagrant/.ssh/known_hosts" -R 172.16.1.111
-ED25519 host key for 172.16.1.111 has changed and you have requested strict checking.
+  ssh-keygen -f "/home/vagrant/.ssh/known_hosts" -R 192.168.59.111
+ED25519 host key for 192.168.59.111 has changed and you have requested strict checking.
 Host key verification failed.
 ```
 
-This warning message is clearly designed to make you stop what you're doing and take notice. SSH is outright telling you that "it is possible that someone is doing something nasty" and that "someone could be eavesdropping on you right now." This can happen because, again, addreses (like `172.16.1.111`) are not identities: when you connect to an SSH server at a given address, the address itself provides no guarantee that you're actually connecting to the same machine you connected to when trying to reach that address before.
+This warning message is clearly designed to make you stop what you're doing and take notice. SSH is outright telling you that "it is possible that someone is doing something nasty" and that "someone could be eavesdropping on you right now." This can happen because, again, addreses (like `192.168.59.111`) are not identities: when you connect to an SSH server at a given address, the address itself provides no guarantee that you're actually connecting to the same machine you connected to when trying to reach that address before.
 
 One thing that could be happening is that a machine you expect to be politely delivering your messages to their ultimate destination is actually opening those messages itself. This "machine-in-the-middle" situation is how all networks function. However, when one of these machines in between you and your ultimate destination starts snooping on your messages, a *machine-in-the-middle (MitM) attack*, there isn't anything inherent in the way most networks are built that can alert you to this. Only the fact that this machine in the middle does not have access to your specific SSH server's private host key file offers any meaningful ability to detect that this interception is happening.
 
@@ -600,7 +600,7 @@ Let's take a look at how `ssh`'s behavior changes if we turn `StrictHostKeyCheck
 
 1. Make a connection to your SSH server asking for its Ed25519 key while also telling `ssh` not to perform "strict" host key checking. We need to set two configuration directives to do this, so we'll include the `-o` option two times, once for each configuration directive:
     ```sh
-    ssh -o "HostKeyAlgorithms ssh-ed25519" -o "StrictHostKeyChecking no" 172.16.1.111
+    ssh -o "HostKeyAlgorithms ssh-ed25519" -o "StrictHostKeyChecking no" 192.168.59.111
     ```
 
 We'll see similar output as before, with a few differences at the end of the warning that read as follows:

@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "server" do |c|
     c.vm.box = "centos/7"
-    c.vm.network "private_network", ip: "172.16.1.111"
+    c.vm.network "private_network", ip: "192.168.59.111"
     c.vm.hostname = "ssh-server"
 
     c.vm.provision "shell", inline: <<~EOF
@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "client" do |c|
     c.vm.box = "ubuntu/bionic64"
-    c.vm.network "private_network", ip: "172.16.1.222"
+    c.vm.network "private_network", ip: "192.168.59.222"
     c.vm.hostname = "ssh-client"
 
     c.vm.provision "shell", inline: <<~EOF
