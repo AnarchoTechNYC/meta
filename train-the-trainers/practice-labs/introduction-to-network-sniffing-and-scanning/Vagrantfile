@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
     c.vm.box_version = "0.1.12-weekly"
     c.vm.network "private_network", ip: "192.168.60.10"
     c.vm.provider "virtualbox" do |v|
-      v.customize ["modifyvm", :id, "--nictrace2", "on", "--nictracefile2", "metasploitable-private_network.pcap"]
+      v.customize ["modifyvm", :id, "--nictrace2", "on", "--nictracefile2", "#{Dir.pwd}/metasploitable-private_network.pcap"]
     end
 
     # This box does not come with VirtualBox Guest Additions, so its
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     c.vm.box = "debian/buster64"
     c.vm.network "private_network", ip: "192.168.60.11"
     c.vm.provider "virtualbox" do |v|
-      v.customize ["modifyvm", :id, "--nictrace2", "on", "--nictracefile2", "scanner-private_network.pcap"]
+      v.customize ["modifyvm", :id, "--nictrace2", "on", "--nictracefile2", "#{Dir.pwd}/scanner-private_network.pcap"]
     end
     c.vm.provision "shell", path: "provision/provision.sh"
     c.vm.post_up_message = <<~EOF
