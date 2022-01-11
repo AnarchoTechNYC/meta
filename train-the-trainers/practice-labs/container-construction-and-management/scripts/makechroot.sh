@@ -8,6 +8,7 @@
 
 # List of programs to include in the chroot environment.
 programs=(
+    # Can use programs in search path.
     sh
     bash
     which
@@ -21,6 +22,9 @@ programs=(
     umount
     sleep
     ps
+
+    # Or by absolute path.
+    #/usr/lib/some_module.so
 )
 
 # We'll not only need those programs, but their dependencies, too.
@@ -80,16 +84,23 @@ copy_deps_deep () {
 
 for program in "${programs[@]}"; do
     echo -n "Copying $program ... "
-    basedir=$(dirname $(which "$program") | sed -e 's/^\///')
-    mkdir -p "$basedir" && cp -v "$(which "$program")" "$basedir/${program##/*}"
 
-    echo "Copying $program dependencies ..."
-    deps="$($ldd_cmd $ldd_args $(which "$program") | grep -oE "$dep_pattern")"
+    if [ "/" == ${program:0:1} ]; then
+        basedir=$(dirname "$program")
+    else
+        basedir=$(dirname $(which "$program"))
+    fi
+
+    mkdir -p "${basedir:1}" && cp -v "${basedir}/$(basename ${program})" "${basedir:1}/$(basename ${program})"
+
+    echo "Copying $basedir/$(basename ${program}) dependencies ..."
+    deps="$($ldd_cmd $ldd_args "$basedir/$(basename $program)" | grep -oE "$dep_pattern")"
     for dep in $deps; do
         mkdir -p $(dirname $dep | sed -e 's/^\///')
         cp -n "$dep" $(echo $dep | sed -e 's/^\///')
         copy_deps_deep "$dep" # Recursively find additional dependencies.
     done
+
 done
 
 echo
