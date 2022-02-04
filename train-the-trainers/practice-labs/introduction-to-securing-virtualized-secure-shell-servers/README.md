@@ -95,6 +95,8 @@ Once both the virtual machines are running, you can continue to the next step.
 
 We'll begin by ensuring you have successfully completed the [set up](#set-up) steps. This process will also introduce the fundamentals that you need to understand to complete the rest of the exercise.
 
+> :beginner: :warning: The server machine in this lab contains both an insecure Telnet server and a more secure SSH server. When working with `telnet` clients, be mindful of the value of your shell environment's `DISPLAY` variable. If it's longer than 50 characters, some telnet client programs will crash. If you encounter this issue, reset it or connect with an invocation such as `DISPLAY= telnet 192.168.59.111` to work around the issue.
+
 ## Introduction
 
 Secure Shell (SSH) servers are more common than you might think. Although we've been focusing on creating a practice lab environment to experiment in, you should know that almost every computer has the capacity to function as an SSH server. The laptop you use every day can do it and, especially if you've been given a machine from your employer, it's possible that an SSH server is already running on it so that the IT department can administer it remotely. Many home routers have both a Web interface and a command line interface, and SSH is often what provides this command-line access.

@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
 
       It's dangerous to go alone. Take this.
 
-      The server is at IP address 172.16.1.111. Get there safely by
+      The server is at IP address 192.168.59.111. Get there safely by
       ensuring all your communication is encrypted.
 
       Good luck!
