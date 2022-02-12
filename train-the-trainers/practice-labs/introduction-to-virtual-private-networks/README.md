@@ -16,6 +16,7 @@
         1. [Dropping privileges after connecting](#dropping-privileges-after-connecting)
         1. [Dealing with fascist firewalls](#dealing-with-fascist-firewalls)
 1. [Discussion](#discussion)
+    1. [WireGuard](#wireguard)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -416,6 +417,10 @@ sudo openvpn --config /etc/openvpn/server/p2p-server-prod.conf
 The client's invocation can (and, probably should) be similarly simplified.
 
 # Discussion
+
+> :construction: TK-TODO
+
+## WireGuard
 
 > :construction: TK-TODO
 
