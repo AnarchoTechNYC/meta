@@ -4,7 +4,7 @@
   become: true
 
   vars:
-      kubernetes_version: "1.19"
+      kubernetes_version: "1.23.4"
       kubernetes_allow_pods_on_master: true
 
   roles:
