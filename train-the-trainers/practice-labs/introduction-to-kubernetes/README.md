@@ -164,7 +164,7 @@ In brief:
 
     Another way to `get` multiple kinds of objects is to ask for the `all` kind of object. This is not really a true API resource type, but rather a conventional keyword that auto-expands to a comma-separated list of common kinds of objects most people want to see in a Namespace most of the time.
 
-    > :beginner: :warning: The `all` keyword does not, in fact, show *all* kinds of objects, which can be a little confusing. It only shows *the most common* kinds of objects. Remember, use the `kubectl api-resources` command to get an exhaustive list of all the kinds of objects you can `get`. Then, use a comma-separated list with `kubectl get` to actually exhaustively list all objects.
+    > :beginner: :warning: The `all` keyword does not, in fact, show *all* kinds of objects, which can be a little confusing. It only shows *the most common* kinds of objects. Remember, use the `kubectl api-resources` command to get an exhaustive list of all the kinds of objects you can `get`. Then, use a comma-separated list with `kubectl get` to actually exhaustively list all objects. For example, to retrieve all namespaced API resources in the `kube-system` Namespace, you might use a command usch as `kubectl -n kube-system get $(kubectl api-resources | sed -ne '/ true /s/ .*//p' | tr '\n' ',' | sed -e 's/,$//')`.
 
     Notice that there are, in fact, Deployments whose name is very similar to the name of some of the Pods. By convention, objects that are created by another resource inherit the name of their parent resource and a suffix of a dash (`-`) followed by an ID (usually some string of letters or, in the case of Pods descended from a StatefulSet resource, a number).
 
