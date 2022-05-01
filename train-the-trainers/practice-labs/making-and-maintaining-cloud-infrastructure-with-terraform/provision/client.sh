@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
-terraform_version="1.1.1"
+terraform_version="1.1.9"
 tprovider_version="latest" # Or a specific version in SemVer format.
-golang_version="1.15.8"
-terragrunt_version="v0.35.14"
+golang_version="1.18.1"
+terragrunt_version="v0.36.9"
 
 apt-get update && apt-get install --yes unzip
 

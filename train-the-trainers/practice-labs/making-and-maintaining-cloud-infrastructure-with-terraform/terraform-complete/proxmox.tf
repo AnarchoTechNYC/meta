@@ -50,7 +50,7 @@ resource "proxmox_virtual_environment_vm" "testvm" {
     }
     ip_config {
       ipv4 {
-        address = "10.10.10.50/24"
+        address = "192.168.60.10/24"
       }
     }
     user_account {
