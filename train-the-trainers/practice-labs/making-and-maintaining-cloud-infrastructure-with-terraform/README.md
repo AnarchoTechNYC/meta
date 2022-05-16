@@ -72,4 +72,4 @@ We'll begin by ensuring you have successfully completed the [set up](#set-up) st
 
 # Additional references
 
-> :construction: TK-TODO
+* [Terragoat](https://github.com/bridgecrewio/terragoat) - Vulnerable by design Terraform project used as a learning and training project that demonstrates how common configuration errors can find their way into production cloud environments.
