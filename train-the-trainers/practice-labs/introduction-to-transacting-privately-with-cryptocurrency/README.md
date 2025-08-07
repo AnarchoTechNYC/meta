@@ -20,6 +20,7 @@ In this practice lab, you will learn enough about cryptocurrencies to make use o
 1. [Set up](#set-up)
 1. [Practice](#practice)
     1. [Introduction](#introduction)
+    1. [Your first cryptocurrency wallet](#your-first-cryptocurrency-wallet)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -29,7 +30,7 @@ When you complete this lab, you will have acquired the following capabilities:
 
 * The ability to receive and send monetary funds in a private and discreet manner using a cryptocurrency "wallet" application.
 * The ability to anonymously convert ("exchange" or "swap") otherwise incompatible cryptocurrencies for one another.
-* THe ability to purchase goods and services without the cryptocurrency transaction itself revealing unnecessary information about you.
+* The ability to purchase goods and services without the cryptocurrency transaction itself revealing unnecessary information about you.
 * An understanding of how to assess "coinflow" analytics and observe other people's transactions on transparent blockchains.
 
 # Bill of materials
@@ -115,7 +116,7 @@ The Bitcoin project was famously spearheaded by a mysterious entity named Satosh
 
 Rather than merely trust one another, each individual node in the network that ran a complete copy of the Bitcoin software was programmed to *cryptographically validate* every incoming message, called a *transaction* in Bitcoin's parlance, ensuring it met certain criteria. If the transaction's math literally didn't add up, it would be discarded and ignored.
 
-Prior to Bitcoin, money was susceptible to certain kinds of manipulation in the physical world. When gold was considered the equivalent of money, discovering veins of gold in gold mines or panhandling in rivers meant literally finding more money in the world. Later, when the value of legally binding tender like the US Dollar was disassociated from the value of gold on April 20<sup>th</sup>, 1933, governments could simply create more money on demand by printing more of it and declaring it valid. But with Bitcoin, the supply of money in circulation, known as metaphorical "coins," was mathematically fixed by an algorithm computed each and every time any transaction on the network was tested for validity.
+Prior to Bitcoin, money was susceptible to certain kinds of manipulation in the physical world. When gold was considered the equivalent of money, discovering veins of gold in gold mines or panhandling in rivers meant literally finding more money in the world. Later, when the value of legally binding tender like the US Dollar was disassociated from the value of gold on April 20<sup>th</sup>, 1933, governments could simply create more money on demand by printing more of it and declaring it valid. But with Bitcoin, the supply of money in circulation, known as metaphorical "coins" or, sometimes and more generically, *tokens*, was mathematically fixed by an algorithm computed each and every time any transaction on the network was tested for validity.
 
 Theoretically, this meant that anyone who ran the Bitcoin software could absolutely trust that a financial transaction would provide exactly and only the precise value they expected it to. But it also meant that such transactions would never validate if they included counterfeit coinage, promising to eliminate a whole category of financial fraud.
 
@@ -123,9 +124,26 @@ To use a cryptocurrency and access its network yourself, you need special softwa
 
 ### Your first cryptocurrency wallet
 
-A *wallet*, *wallet app*, or *crypto wallet* is simply a software program or application that you 
+A *wallet*, *wallet app*, or *crypto wallet* is simply a software program or application that you use to manage your interactions with the cryptocurrency network for you. You can think of it a little bit like a Web browser, but for your cryptocurrency tokens instead of for Web sites and pages. Choosing a wallet app is also a bit like choosing a Web browser. Different people have their favorites, for their own reasons, and which one you ultimately choose to use depends on a combination of the features you need, the aesthetics you like, and the support community you have available to you.
 
-TK-TODO
+Also like a Web browser, different wallet apps implement their features in ways that can be more or less accomodating of privacy concerns. Unfortunately it isn't enough to simply use a privacy coin cryptocurrency if you want to achieve the best level of privacy that you can. For that, you must also interact with that privacy coin's cryptocurrency network using a wallet app that won't leak data you don't need it to. Not all wallet apps fit that bill.
+
+The authors of this guide have their preferences, but as each cryptocurrency ecosystem evolves, we encourage you to do additional research and choose a wallet app that suits you. In the meantime, you are also welcome to stick to [our recommendations](#set-up), which are described above.
+
+When you first open most wallet apps, the app will probably prompt you to generate and save a set of randomly generated words (most commonly 12 or 14) called a *seed phrase*, *recovery phrase*, or *mnemonic code*. This phrase acts like a password, and denotes a secret that you should keep well protected, because it grants full access to spend any of the coins, tokens, or funds that you acquire. We strongly advise you to record your new wallet app's seed phrase somewhere safe, such as in a [password manager](../../mr-robots-netflix-n-hack/week-2/strengthening-passwords-to-defend-against-john/README.md#using-a-password-manager) that you trust.
+
+> [!TIP]
+> Seed phrases are portable across many different wallet apps. If you remember your wallet app's seed phrase, you can completely erase your wallet app and all the data in it, and still easily recover (or "import") your prior token balance and other transaction data from the cryptocurrency network, even if you use a different wallet app in the future. Seed phrases are based on a standard algorithm themselves and work by encoding the bits of a primary cryptographic key that is later used in a hierarchically deterministic algorithm to generate the actual private keys for various cryptocurrency system addresses. Using this system, your single wallet app can contain many millions upon millions of individual cryptocurrency addresses, while requiring you to remember only one set of "seed" words to gain access to all of them.
+>
+> Among other benefits, this makes it easy to migrate your funds from one wallet app to another, as long as both of the wallet apps you choose support the same seed phrase algorithm.
+
+**Do this** to ensure your cryptocurrency wallet app is installed and set up for first use:
+
+> :construction: TK-TODO
+
+Now that you have a wallet app installed
+
+### 
 
 # Discussion
 
@@ -134,3 +152,5 @@ TK-TODO
 # Additional references
 
 > :construction: TK-TODO
+
+* [Crypto Pills #10: BIP32 Derivations in Depth](https://medium.com/@guibv.avatar/crypto-pills-10-bip32-derivations-in-depth-3005da02ae6a)
