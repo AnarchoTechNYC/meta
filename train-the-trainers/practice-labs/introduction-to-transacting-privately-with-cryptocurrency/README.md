@@ -21,6 +21,12 @@ In this practice lab, you will learn enough about cryptocurrencies to make use o
 1. [Practice](#practice)
     1. [Introduction](#introduction)
     1. [Your first cryptocurrency wallet](#your-first-cryptocurrency-wallet)
+    1. [Onramping: acquiring crypto](#onramping-acquiring-crypto)
+        1. [Know Your Know-Your-Customer (KYC)](#know-your-know-your-customer-kyc)
+    1. [Understanding custodial schemes for cryptocurrency assets](#understanding-custodial-schemes-for-cryptocurrency-assets)
+    1. [Addresses, wallets, accounts, oh my!](#addresses-wallets-accounts-oh-my)
+    1. [Performing currency swaps](#performing-currency-swaps)
+    1. [Understanding netflows and coinflows](#understanding-netflows-and-coinflows)
 1. [Discussion](#discussion)
 1. [Additional references](#additional-references)
 
@@ -142,6 +148,33 @@ When you first open most wallet apps, the app will probably prompt you to genera
 > :construction: TK-TODO
 
 Now that you have a wallet app installed
+
+### Onramping: acquiring crypto
+
+#### Know Your Know-Your-Customer (KYC)
+
+### Understanding custodial schemes for cryptocurrency assets
+
+### Addresses, wallets, accounts, oh my!
+
+> :construction: TK-TODO: These are mostly notes, for now.
+
+### Performing currency swaps
+
+- An exchange keeps a liquidity pool in order to service swaps.
+- Many exchanges exist, but most are strict about requiring KYC before they will let you access any part of their liquidity pool for swaps.
+- Making swaps is a direct interaction with an exchange directly or with a service that proxies your request for making a swap, so your privacy is also affected by which you choose for the network interaction.
+- Trocador.app is an aggregator that rates exchanges based on their privacy policy guarantees *and* also offers a programmatic API to their partner exchanges via their own anonymizing proxy. They have a JavaScript-free version at https://noscript.trocador.app that can be accessed freely and anonymously over Tor!
+
+### Understanding netflows and coinflows
+
+> :construction: TK-TODO: These are mostly notes, for now.
+
+- Netflow is network-level data trails, where packets come from and go to, their IP addresses, and so on.
+- Coinflow is cryptocurrency network data trails, where transactions are sent to and originate from, what their amount is, and so on.
+- Use Tor (or Tor Browser) to protect against netflow analysis.
+- Only opaque ledger sysetms offered by privacy coins such as Zcash or Monero can fully protect against coinflow analysis.
+    - Some privacy-enhanced L2's like Lightning claim to protect against some coinflow analysis, but none protect as thoroughly as encrypted L1s like Zcash or Monero.
 
 ### 
 
