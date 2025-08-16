@@ -2,9 +2,9 @@
 
 The advent of digitally securable currencies, known as *cryptocurrency*, heralded a watershed moment for what was still a young Internet of the time. It happened in 2009 with the formal announcement of the first official release of software called *Bitcoin*. The notion of securing a financial system using the awesome power of modern cryptography has some obvious benefits, such as eliminating certain classes of fraud and abuse, but it comes with massive implications that variously both appeal to and threaten everyone who needs to participate in such a system. 
 
-While Bitcoin remains one of the most important cryptocurrencies today, it was not initially designed for financial privacy. In many ways, the Bitcoin software was similar to other networked software applications of its day: it had a peer-to-peer (P2P) architecture where anyone who ran an instance of the program, called *Bitcoin Core*, would connect to other instances of the same software in order to transmit and receive data from them that, eventually, all users would share.
+While Bitcoin remains one of the most important cryptocurrencies today, it was not initially designed for financial privacy. In many ways, the Bitcoin software was similar to other networked software applications of its day: it had a peer-to-peer (P2P) architecture where anyone who ran an instance of the program, called *Bitcoin Core*, would connect to other instances of the same software in order to transmit and receive data from them that, eventually, all users would share on a special kind of distributed database called a *blockchain*.
 
-This sharing of data meant that every single user of the Bitcoin software who joined the network would eventually have the exact same view of the data in the network. Since everyone on the network shared all the data of the network, everything anyone did on the network was visible to everyone else on the network at any time. And since valid transactions were always ever appended to, never deleted, anything anyone ever did on the network remained enshrined in the network's account of its own history for as long as at least one copy of the network's data survived.
+This sharing of data meant that every single user of the Bitcoin software who joined the network and downloaded its blockchain database would eventually have the exact same view of the data in the network. Since everyone on the network shared all the data of the network, everything anyone did on the network was visible to everyone else on the network at any time. And since valid transactions were always ever appended to, never deleted, anything anyone ever did on the network remained enshrined in the network's account of its own history for as long as at least one copy of the network's data survived.
 
 For certain use cases requiring transparency, such as auditing non-profit or government revenues and expenses, such a system makes a lot of sense. But there are many situations in which publicizing financial dealings this way poses serious risks to life or liberty for all sorts of individuals and groups of people.
 
@@ -28,6 +28,14 @@ In this practice lab, you will learn enough about cryptocurrencies to make use o
     1. [Performing currency swaps](#performing-currency-swaps)
     1. [Understanding netflows and coinflows](#understanding-netflows-and-coinflows)
 1. [Discussion](#discussion)
+    1. [Evolution of blockchain data analytics](#evolution-of-blockchain-data-analytics)
+    1. [Cryptocurrency and blockchain de-anonymization techniques](#cryptocurrency-and-blockchain-de-anonymization-techniques)
+        1. [De-anonymization via KYC/AML data](#de-anonymization-via-kyc-aml-data)
+        1. [De-anonymization via open sources intelligence (OSINT) and public data](#de-anonymization-via-open-sources-intelligence-osint-and-public-data)
+        1. [De-anonymization via address clustering](#de-anonymization-via-address-clustering)
+        1. [De-anonymization via transaction analysis](#de-anonymization-via-transaction-analysis)
+        1. [De-anonymization via-dusting-attacks](#de-anonymization-via-dusting-attacks)
+        1. [De-anonymization via Internet Protocol (IP) network analysis](#de-anonymization-via-internet-protocol-ip-network-analysis)
 1. [Additional references](#additional-references)
 
 # Objectives
@@ -112,6 +120,10 @@ Follow the above links. Then download and install the appropriate software packa
 
 > :construction: TODO
 
+## Tor Browser installation on Android
+
+> :construction: TODO
+
 # Practice
 
 We'll begin by ensuring you have successfully completed the [set up](#set-up) steps. This process will also introduce the fundamentals that you need to understand to complete the rest of the exercise.
@@ -139,7 +151,7 @@ The authors of this guide have their preferences, but as each cryptocurrency eco
 When you first open most wallet apps, the app will probably prompt you to generate and save a set of randomly generated words (most commonly 12 or 14) called a *seed phrase*, *recovery phrase*, or *mnemonic code*. This phrase acts like a password, and denotes a secret that you should keep well protected, because it grants full access to spend any of the coins, tokens, or funds that you acquire. We strongly advise you to record your new wallet app's seed phrase somewhere safe, such as in a [password manager](../../mr-robots-netflix-n-hack/week-2/strengthening-passwords-to-defend-against-john/README.md#using-a-password-manager) that you trust.
 
 > [!TIP]
-> Seed phrases are portable across many different wallet apps. If you remember your wallet app's seed phrase, you can completely erase your wallet app and all the data in it, and still easily recover (or "import") your prior token balance and other transaction data from the cryptocurrency network, even if you use a different wallet app in the future. Seed phrases are based on a standard algorithm themselves and work by encoding the bits of a primary cryptographic key that is later used in a hierarchically deterministic algorithm to generate the actual private keys for various cryptocurrency system addresses. Using this system, your single wallet app can contain many millions upon millions of individual cryptocurrency addresses, while requiring you to remember only one set of "seed" words to gain access to all of them.
+> Seed phrases are portable across many different wallet apps. If you remember your wallet app's seed phrase, you can completely erase your wallet app along with all the data in it, and still easily recover (or "import") your prior token balance and other transaction data from the cryptocurrency network, even if you use a different wallet app in the future. Seed phrases are based on a standard algorithm themselves and work by encoding the bits of a primary cryptographic key that is later used in a hierarchically deterministic algorithm to generate the actual private keys for various cryptocurrency system addresses. Using this system, your single wallet app can contain many millions upon millions of individual cryptocurrency addresses, while requiring you to remember only one set of "seed" words to gain access to all of them.
 >
 > Among other benefits, this makes it easy to migrate your funds from one wallet app to another, as long as both of the wallet apps you choose support the same seed phrase algorithm.
 
@@ -147,9 +159,16 @@ When you first open most wallet apps, the app will probably prompt you to genera
 
 > :construction: TK-TODO
 
-Now that you have a wallet app installed
+Now that you have a wallet app installed, and you've stored your seed phrase somewhere safe, it's time to acquire some funds to fill your empty wallet app with.
 
 ### Onramping: acquiring crypto
+
+Cryptocurrency is most intuitively understood as cash. (That's kind of the whole idea, anyway.) An empty wallet isn't very useful. You need something for it to store. In the case of a physical wallet, that something is physical notes or coins. In the case of a cryptocurrency wallet app, that something is its metaphorical equivalent, which are cryptocurrency tokens.
+
+> [!TIP]
+> In reality, cryptocurrency wallet apps don't store any tokens. Instead, they store *private keys*, the numerical secret from which public *blockchain addresses* are derived and that grant the power to spend the tokens assigned to those addresses. This is what makes it technically possible to delete your wallet app and still recover your transaction data from the seed phrase you stored earlier; you're not actually deleting your tokens, you're just deleting a copy of the pointers (addresses) to the relevant transactions.
+
+Cryptocurrency transactions are trades; you give someone a metaphorical coin, and they give you something in exchange. The most intui
 
 #### Know Your Know-Your-Customer (KYC)
 
@@ -180,10 +199,64 @@ Now that you have a wallet app installed
 
 # Discussion
 
-> :construction: TK-TODO
+## Evolution of blockchain data analytics
+
+As new technologies and data formats become adopted, there is a period of time during which they are difficult to understand or manipulate simply because the tooling for using the new technology is itself rather new. This often leads people to believe that newer technology is "more secure" or "more private" than it really is simply because there is no easily usable way to visualize or analyze the new data format. Over time, though, this is often proved untrue, as better and more intuitive interfaces to that same data becomes more widely available, itself.
+
+This is happening again with blockchain data. Transparent ledger systems like Bitcoin contain a wealth of historical information, but this data is stored in a technology-specific format and few publicly available consumer tools exist for analyzing and making sense of this data in a way that is clear to non-experts. However, such tools are getting better all the time and, as you might expect, corporations and governments are ahead of the game on this.
+
+In the early years after Bitcoin's release, the only meaningful tools were called [blockchain explorers](https://support.bitcoin.com/en/articles/4363796-how-to-use-a-bitcoin-blockchain-explorer), which simply decoded the data stored in each block that was "mined" (i.e., cemented into the cryptographic history of the chain of blocks making up the blockchain itself). Blockchain explorers are still the most common form of blockchain data analytic tools that exist today because they are also the simplest to create and the least capable.
+
+Popular blockchain explorers exist for different blockchain databases (or "chains"). Some of the better and more visual ones include:
+
+* [BTCScan.org](https://btcscan.org/) - Straightforward blockchain explorer for the Bitcoin cryptocurrency network.
+* [EtherScan.io](https://etherscan.io/) - Ethereum network blockchain explorer with clever support for [Ethereum Name Service (ENS)](https://ens.domains/) name-to-address mappings.
+    * For example, [look up `vitalik.eth` on EtherScan.io's blockchain explorer](https://etherscan.io/name-lookup-search?id=vitalik.eth).
+* [Cake Wallet's Monero Block Explorer](https://monero.com/explorer) - Web-based blockchain explorer that demonstrates Monero's additional privacy features by requiring transaction secret keys before displaying transaction details.
+* [Zcash Blockchain Explorer](https://zcashexplorer.app/) ([Source code](https://github.com/nighthawk-apps/zcash-explorer)) - Similar blockchain explorer but for Zcash. Also shows popular transparent addresses with their identities, such as which transactions are made by large exchanges like Coinbase.
+    * Also available as a [Tor v3 Onion service](http://zcashfgzdzxwiy7yq74uejvo2ykppu4pzgioplcvdnpmc6gcu5k6vwyd.onion/).
+
+Over time, all the capabilities you might expect from automatable systems are being added to blockchain ecosystem toolkits. For example, [Arkham Intelligence provides a free service to send you alerts](https://intel.arkm.com/alerts) and notifications based on activity that it can see on any of its supported (transparent) ledgers, as shown here:
+
+![Screenshot of the Arkham Intelligence "Create Alert" dialogue box.](screenshots/screenshot.arkham-intelligence-create-alert-screen.png)
+
+[Arkham Intelligence](https://arkm.com/) is noteworthy as an early entry into the cryptocurrency analysis space that started using artificial intelligence (AI) to identify and catalog the owners of blockchain addresses.
+
+While the majority of the more sophisticated analytics tools are still not public, they exist, as evidenced by the proliferation of "cryptocurrency investigatory" services that claiming to "track down your stolen digital assets," as companies like [Bitquery advertises](https://bitquery.io/products/crypto-investigation-services). Famously, [Chainalysis works with government law enforcement officers](https://www.chainalysis.com/blog/chainalysis-fbi-caesars-ransomware-recovery/) and provides its [Reactor](https://www.chainalysis.com/product/reactor/) tool for these investigations. [Breadcrums](https://www.breadcrumbs.app/) is another leading contender in this space.
+
+## Cryptocurrency and blockchain de-anonymization techniques
+
+> :construction: TK-TODO:
+
+### De-anonymization via KYC/AML data
+
+"Utilizing Know Your Customer (KYC) and Anti-Money Laundering (AML) information from centralized exchanges to link user identities to specific addresses"
+
+### De-anonymization via open sources intelligence (OSINT) and public data
+
+"Employing rules and patterns derived from transaction data to infer relationships between addresses"
+
+### De-anonymization via address clustering
+
+"Analyzing patterns of transactions between addresses to group those likely belonging to the same user"
+
+### De-anonymization via transaction analysis
+
+"Examining the flow of funds, transaction amounts, and timing to identify connections between addresses and potentially link them to real-world entities"
+
+### De-anonymization via "dusting" attacks
+
+"Sending small amounts of cryptocurrency (so-called "dust") to multiple addresses to see which ones are combined in future transactions, revealing connections." Sort of combines address clustering and transaction analysis.
+
+### De-anonymization via Internet Protocol (IP) network analysis
+
+"Studying the connections within the blockchain network to identify patterns and potentially trace transactions back to specific users."
 
 # Additional references
 
 > :construction: TK-TODO
 
 * [Crypto Pills #10: BIP32 Derivations in Depth](https://medium.com/@guibv.avatar/crypto-pills-10-bip32-derivations-in-depth-3005da02ae6a)
+* [EY Blockchain Analyzer: Solution Overview](https://web.archive.org/web/20250217162037/https://www.ey.com/content/dam/ey-unified-site/ey-com/en-us/services/blockchain/documents/ey-solution-brief-explorer-visualizer.pdf)
+* [De-anonymizing Bitcoin](https://web.archive.org/web/20250727090726/https://www.schneier.com/blog/archives/2022/04/de-anonymizing-bitcoin.html) - Excerpted from Andy Greenberg's book, *Tracers In The Dark: The Global Hunt for the Crime Lords of Cryptocurrency*, discusses various de-anonymization techniques such as address clustering.
+* [Deanonymization and Linkability of Cryptocurrency Transactions Based on Network Analysis](https://ieeexplore.ieee.org/document/8806723) - Revealing academic study on using traditional IP network analysis techniques to deanonymize Bitcoin users despite following Bitcoin's privacy best practices such as using new ("virgin") addresses for each new transaction to avoid transaction graph analysis.
