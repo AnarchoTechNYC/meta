@@ -73,8 +73,8 @@ In addition to your smartphone and laptop or desktop computer, you will need to 
 On your smartphone, you will need the following wallets:
 
 * [Zashi](https://electriccoin.co/zashi/), for Zcash transactions
-* [Cake Wallet](https://cakewallet.com/), for Monero and BitCoin transactions, or
-* [Edge Wallet](https://edge.app/), for Monero and BitCoin transactions.
+* [Cake Wallet](https://cakewallet.com/), for Monero and Bitcoin transactions, or
+* [Edge Wallet](https://edge.app/), for Monero and Bitcoin transactions.
 
 For educational purposes, the authors recommend acquiring all three.
 
